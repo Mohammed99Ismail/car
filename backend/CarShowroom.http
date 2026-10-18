@@ -1,0 +1,120 @@
+@baseUrl = http://localhost:5041/api
+
+### 1. Register User
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "fullName": "محمد أحمد",
+  "email": "user@example.com",
+  "password": "Password@123"
+}
+
+### 2. Login SuperAdmin
+# @name loginAdmin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@carshowroom.com",
+  "password": "Admin@123456"
+}
+
+### Store Token
+@adminToken = {{loginAdmin.response.body.data.accessToken}}
+@refreshToken = {{loginAdmin.response.body.data.refreshToken}}
+
+### 3. Get Current User Profile (Me)
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{adminToken}}
+
+### 4. Refresh Token
+POST {{baseUrl}}/auth/refresh-token
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### 5. Forgot Password
+POST {{baseUrl}}/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "admin@carshowroom.com"
+}
+
+### 6. Contract Types (Read-Only Lookup)
+GET {{baseUrl}}/contract-types
+Authorization: Bearer {{adminToken}}
+
+### 7. Lookups: Makes
+GET {{baseUrl}}/lookups/makes
+Authorization: Bearer {{adminToken}}
+
+### 8. Lookups: Models for Make 1 (Honda)
+GET {{baseUrl}}/lookups/makes/1/models
+Authorization: Bearer {{adminToken}}
+
+### 9. Lookups: Manufacture Years
+GET {{baseUrl}}/lookups/years
+Authorization: Bearer {{adminToken}}
+
+### 10. Lookups: Branches
+GET {{baseUrl}}/lookups/branches
+Authorization: Bearer {{adminToken}}
+
+### 11. Branches: Get Paged List
+GET {{baseUrl}}/branches?page=0&limit=10
+Authorization: Bearer {{adminToken}}
+
+### 12. Customers: Create Customer
+POST {{baseUrl}}/customers
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "عبد الله الشمري",
+  "nationalId": "1098765432",
+  "mobile": "0551234567",
+  "address": "الرياض - حي الملز"
+}
+
+### 13. Customers: Get List
+GET {{baseUrl}}/customers?page=0&limit=10
+Authorization: Bearer {{adminToken}}
+
+### 14. Cars: Create Car
+POST {{baseUrl}}/cars
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "makeId": 1,
+  "modelId": 1,
+  "manufactureYear": 2024,
+  "color": "أبيض لؤلؤي",
+  "plateNumber": "أ ب ج 1234",
+  "branchId": 1,
+  "purchaseDate": "2024-01-15T00:00:00Z",
+  "purchasePrice": 125000.00,
+  "chassisNumber": "1HGCV1F12PA123456",
+  "engineNumber": "K20C1-9876543",
+  "notes": "حالة الوكالة - صيانة دورية منتظمة"
+}
+
+### 15. Cars: Get List
+GET {{baseUrl}}/cars?page=0&limit=10
+Authorization: Bearer {{adminToken}}
+
+### 16. Roles: Get List
+GET {{baseUrl}}/roles?page=0&limit=10
+Authorization: Bearer {{adminToken}}
+
+### 17. Permissions: Get Grouped By Module
+GET {{baseUrl}}/permissions
+Authorization: Bearer {{adminToken}}
+
+### 18. Users: Get List
+GET {{baseUrl}}/users?page=0&limit=10
+Authorization: Bearer {{adminToken}}
