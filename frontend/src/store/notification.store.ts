@@ -6,9 +6,19 @@ export const useNotificationStore = defineStore('Notification', () => {
   const notificationService = useNotificationsService()
   const notifications = ref<Notification[]>([])
   const isLoading = ref(false)
+
   async function getNotifications() {
-    const response = await notificationService.getNotificationsList()
-    notifications.value = response.items
+    isLoading.value = true
+    try {
+      const response = await notificationService.getNotificationsList()
+      notifications.value = response?.items ?? []
+    }
+    catch {
+      notifications.value = []
+    }
+    finally {
+      isLoading.value = false
+    }
   }
 
   function clearAll() {
@@ -23,5 +33,6 @@ export const useNotificationStore = defineStore('Notification', () => {
   }
 })
 
-if (import.meta.hot)
+if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useNotificationStore, import.meta.hot))
+}
