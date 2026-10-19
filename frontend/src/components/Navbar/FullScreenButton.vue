@@ -11,7 +11,6 @@ function toggleFullScreen() {
   else document.documentElement.requestFullscreen()
 
   isFullScreen.value = !isFullScreen.value
-  window.umami?.track('ToggleFullScreen')
 }
 </script>
 

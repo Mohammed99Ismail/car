@@ -30,9 +30,6 @@ function selectGroup(item: TaskGroup | undefined) {
   if (item === undefined) return
   if (props.selectedGroup && item && props.selectedGroup.id === item.id) return
   emits('select', item)
-
-  if (item!.id !== 1)
-    window.umami?.track('Todo:SelectGroup', { title: item!.title })
 }
 
 const showDropdown = ref(false)

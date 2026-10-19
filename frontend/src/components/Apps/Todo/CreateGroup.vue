@@ -28,7 +28,6 @@ function createGroup() {
     groupItem.value.bgColor = color
     store.createGroup(groupItem.value)
     emits('created')
-    window.umami?.track('Todo:CreateGroup', { title: groupItem.value.title })
     groupItem.value = {}
     selectedColorIndex.value = -1
 }

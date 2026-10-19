@@ -32,7 +32,6 @@ export const useTodoAppStore = defineStore('Todo', () => {
   function createGroup(group: TaskGroup) {
     group.id = groups.value.length + 2
     groups.value.push(group)
-    window.umami?.track('Todo:CreateGroup', { title: group.title })
   }
 
   function deleteGroup(id: number) {
@@ -49,7 +48,6 @@ export const useTodoAppStore = defineStore('Todo', () => {
   function toggleFavTask(id: number) {
     const task = tasks.value.find((x: TaskItem) => x.id === id)
     task.isFavorite = !task.isFavorite
-    if (task.isFavorite) window.umami?.track('Todo:FavTask')
   }
 
   function deleteTask(id: number) {
@@ -62,7 +60,6 @@ export const useTodoAppStore = defineStore('Todo', () => {
   async function createTask(task: TaskCreateModel) {
     const result = await todoService.createTask(task)
     tasks.value.unshift({ id: result.id, title: task.title })
-    window.umami?.track('Todo:CreateTask', { title: task.title })
   }
 
   const counts = computed(() => {
