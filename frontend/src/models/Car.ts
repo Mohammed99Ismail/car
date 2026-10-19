@@ -1,13 +1,14 @@
+/** Matches backend CarDto. */
 export interface CarDto {
-  id: string
-  makeId: string
+  id: number
+  makeId: number
   makeName: string
-  modelId: string
+  modelId: number
   modelName: string
-  year: number
+  manufactureYear: number
   color: string
   plateNumber: string
-  branchId: string
+  branchId: number
   branchName: string
   purchaseDate: string
   purchasePrice: number
@@ -15,27 +16,22 @@ export interface CarDto {
   chassisNumber: string
   engineNumber: string
   notes: string | null
-  createdAt: string
-  updatedAt?: string | null
+  createdDate: string
 }
 
-export interface CreateCarDto {
-  makeId: string
-  modelId: string
-  year: number
+/** Matches backend CreateCarRequest / UpdateCarRequest. */
+export interface SaveCarDto {
+  makeId: number
+  modelId: number
+  manufactureYear: number
   color: string
   plateNumber: string
-  branchId: string
+  branchId: number
   purchaseDate: string
   purchasePrice: number
-  imagePath?: string | null
   chassisNumber: string
   engineNumber: string
   notes?: string | null
-}
-
-export interface UpdateCarDto extends CreateCarDto {
-  id: string
 }
 
 export interface CarQueryParameters {
@@ -44,8 +40,8 @@ export interface CarQueryParameters {
   search?: string
   sortBy?: string
   isDescending?: boolean
-  makeId?: string
-  modelId?: string
-  branchId?: string
-  year?: number
+  makeId?: number | null
+  modelId?: number | null
+  branchId?: number | null
+  manufactureYear?: number | null
 }

@@ -3,7 +3,6 @@ import {
   Add24Regular as AddIcon,
   Delete24Regular as DeleteIcon,
   Edit24Regular as EditIcon,
-  Filter24Regular as FilterIcon,
   Image24Regular as ImageIcon,
   ArrowClockwise24Regular as RefreshIcon,
   Search24Regular as SearchIcon,
@@ -11,14 +10,9 @@ import {
 import { useDebounceFn } from '@vueuse/core'
 import type { DataTableColumns, FormInst, FormRules } from 'naive-ui'
 import { NButton, NImage, NSpace, NTag } from 'naive-ui'
-import type { ApiResponse, LookupItemDto, PagedList } from '~/models/ApiResponse'
-import { ResultStatusEnum, isApiSuccess } from '~/models/ApiResponse'
-import type {
-  CarDto,
-  CarQueryParameters,
-  CreateCarDto,
-  UpdateCarDto,
-} from '~/models/Car'
+import type { LookupItemDto } from '~/models/ApiResponse'
+import { isApiSuccess } from '~/models/ApiResponse'
+import type { CarDto, CarQueryParameters, SaveCarDto } from '~/models/Car'
 import { useCarService } from '~/services/car.service'
 import { useLookupService } from '~/services/lookup.service'
 
@@ -37,34 +31,39 @@ const queryParams = reactive<CarQueryParameters>({
   pageIndex: 1,
   pageSize: 10,
   search: '',
-  makeId: undefined,
-  modelId: undefined,
-  branchId: undefined,
-  year: undefined,
+  makeId: null,
+  modelId: null,
+  branchId: null,
+  manufactureYear: null,
 })
 
 // Lookups for filters and form
 const makesList = ref<LookupItemDto[]>([])
-const modelsList = ref<LookupItemDto[]>([])
+const filterModelsList = ref<LookupItemDto[]>([])
 const formModelsList = ref<LookupItemDto[]>([])
 const branchesList = ref<LookupItemDto[]>([])
 const yearsList = ref<number[]>([])
+
+// Permissions
+const canCreate = computed(() => accountStore.hasPermission('Cars.Create'))
+const canUpdate = computed(() => accountStore.hasPermission('Cars.Update'))
+const canDelete = computed(() => accountStore.hasPermission('Cars.Delete'))
 
 // Modal & Form State
 const showModal = ref(false)
 const isEditing = ref(false)
 const submitting = ref(false)
 const formRef = ref<FormInst | null>(null)
-const editingId = ref<string | null>(null)
+const editingId = ref<number | null>(null)
 
 const formData = reactive<{
-  makeId: string | null
-  modelId: string | null
-  year: number | null
+  makeId: number | null
+  modelId: number | null
+  manufactureYear: number | null
   color: string
   plateNumber: string
-  branchId: string | null
-  purchaseDate: number | null // Naive UI date picker uses timestamp
+  branchId: number | null
+  purchaseDate: number | null
   purchasePrice: number | null
   imagePath: string | null
   chassisNumber: string
@@ -73,7 +72,7 @@ const formData = reactive<{
 }>({
   makeId: null,
   modelId: null,
-  year: new Date().getFullYear(),
+  manufactureYear: new Date().getFullYear(),
   color: '',
   plateNumber: '',
   branchId: null,
@@ -89,16 +88,16 @@ const uploadingImage = ref(false)
 
 // Form Validation Rules
 const rules: FormRules = {
-  makeId: [{ required: true, message: 'الماركة مطلوبة', trigger: ['blur', 'change'] }],
-  modelId: [{ required: true, message: 'الموديل مطلوب', trigger: ['blur', 'change'] }],
-  year: [{ required: true, type: 'number', message: 'سنة الصنع مطلوبة', trigger: ['blur', 'change'] }],
-  color: [{ required: true, message: 'اللون مطلوب', trigger: ['blur', 'change'] }],
-  plateNumber: [{ required: true, message: 'رقم اللوحة مطلوب', trigger: ['blur', 'change'] }],
-  branchId: [{ required: true, message: 'الفرع مطلوب', trigger: ['blur', 'change'] }],
+  makeId: [{ required: true, type: 'number', message: 'الشركة المصنعة مطلوبة', trigger: ['blur', 'change'] }],
+  modelId: [{ required: true, type: 'number', message: 'الموديل مطلوب', trigger: ['blur', 'change'] }],
+  manufactureYear: [{ required: true, type: 'number', message: 'سنة الصنع مطلوبة', trigger: ['blur', 'change'] }],
+  color: [{ required: true, message: 'اللون مطلوب', trigger: ['blur', 'input'] }],
+  plateNumber: [{ required: true, message: 'رقم اللوحة مطلوب', trigger: ['blur', 'input'] }],
+  branchId: [{ required: true, type: 'number', message: 'الفرع مطلوب', trigger: ['blur', 'change'] }],
   purchaseDate: [{ required: true, type: 'number', message: 'تاريخ الشراء مطلوب', trigger: ['blur', 'change'] }],
-  purchasePrice: [{ required: true, type: 'number', message: 'سعر الشراء مطلوب', trigger: ['blur', 'change'] }],
-  chassisNumber: [{ required: true, message: 'رقم الشاصي مطلوب', trigger: ['blur', 'change'] }],
-  engineNumber: [{ required: true, message: 'رقم المحرك مطلوب', trigger: ['blur', 'change'] }],
+  purchasePrice: [{ required: true, type: 'number', message: 'سعر الشراء مطلوب', trigger: ['blur', 'input'] }],
+  chassisNumber: [{ required: true, message: 'رقم الشاسيه / الهيكل مطلوب', trigger: ['blur', 'input'] }],
+  engineNumber: [{ required: true, message: 'رقم المحرك مطلوب', trigger: ['blur', 'input'] }],
 }
 
 // Fetch Initial Lookups
@@ -109,10 +108,11 @@ async function loadFilterLookups() {
       lookupService.getBranches(),
       lookupService.getYears(),
     ])
-    if (makesRes.data) makesList.value = makesRes.data
-    if (branchesRes.data) branchesList.value = branchesRes.data
-    if (yearsRes.data) yearsList.value = yearsRes.data
-  } catch (err) {
+    if (isApiSuccess(makesRes) && makesRes.data) makesList.value = makesRes.data
+    if (isApiSuccess(branchesRes) && branchesRes.data) branchesList.value = branchesRes.data
+    if (isApiSuccess(yearsRes) && yearsRes.data) yearsList.value = yearsRes.data
+  }
+  catch (err) {
     console.error('Error loading lookups', err)
   }
 }
@@ -126,9 +126,11 @@ async function loadCars() {
       cars.value = res.data.items
       totalCount.value = res.data.totalCount
     }
-  } catch (err) {
+  }
+  catch (err) {
     console.error('Error loading cars', err)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -139,24 +141,24 @@ const debouncedSearch = useDebounceFn(() => {
 }, 300)
 
 // Dependent filter for models
-async function onFilterMakeChange(makeId: string | null) {
-  queryParams.modelId = undefined
-  modelsList.value = []
+async function onFilterMakeChange(makeId: number | null) {
+  queryParams.modelId = null
+  filterModelsList.value = []
   if (makeId) {
     const res = await lookupService.getModels(makeId)
-    if (res.data) modelsList.value = res.data
+    if (isApiSuccess(res) && res.data) filterModelsList.value = res.data
   }
   queryParams.pageIndex = 1
   loadCars()
 }
 
 // Dependent form for models
-async function onFormMakeChange(makeId: string | null) {
+async function onFormMakeChange(makeId: number | null) {
   formData.modelId = null
   formModelsList.value = []
   if (makeId) {
     const res = await lookupService.getModels(makeId)
-    if (res.data) formModelsList.value = res.data
+    if (isApiSuccess(res) && res.data) formModelsList.value = res.data
   }
 }
 
@@ -168,15 +170,18 @@ async function handleImageFileChange(e: Event) {
   const file = target.files[0]
   uploadingImage.value = true
   try {
-    const res = await carService.uploadImage(file)
-    if (res.status === ResultStatusEnum.Success && res.data) {
-      formData.imagePath = res.data.webPath
+    const res = await carService.uploadImage(file, editingId.value)
+    if (isApiSuccess(res) && res.data) {
+      formData.imagePath = res.data
       message.success('تم رفع الصورة بنجاح')
     }
-  } catch (err: any) {
+  }
+  catch (err: any) {
     message.error(err.response?.data?.message || 'فشل رفع الصورة')
-  } finally {
+  }
+  finally {
     uploadingImage.value = false
+    target.value = ''
   }
 }
 
@@ -188,7 +193,7 @@ function openAddModal() {
   Object.assign(formData, {
     makeId: null,
     modelId: null,
-    year: new Date().getFullYear(),
+    manufactureYear: new Date().getFullYear(),
     color: '',
     plateNumber: '',
     branchId: null,
@@ -211,13 +216,13 @@ async function openEditModal(car: CarDto) {
   // Pre-load models for this make
   if (car.makeId) {
     const res = await lookupService.getModels(car.makeId)
-    if (res.data) formModelsList.value = res.data
+    if (isApiSuccess(res) && res.data) formModelsList.value = res.data
   }
 
   Object.assign(formData, {
     makeId: car.makeId,
     modelId: car.modelId,
-    year: car.year,
+    manufactureYear: car.manufactureYear,
     color: car.color,
     plateNumber: car.plateNumber,
     branchId: car.branchId,
@@ -239,32 +244,30 @@ async function handleSave() {
 
     submitting.value = true
     try {
-      const payload: CreateCarDto = {
+      const payload: SaveCarDto = {
         makeId: formData.makeId!,
         modelId: formData.modelId!,
-        year: Number(formData.year),
-        color: formData.color,
-        plateNumber: formData.plateNumber,
+        manufactureYear: Number(formData.manufactureYear),
+        color: formData.color.trim(),
+        plateNumber: formData.plateNumber.trim(),
         branchId: formData.branchId!,
         purchaseDate: new Date(formData.purchaseDate!).toISOString(),
         purchasePrice: Number(formData.purchasePrice),
+        chassisNumber: formData.chassisNumber.trim(),
+        engineNumber: formData.engineNumber.trim(),
+        notes: formData.notes?.trim() || null,
         imagePath: formData.imagePath,
-        chassisNumber: formData.chassisNumber,
-        engineNumber: formData.engineNumber,
-        notes: formData.notes,
       }
 
       if (isEditing.value && editingId.value) {
-        const res = await carService.update(editingId.value, {
-          id: editingId.value,
-          ...payload,
-        })
+        const res = await carService.update(editingId.value, payload)
         if (isApiSuccess(res)) {
           message.success(t('cars.updateSuccess'))
           showModal.value = false
           loadCars()
         }
-      } else {
+      }
+      else {
         const res = await carService.create(payload)
         if (isApiSuccess(res)) {
           message.success(t('cars.createSuccess'))
@@ -272,9 +275,11 @@ async function handleSave() {
           loadCars()
         }
       }
-    } catch (err: any) {
+    }
+    catch (err: any) {
       console.error('Error saving car', err)
-    } finally {
+    }
+    finally {
       submitting.value = false
     }
   })
@@ -294,24 +299,25 @@ function handleDelete(car: CarDto) {
           message.success(t('cars.deleteSuccess'))
           loadCars()
         }
-      } catch (err) {
+      }
+      catch (err) {
         console.error('Error deleting car', err)
       }
     },
   })
 }
 
-// Table Columns
+// Table Columns with full responsive widths
 const columns: DataTableColumns<CarDto> = [
   {
     title: t('cars.imagePath'),
     key: 'imagePath',
-    width: 80,
+    width: 75,
     render(row) {
       if (row.imagePath) {
         return h(NImage, {
-          width: 50,
-          height: 38,
+          width: 48,
+          height: 36,
           src: row.imagePath,
           previewSrc: row.imagePath,
           class: 'rounded object-cover shadow-sm',
@@ -339,15 +345,16 @@ const columns: DataTableColumns<CarDto> = [
   {
     title: t('cars.make'),
     key: 'makeName',
-    sorter: 'default',
+    minWidth: 120,
   },
   {
     title: t('cars.model'),
     key: 'modelName',
+    minWidth: 120,
   },
   {
     title: t('cars.year'),
-    key: 'year',
+    key: 'manufactureYear',
     width: 90,
   },
   {
@@ -358,10 +365,12 @@ const columns: DataTableColumns<CarDto> = [
   {
     title: t('cars.branch'),
     key: 'branchName',
+    minWidth: 120,
   },
   {
     title: t('cars.purchasePrice'),
     key: 'purchasePrice',
+    minWidth: 130,
     render(row) {
       return `${row.purchasePrice.toLocaleString()} ${t('common.currency')}`
     },
@@ -369,15 +378,16 @@ const columns: DataTableColumns<CarDto> = [
   {
     title: t('cars.chassisNumber'),
     key: 'chassisNumber',
+    minWidth: 150,
     ellipsis: { tooltip: true },
   },
   {
     title: t('common.actions'),
     key: 'actions',
-    width: 140,
+    width: 130,
     render(row) {
       const actions = []
-      if (accountStore.hasPermission('Cars.Update')) {
+      if (canUpdate.value) {
         actions.push(
           h(
             NButton,
@@ -394,7 +404,7 @@ const columns: DataTableColumns<CarDto> = [
           ),
         )
       }
-      if (accountStore.hasPermission('Cars.Delete')) {
+      if (canDelete.value) {
         actions.push(
           h(
             NButton,
@@ -415,7 +425,6 @@ const columns: DataTableColumns<CarDto> = [
   },
 ]
 
-// Pagination handler
 function onPageChange(page: number) {
   queryParams.pageIndex = page
   loadCars()
@@ -440,11 +449,11 @@ meta:
 </route>
 
 <template>
-  <div class="p-6">
+  <div class="p-4 md:p-6">
     <!-- Header -->
     <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 gap-4">
       <div>
-        <h1 class="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
+        <h1 class="text-2xl font-bold flex items-center gap-2">
           <span>🚗</span> {{ t('cars.title') }}
         </h1>
         <p class="text-sm text-slate-500 mt-1">
@@ -453,12 +462,16 @@ meta:
       </div>
 
       <div class="flex items-center gap-2">
-        <n-button secondary @click="loadCars">
-          <template #icon><RefreshIcon class="w-4 h-4" /></template>
+        <n-button id="cars-refresh-btn" secondary @click="loadCars">
+          <template #icon>
+            <RefreshIcon class="w-4 h-4" />
+          </template>
           {{ t('common.refresh') }}
         </n-button>
-        <n-button v-can="'Cars.Create'" type="primary" @click="openAddModal">
-          <template #icon><AddIcon class="w-5 h-5" /></template>
+        <n-button v-if="canCreate" id="cars-create-btn" type="primary" @click="openAddModal">
+          <template #icon>
+            <AddIcon class="w-5 h-5" />
+          </template>
           {{ t('cars.create') }}
         </n-button>
       </div>
@@ -469,16 +482,20 @@ meta:
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
         <!-- Search Input -->
         <n-input
+          id="cars-search-input"
           v-model:value="queryParams.search"
           clearable
           :placeholder="t('cars.searchPlaceholder')"
-          @input="debouncedSearch"
+          @update:value="debouncedSearch"
         >
-          <template #prefix><SearchIcon class="w-4 h-4 text-slate-400" /></template>
+          <template #prefix>
+            <SearchIcon class="w-4 h-4 text-slate-400" />
+          </template>
         </n-input>
 
         <!-- Make Filter -->
         <n-select
+          id="cars-filter-make"
           v-model:value="queryParams.makeId"
           clearable
           filterable
@@ -489,17 +506,19 @@ meta:
 
         <!-- Model Filter (Dependent) -->
         <n-select
+          id="cars-filter-model"
           v-model:value="queryParams.modelId"
           clearable
           filterable
           :disabled="!queryParams.makeId"
           :placeholder="t('cars.model')"
-          :options="modelsList.map(m => ({ label: m.name, value: m.id }))"
+          :options="filterModelsList.map(m => ({ label: m.name, value: m.id }))"
           @update:value="() => { queryParams.pageIndex = 1; loadCars(); }"
         />
 
         <!-- Branch Filter -->
         <n-select
+          id="cars-filter-branch"
           v-model:value="queryParams.branchId"
           clearable
           filterable
@@ -510,7 +529,8 @@ meta:
 
         <!-- Year Filter -->
         <n-select
-          v-model:value="queryParams.year"
+          id="cars-filter-year"
+          v-model:value="queryParams.manufactureYear"
           clearable
           :placeholder="t('cars.filterByYear')"
           :options="yearsList.map(y => ({ label: String(y), value: y }))"
@@ -519,20 +539,22 @@ meta:
       </div>
     </div>
 
-    <!-- Cars Data Table -->
+    <!-- Cars Data Table (Fully Responsive with scroll-x) -->
     <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
       <n-data-table
         remote
         :columns="columns"
         :data="cars"
         :loading="loading"
+        :row-key="(row: CarDto) => row.id"
+        :scroll-x="1150"
         :pagination="{
           page: queryParams.pageIndex,
           pageSize: queryParams.pageSize,
           itemCount: totalCount,
           showSizePicker: true,
           pageSizes: [10, 20, 50],
-          prefix: (info) => `إجمالي: ${info.itemCount} سيارة`,
+          prefix: ({ itemCount }) => `إجمالي: ${itemCount} سيارة`,
           onUpdatePage: onPageChange,
           onUpdatePageSize: onPageSizeChange,
         }"
@@ -546,7 +568,7 @@ meta:
       v-model:show="showModal"
       preset="card"
       :title="isEditing ? t('cars.edit') : t('cars.create')"
-      class="max-w-3xl"
+      style="width: min(840px, 95vw)"
       :segmented="{ content: true, action: true }"
     >
       <n-form
@@ -556,10 +578,11 @@ meta:
         label-placement="top"
         require-mark-placement="right-hanging"
       >
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           <!-- 1. Make -->
           <n-form-item path="makeId" :label="t('cars.make')">
             <n-select
+              id="car-form-make"
               v-model:value="formData.makeId"
               filterable
               :placeholder="t('common.select')"
@@ -571,6 +594,7 @@ meta:
           <!-- 2. Model (Dependent) -->
           <n-form-item path="modelId" :label="t('cars.model')">
             <n-select
+              id="car-form-model"
               v-model:value="formData.modelId"
               filterable
               :disabled="!formData.makeId"
@@ -580,9 +604,10 @@ meta:
           </n-form-item>
 
           <!-- 3. Year -->
-          <n-form-item path="year" :label="t('cars.year')">
+          <n-form-item path="manufactureYear" :label="t('cars.year')">
             <n-select
-              v-model:value="formData.year"
+              id="car-form-year"
+              v-model:value="formData.manufactureYear"
               :placeholder="t('cars.year')"
               :options="yearsList.map(y => ({ label: String(y), value: y }))"
             />
@@ -590,17 +615,18 @@ meta:
 
           <!-- 4. Color -->
           <n-form-item path="color" :label="t('cars.color')">
-            <n-input v-model:value="formData.color" placeholder="مثال: أبيض لؤلؤي، أسود ملكي" />
+            <n-input id="car-form-color" v-model:value="formData.color" placeholder="مثال: أبيض لؤلؤي، أسود ملكي" />
           </n-form-item>
 
           <!-- 5. Plate Number -->
           <n-form-item path="plateNumber" :label="t('cars.plateNumber')">
-            <n-input v-model:value="formData.plateNumber" placeholder="مثال: أ ب ج 1234" />
+            <n-input id="car-form-plate" v-model:value="formData.plateNumber" placeholder="مثال: أ ب ج 1234" />
           </n-form-item>
 
           <!-- 6. Branch -->
           <n-form-item path="branchId" :label="t('cars.branch')">
             <n-select
+              id="car-form-branch"
               v-model:value="formData.branchId"
               filterable
               :placeholder="t('common.select')"
@@ -611,6 +637,7 @@ meta:
           <!-- 7. Purchase Date -->
           <n-form-item path="purchaseDate" :label="t('cars.purchaseDate')">
             <n-date-picker
+              id="car-form-purchasedate"
               v-model:value="formData.purchaseDate"
               type="date"
               class="w-full"
@@ -620,34 +647,37 @@ meta:
           <!-- 8. Purchase Price -->
           <n-form-item path="purchasePrice" :label="t('cars.purchasePrice')">
             <n-input-number
+              id="car-form-price"
               v-model:value="formData.purchasePrice"
               :min="0"
               class="w-full"
               placeholder="0.00"
             >
-              <template #suffix>{{ t('common.currency') }}</template>
+              <template #suffix>
+                {{ t('common.currency') }}
+              </template>
             </n-input-number>
           </n-form-item>
 
           <!-- 9. Chassis Number -->
           <n-form-item path="chassisNumber" :label="t('cars.chassisNumber')">
-            <n-input v-model:value="formData.chassisNumber" placeholder="رقم الهيكل VIN" />
+            <n-input id="car-form-chassis" v-model:value="formData.chassisNumber" placeholder="رقم الهيكل VIN" />
           </n-form-item>
 
           <!-- 10. Engine Number -->
           <n-form-item path="engineNumber" :label="t('cars.engineNumber')">
-            <n-input v-model:value="formData.engineNumber" placeholder="رقم المحرك" />
+            <n-input id="car-form-engine" v-model:value="formData.engineNumber" placeholder="رقم المحرك" />
           </n-form-item>
 
           <!-- 11. Image Upload -->
-          <n-form-item :label="t('cars.imagePath')" class="md:col-span-2">
+          <n-form-item :label="t('cars.imagePath')" class="sm:col-span-2">
             <div class="flex items-center gap-4 w-full">
               <div v-if="formData.imagePath" class="relative group">
                 <img
                   :src="formData.imagePath"
                   alt="Car preview"
                   class="w-24 h-16 object-cover rounded-lg border border-slate-200 dark:border-slate-700"
-                />
+                >
                 <button
                   type="button"
                   class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
@@ -664,7 +694,7 @@ meta:
                   accept="image/jpeg,image/png,image/webp"
                   class="hidden"
                   @change="handleImageFileChange"
-                />
+                >
                 <label
                   for="car-image-upload"
                   class="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 rounded-lg text-sm font-medium transition"
@@ -673,14 +703,17 @@ meta:
                   <span v-if="uploadingImage">جاري الرفع...</span>
                   <span v-else>{{ formData.imagePath ? 'تغيير الصورة' : t('cars.uploadImage') }}</span>
                 </label>
-                <p class="text-xs text-slate-400 mt-1">يدعم JPG, PNG, WEBP حتى 5MB</p>
+                <p class="text-xs text-slate-400 mt-1">
+                  يدعم JPG, PNG, WEBP حتى 5MB
+                </p>
               </div>
             </div>
           </n-form-item>
 
           <!-- 12. Notes -->
-          <n-form-item path="notes" :label="t('cars.notes')" class="md:col-span-3">
+          <n-form-item path="notes" :label="t('cars.notes')" class="sm:col-span-2 md:col-span-3">
             <n-input
+              id="car-form-notes"
               v-model:value="formData.notes"
               type="textarea"
               placeholder="أي ملاحظات فنية أو إضافات..."
@@ -695,7 +728,7 @@ meta:
           <n-button @click="showModal = false">
             {{ t('common.cancel') }}
           </n-button>
-          <n-button type="primary" :loading="submitting" @click="handleSave">
+          <n-button id="car-form-save-btn" type="primary" :loading="submitting" @click="handleSave">
             {{ isEditing ? t('common.update') : t('common.save') }}
           </n-button>
         </div>

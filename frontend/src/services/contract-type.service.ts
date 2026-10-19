@@ -2,6 +2,7 @@ import { useApi } from '~/composables/useApi'
 import type { ApiResponse } from '~/models/ApiResponse'
 import type { ContractTypeDto } from '~/models/ContractType'
 
+/** Contract types are a read-only lookup (no CRUD). */
 export const useContractTypeService = () => {
   const api = useApi('contract-types')
 
@@ -9,12 +10,5 @@ export const useContractTypeService = () => {
     return api.get<ApiResponse<ContractTypeDto[]>>('')
   }
 
-  async function getById(id: string): Promise<ApiResponse<ContractTypeDto>> {
-    return api.get<ApiResponse<ContractTypeDto>>(id)
-  }
-
-  return {
-    getAll,
-    getById,
-  }
+  return { getAll }
 }

@@ -36,20 +36,16 @@ export const useAccountStore = defineStore(
         return true
       }
 
-      const p = permission.toLowerCase().trim()
-      return (
-        user.value.permissions?.some((userPerm) => {
-          const up = userPerm.toLowerCase().trim()
-          return (
-            up === p ||
-            up === `view-${p.replace('.view', '')}` ||
-            up === `create-${p.replace('.create', '')}` ||
-            up === `update-${p.replace('.update', '')}` ||
-            up === `delete-${p.replace('.delete', '')}` ||
-            up === p.replace('.', '-')
-          )
-        }) ?? false
-      )
+      // Accepts both backend keys (e.g. "update-cars", "view-contract-types")
+      // and UI notation "Module.Action" (e.g. "Cars.Update", "ContractTypes.View").
+      const raw = permission.trim()
+      let key = raw.toLowerCase()
+      if (raw.includes('.')) {
+        const [module, action] = raw.split('.')
+        const kebabModule = module.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
+        key = `${action.toLowerCase()}-${kebabModule}`
+      }
+      return user.value.permissions?.some(up => up.toLowerCase().trim() === key) ?? false
     }
 
     function hasRole(role: string): boolean {

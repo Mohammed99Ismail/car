@@ -141,3 +141,37 @@ select:-webkit-autofill:focus {
 .n-list {
   background-color: transparent !important;
 }
+
+// ---------------------------------------------------------------------------
+// Fix Naive UI / vueuc Follower positioning in RTL layouts (Select, DatePicker, Popover)
+// In RTL, absolutely-positioned followers without explicit left:0 default to right:0,
+// and then vueuc applies translateX(+left), pushing them completely off to the right.
+// Setting left:0, right:auto, top:0 and container ltr establishes standard coordinate space.
+// ---------------------------------------------------------------------------
+.v-binder-follower-container {
+  direction: ltr !important;
+  text-align: left !important;
+  left: 0 !important;
+  top: 0 !important;
+}
+
+.v-binder-follower-content {
+  left: 0 !important;
+  right: auto !important;
+  top: 0 !important;
+}
+
+.rtl .v-binder-follower-content > *,
+[dir="rtl"] .v-binder-follower-content > *,
+body.rtl .v-binder-follower-content > *,
+.rtl .n-base-select-menu,
+body.rtl .n-base-select-menu {
+  direction: rtl;
+  text-align: right;
+}
+
+:not(.rtl) .n-base-select-menu,
+[dir="ltr"] .n-base-select-menu {
+  direction: ltr;
+  text-align: left;
+}

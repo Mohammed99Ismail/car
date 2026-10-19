@@ -1,10 +1,10 @@
+/** Matches backend BranchDto. */
 export interface BranchDto {
-  id: string
+  id: number
   name: string
   address: string
   mobile: string
-  createdAt: string
-  updatedAt?: string | null
+  createdDate: string
 }
 
 export interface CreateBranchDto {
@@ -14,5 +14,5 @@ export interface CreateBranchDto {
 }
 
 export interface UpdateBranchDto extends CreateBranchDto {
-  id: string
+  id: number
 }

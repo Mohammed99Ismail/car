@@ -308,6 +308,8 @@ meta:
         :columns="columns"
         :data="customers"
         :loading="loading"
+        :scroll-x="750"
+        :row-key="(row: CustomerDto) => row.id"
         :pagination="{
           page: queryParams.pageIndex,
           pageSize: queryParams.pageSize,

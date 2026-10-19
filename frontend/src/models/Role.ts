@@ -1,25 +1,40 @@
+/** Matches backend RoleSummaryDto. */
 export interface RoleDto {
-  id: string
-  name: string
-  description?: string | null
-  isSystemRole: boolean
-  permissions: string[]
+  id: number
+  nameAr: string
+  nameEn: string
+  isSystem: boolean
+  permissionsCount: number
+  usersCount: number
 }
 
-export interface CreateRoleDto {
-  name: string
-  description?: string | null
-  permissions: string[]
+/** Matches backend RoleDetailDto. */
+export interface RoleDetailDto {
+  id: number
+  nameAr: string
+  nameEn: string
+  isSystem: boolean
+  permissionIds: number[]
 }
 
-export interface UpdateRoleDto extends CreateRoleDto {
-  id: string
+/** Matches backend CreateRoleRequest / UpdateRoleRequest. */
+export interface SaveRoleDto {
+  nameAr: string
+  nameEn: string
+  permissionIds: number[]
 }
 
+/** Matches backend PermissionDto. */
 export interface PermissionDto {
-  id: string
-  name: string
-  code: string
+  id: number
+  key: string
   module: string
-  description?: string | null
+  nameAr: string
+  nameEn: string
+}
+
+/** Matches backend ModulePermissionsDto. */
+export interface ModulePermissionsDto {
+  module: string
+  permissions: PermissionDto[]
 }

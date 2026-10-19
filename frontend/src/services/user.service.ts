@@ -1,43 +1,33 @@
 import { useApi } from '~/composables/useApi'
-import type { ApiResponse, PagedList } from '~/models/ApiResponse'
-import type { UpdateUserRolesDto, UserDto } from '~/models/User'
+import type { ApiResponse, BackendPagedList, PagedList, PagedQuery } from '~/models/ApiResponse'
+import { toBackendQuery, toPagedResponse } from '~/models/ApiResponse'
+import type { CreateUserDto, UpdateUserRolesDto, UserDetailDto, UserDto } from '~/models/User'
 
-export interface UserQueryParameters {
-  pageIndex?: number
-  pageSize?: number
-  search?: string
-  sortBy?: string
-  isDescending?: boolean
-}
+export type UserQueryParameters = PagedQuery
 
 export const useUserService = () => {
   const api = useApi('users')
 
-  async function getPaged(
-    params: UserQueryParameters,
-  ): Promise<ApiResponse<PagedList<UserDto>>> {
-    return api.get<ApiResponse<PagedList<UserDto>>>('', params)
+  async function getPaged(params: UserQueryParameters): Promise<ApiResponse<PagedList<UserDto>>> {
+    const res = await api.get<ApiResponse<BackendPagedList<UserDto>>>('', toBackendQuery(params))
+    return toPagedResponse(res)
   }
 
-  async function getById(id: string): Promise<ApiResponse<UserDto>> {
-    return api.get<ApiResponse<UserDto>>(id)
+  async function getById(id: number): Promise<ApiResponse<UserDetailDto>> {
+    return api.get<ApiResponse<UserDetailDto>>(String(id))
   }
 
-  async function toggleActive(id: string): Promise<ApiResponse<boolean>> {
-    return api.put<ApiResponse<boolean>>(`${id}/toggle-active`)
+  async function create(dto: CreateUserDto): Promise<ApiResponse<UserDetailDto>> {
+    return api.post<ApiResponse<UserDetailDto>>('', dto)
   }
 
-  async function updateRoles(
-    id: string,
-    dto: UpdateUserRolesDto,
-  ): Promise<ApiResponse<boolean>> {
-    return api.put<ApiResponse<boolean>>(`${id}/roles`, dto)
+  async function setStatus(id: number, isActive: boolean): Promise<ApiResponse<unknown>> {
+    return api.put<ApiResponse<unknown>>(`${id}/status`, { isActive })
   }
 
-  return {
-    getPaged,
-    getById,
-    toggleActive,
-    updateRoles,
+  async function updateRoles(id: number, dto: UpdateUserRolesDto): Promise<ApiResponse<unknown>> {
+    return api.put<ApiResponse<unknown>>(`${id}/roles`, dto)
   }
+
+  return { getPaged, getById, create, setStatus, updateRoles }
 }

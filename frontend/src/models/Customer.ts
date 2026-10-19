@@ -1,11 +1,11 @@
+/** Matches backend CustomerDto. */
 export interface CustomerDto {
-  id: string
+  id: number
   name: string
   nationalId: string
   mobile: string
   address: string
-  createdAt: string
-  updatedAt?: string | null
+  createdDate: string
 }
 
 export interface CreateCustomerDto {
@@ -16,5 +16,5 @@ export interface CreateCustomerDto {
 }
 
 export interface UpdateCustomerDto extends CreateCustomerDto {
-  id: string
+  id: number
 }

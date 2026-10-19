@@ -262,19 +262,36 @@ roles:
 
 users:
   title: إدارة المستخدمين
+  subtitle: إدارة حسابات المستخدمين، تفعيل/تعطيل الحسابات، وتعيين الأدوار بمرونة
   list: قائمة المستخدمين
+  create: إضافة مستخدم جديد
   fullName: الاسم الكامل
   email: البريد الإلكتروني
+  password: كلمة المرور
+  confirmPassword: تأكيد كلمة المرور
   mobile: رقم الجوال
   roles: الأدوار الممنوحة
+  assignedRoles: الأدوار الممنوحة لهذا المستخدم
+  selectRoles: اختر دوراً أو أكثر...
   status: حالة الحساب
   active: نشط
   inactive: معطل
   activate: تفعيل
   deactivate: تعطيل
   editRoles: تعديل الأدوار الممنوحة
+  createdDate: تاريخ الإنشاء
+  searchPlaceholder: ابحث بالاسم الكامل أو البريد الإلكتروني...
   statusChangedSuccess: تم تحديث حالة الحساب بنجاح
   rolesUpdatedSuccess: تم تحديث أدوار المستخدم بنجاح
+  createSuccess: تم إنشاء المستخدم بنجاح
+  validation:
+    fullNameRequired: الاسم الكامل مطلوب
+    emailRequired: البريد الإلكتروني مطلوب
+    emailInvalid: صيغة البريد الإلكتروني غير صحيحة
+    passwordRequired: كلمة المرور مطلوبة
+    passwordMin: كلمة المرور يجب أن لا تقل عن 8 خانات
+    passwordMismatch: كلمة المرور غير متطابقة
+
 
 userMenu:
   profile: الملف الشخصي

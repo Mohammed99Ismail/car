@@ -1,49 +1,36 @@
 import { useApi } from '~/composables/useApi'
-import type { ApiResponse } from '~/models/ApiResponse'
-import type {
-  CreateRoleDto,
-  PermissionDto,
-  RoleDto,
-  UpdateRoleDto,
-} from '~/models/Role'
+import type { ApiResponse, BackendPagedList, PagedList, PagedQuery } from '~/models/ApiResponse'
+import { toBackendQuery, toPagedResponse } from '~/models/ApiResponse'
+import type { ModulePermissionsDto, RoleDetailDto, RoleDto, SaveRoleDto } from '~/models/Role'
 
 export const useRoleService = () => {
   const rolesApi = useApi('roles')
   const permissionsApi = useApi('permissions')
 
-  async function getAll(): Promise<ApiResponse<RoleDto[]>> {
-    return rolesApi.get<ApiResponse<RoleDto[]>>('')
+  async function getPaged(params: PagedQuery = { pageIndex: 1, pageSize: 100 }): Promise<ApiResponse<PagedList<RoleDto>>> {
+    const res = await rolesApi.get<ApiResponse<BackendPagedList<RoleDto>>>('', toBackendQuery(params))
+    return toPagedResponse(res)
   }
 
-  async function getById(id: string): Promise<ApiResponse<RoleDto>> {
-    return rolesApi.get<ApiResponse<RoleDto>>(id)
+  async function getById(id: number): Promise<ApiResponse<RoleDetailDto>> {
+    return rolesApi.get<ApiResponse<RoleDetailDto>>(String(id))
   }
 
-  async function create(dto: CreateRoleDto): Promise<ApiResponse<RoleDto>> {
-    return rolesApi.post<ApiResponse<RoleDto>>('', dto)
+  async function create(dto: SaveRoleDto): Promise<ApiResponse<RoleDetailDto>> {
+    return rolesApi.post<ApiResponse<RoleDetailDto>>('', dto)
   }
 
-  async function update(
-    id: string,
-    dto: UpdateRoleDto,
-  ): Promise<ApiResponse<RoleDto>> {
-    return rolesApi.put<ApiResponse<RoleDto>>(id, dto)
+  async function update(id: number, dto: SaveRoleDto): Promise<ApiResponse<RoleDetailDto>> {
+    return rolesApi.put<ApiResponse<RoleDetailDto>>(String(id), dto)
   }
 
-  async function remove(id: string): Promise<ApiResponse<boolean>> {
-    return rolesApi.delete<ApiResponse<boolean>>(id)
+  async function remove(id: number): Promise<ApiResponse<unknown>> {
+    return rolesApi.delete<ApiResponse<unknown>>(String(id))
   }
 
-  async function getPermissions(): Promise<ApiResponse<PermissionDto[]>> {
-    return permissionsApi.get<ApiResponse<PermissionDto[]>>('')
+  async function getPermissions(): Promise<ApiResponse<ModulePermissionsDto[]>> {
+    return permissionsApi.get<ApiResponse<ModulePermissionsDto[]>>('')
   }
 
-  return {
-    getAll,
-    getById,
-    create,
-    update,
-    remove,
-    getPermissions,
-  }
+  return { getPaged, getById, create, update, remove, getPermissions }
 }

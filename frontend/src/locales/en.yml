@@ -451,17 +451,34 @@ roles:
 
 users:
   title: Users Management
+  subtitle: Manage user accounts, activation/deactivation, and dynamic roles
   list: Users List
+  create: Add New User
   fullName: Full Name
   email: Email
+  password: Password
+  confirmPassword: Confirm Password
   mobile: Mobile Phone
   roles: Assigned Roles
+  assignedRoles: Assigned Roles for this User
+  selectRoles: Select one or more roles...
   status: Account Status
   active: Active
   inactive: Inactive
   activate: Activate
   deactivate: Deactivate
   editRoles: Manage Roles
+  createdDate: Created Date
+  searchPlaceholder: Search by full name or email...
   statusChangedSuccess: Account status updated successfully
   rolesUpdatedSuccess: User roles updated successfully
+  createSuccess: User created successfully
+  validation:
+    fullNameRequired: Full name is required
+    emailRequired: Email is required
+    emailInvalid: Invalid email address
+    passwordRequired: Password is required
+    passwordMin: Password must be at least 8 characters
+    passwordMismatch: Passwords do not match
+
 

@@ -1,9 +1,6 @@
+/** Matches backend LookupDto used by GET /api/contract-types (read-only). */
 export interface ContractTypeDto {
-  id: string
-  code: string
+  id: number
   nameAr: string
   nameEn: string
-  descriptionAr?: string | null
-  descriptionEn?: string | null
-  isActive: boolean
 }

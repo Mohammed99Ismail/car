@@ -34,7 +34,8 @@ public record CreateCarRequest(
     decimal PurchasePrice,
     string ChassisNumber,
     string EngineNumber,
-    string? Notes);
+    string? Notes,
+    string? ImagePath = null);
 
 public record UpdateCarRequest(
     int MakeId,
@@ -47,7 +48,9 @@ public record UpdateCarRequest(
     decimal PurchasePrice,
     string ChassisNumber,
     string EngineNumber,
-    string? Notes);
+    string? Notes,
+    string? ImagePath = null);
+
 
 public class CarQueryParameters : QueryParameters
 {

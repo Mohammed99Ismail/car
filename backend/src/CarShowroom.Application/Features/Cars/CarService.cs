@@ -158,7 +158,8 @@ public class CarService(
             PurchasePrice = request.PurchasePrice,
             ChassisNumber = chassis,
             EngineNumber = engine,
-            Notes = request.Notes?.Trim()
+            Notes = request.Notes?.Trim(),
+            ImagePath = request.ImagePath
         };
 
         await context.Cars.AddAsync(car, cancellationToken);
@@ -217,6 +218,10 @@ public class CarService(
         car.ChassisNumber = chassis;
         car.EngineNumber = engine;
         car.Notes = request.Notes?.Trim();
+        if (request.ImagePath is not null)
+        {
+            car.ImagePath = request.ImagePath;
+        }
 
         await context.SaveChangesAsync(cancellationToken);
 
@@ -266,6 +271,18 @@ public class CarService(
         car.ImagePath = webPath;
         await context.SaveChangesAsync(cancellationToken);
 
+        return CustomApiResponse<string>.Success(webPath, Msg.Saved);
+    }
+
+    public async Task<CustomApiResponse<string>> UploadStandaloneImageAsync(
+        Stream imageStream, string extension, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(extension) || !AllowedImageExtensions.Contains(extension.ToLowerInvariant()))
+        {
+            return CustomApiResponse<string>.BadRequest(Msg.InvalidImage);
+        }
+
+        var webPath = await fileStorage.SaveAsync(imageStream, extension, "cars", cancellationToken);
         return CustomApiResponse<string>.Success(webPath, Msg.Saved);
     }
 }

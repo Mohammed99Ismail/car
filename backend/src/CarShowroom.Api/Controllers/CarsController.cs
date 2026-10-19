@@ -71,4 +71,21 @@ public class CarsController(ICarService carService) : BaseApiController
         var result = await carService.UploadCarImageAsync(id, stream, ext, cancellationToken);
         return CustomResult(result);
     }
+
+    [HttpPost("upload-image")]
+    [PermissionAuthorize(PermissionKeysConstant.Cars.CREATE_KEY)]
+    [RequestSizeLimit(5 * 1024 * 1024)] // 5 MB max
+    public async Task<ActionResult<CustomApiResponse<string>>> UploadImageStandalone(
+        IFormFile file, CancellationToken cancellationToken)
+    {
+        if (file is null || file.Length == 0)
+        {
+            return CustomResult(CustomApiResponse<string>.BadRequest(Msg.InvalidImage));
+        }
+
+        var ext = Path.GetExtension(file.FileName);
+        await using var stream = file.OpenReadStream();
+        var result = await carService.UploadStandaloneImageAsync(stream, ext, cancellationToken);
+        return CustomResult(result);
+    }
 }

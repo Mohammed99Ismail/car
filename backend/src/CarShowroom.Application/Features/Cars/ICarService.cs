@@ -11,4 +11,5 @@ public interface ICarService
     Task<CustomApiResponse<CarDto>> UpdateCarAsync(int id, UpdateCarRequest request, CancellationToken cancellationToken = default);
     Task<CustomApiResponse<Nothing>> DeleteCarAsync(int id, CancellationToken cancellationToken = default);
     Task<CustomApiResponse<string>> UploadCarImageAsync(int carId, Stream imageStream, string extension, CancellationToken cancellationToken = default);
+    Task<CustomApiResponse<string>> UploadStandaloneImageAsync(Stream imageStream, string extension, CancellationToken cancellationToken = default);
 }
