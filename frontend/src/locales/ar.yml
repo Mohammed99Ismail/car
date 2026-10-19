@@ -1,0 +1,293 @@
+title: إدارة معرض وتأجير السيارات
+description: لوحة تحكم ذكية لإدارة معارض وتأجير السيارات
+direction: rtl
+currencySign: ر.س
+home: الرئيسية
+not-found: الصفحة غير موجودة
+languages:
+  en: English
+  ar: العربية
+
+enums:
+  ResultStatus:
+    Success: ناجح
+    Failed: فشل
+    NotFound: غير موجود
+    ValidationError: خطأ في البيانات
+    Unauthorized: غير مصرح
+    Forbidden: محظور
+
+common:
+  403Error: ليس لديك الصلاحية للوصول إلى هذه الصفحة
+  404Error: خطأ 404
+  404Message: عذراً، الصفحة التي تبحث عنها غير موجودة أو تم نقلها
+  500Error: خطأ 500
+  500Message: حدث خطأ غير متوقع، يرجى المحاولة لاحقاً
+  actions: الإجراءات
+  cancel: إلغاء
+  confirm: تأكيد
+  create: إضافة جديد
+  save: حفظ
+  edit: تعديل
+  update: تحديث
+  currency: ر.س
+  date: التاريخ
+  day: يوم
+  delete: حذف
+  deleteConfirm: هل أنت متأكد من حذف هذا العنصر؟
+  deleteMultipleConfirm: هل أنت متأكد من حذف العناصر المحددة؟
+  deletedMessage: تم الحذف بنجاح
+  savedMessage: تم الحفظ بنجاح
+  createdMessage: تم الإنشاء بنجاح
+  updatedMessage: تم التحديث بنجاح
+  goHome: العودة للرئيسية
+  locale: ar-SA
+  maintenance: الموقع قيد الصيانة
+  maintenanceDetail: نقوم حالياً بأعمال صيانة مجدولة. سنعود قريباً!
+  month: شهر
+  name: الاسم
+  new: جديد
+  notFound: لا توجد بيانات
+  price: السعر
+  search: بحث...
+  status: الحالة
+  active: نشط
+  inactive: غير نشط
+  week: أسبوع
+  refresh: تحديث
+  settings: الإعدادات
+  perPage: لكل صفحة
+  filter: تصفية
+  clearFilter: مسح الفلاتر
+  total: الإجمالي
+  all: الكل
+  loading: جاري التحميل...
+  select: اختر...
+  back: رجوع
+  details: التفاصيل
+  close: إغلاق
+  required: هذا الحقل مطلوب
+  notes: ملاحظات
+
+button:
+  about: حول
+  back: رجوع
+  go: انتقل
+  home: الرئيسية
+  notifications: الإشعارات
+  toggle_dark: الوضع الليلي
+  toggle_fullscreen: شاشة كاملة
+  toggle_langs: تغيير اللغة
+  toggle_notifications: الإشعارات
+  toggle_customize: تخصيص
+
+customize:
+  color: اللون الرئيسي
+  flatDesign: تصميم مسطح
+  fluid: تصميم ممتد
+  language: اللغة
+  layout: التخطيط
+  rtl: من اليمين لليسار (RTL)
+  theme: المظهر
+  title: تخصيص اللوحة
+
+login:
+  title: تسجيل الدخول
+  welcome: مرحباً بك مجدداً!
+  message: أدخل بياناتك للوصول إلى حسابك
+  username: البريد الإلكتروني
+  password: كلمة المرور
+  rememberMe: تذكرني
+  loginButton: تسجيل الدخول
+  loginUsing: أو سجل بواسطة
+  forgetPassword: نسيت كلمة المرور؟
+  haveNotAccount: ليس لديك حساب؟
+  createAccount: إنشاء حساب جديد
+  failedMessage: فشل تسجيل الدخول، تأكد من صحة البريد وكلمة المرور
+  successMessage: تم تسجيل الدخول بنجاح!
+  validations:
+    userNameRequired: يرجى إدخال البريد الإلكتروني
+    passwordRequired: يرجى إدخال كلمة المرور
+
+register:
+  title: إنشاء حساب جديد
+  fullName: الاسم الكامل
+  email: البريد الإلكتروني
+  mobile: رقم الجوال
+  password: كلمة المرور
+  confirmPassword: تأكيد كلمة المرور
+  button: إنشاء الحساب
+  haveAccount: لديك حساب بالفعل؟
+  login: تسجيل الدخول
+  successMessage: تم إنشاء الحساب بنجاح!
+  validations:
+    fullNameRequired: يرجى إدخال الاسم الكامل
+    emailRequired: يرجى إدخال البريد الإلكتروني
+    emailInvalid: صيغة البريد الإلكتروني غير صحيحة
+    passwordRequired: يرجى إدخال كلمة المرور
+    passwordLength: كلمة المرور يجب أن لا تقل عن 6 أحرف
+    confirmPasswordMismatch: كلمة المرور غير متطابقة
+
+forgot:
+  title: استعادة كلمة المرور
+  subtitle: أدخل بريدك الإلكتروني لإرسال رابط إعادة تعيين كلمة المرور
+  email: البريد الإلكتروني
+  button: إرسال رابط الاستعادة
+  rememberInfo: تذكرت كلمة المرور؟
+  login: العودة لتسجيل الدخول
+  haveNotAccount: ليس لديك حساب؟
+  register: إنشاء حساب جديد
+  sendEmailSuccess: تم إرسال الرابط إلى بريدك الإلكتروني بنجاح (يرجى مراجعة البريد أو سجل النظام)
+  resetPassword: إعادة تعيين كلمة المرور
+  newPassword: كلمة المرور الجديدة
+  resetButton: حفظ كلمة المرور الجديدة
+  resetSuccess: تم تغيير كلمة المرور بنجاح، يمكنك الآن تسجيل الدخول
+
+menu:
+  dashboard: لوحة التحكم
+  cars: السيارات
+  customers: العملاء
+  branches: الفروع
+  contractTypes: أنواع العقود
+  roles: الأدوار والصلاحيات
+  users: المستخدمين
+  profile: الملف الشخصي
+  settings: الإعدادات
+  login: تسجيل الدخول
+  register: تسجيل حساب
+  forgetPassword: نسيت كلمة المرور
+  notFound: 404 غير موجود
+  error: صفحة الخطأ
+  maintenance: الصيانة
+
+cars:
+  title: إدارة السيارات
+  list: قائمة السيارات
+  create: إضافة سيارة جديدة
+  edit: تعديل بيانات السيارة
+  details: تفاصيل السيارة
+  make: الماركة (الشركة المصنعة)
+  model: الموديل
+  year: سنة الصنع
+  color: اللون
+  plateNumber: رقم اللوحة
+  branch: الفرع الحالي
+  purchaseDate: تاريخ الشراء
+  purchasePrice: سعر الشراء
+  imagePath: صورة السيارة
+  uploadImage: رفع صورة السيارة
+  chassisNumber: رقم الشاصي / الهيكل
+  engineNumber: رقم المحرك
+  notes: ملاحظات إضافية
+  filterByMake: تصفية حسب الماركة
+  filterByBranch: تصفية حسب الفرع
+  filterByYear: تصفية حسب السنة
+  searchPlaceholder: ابحث برقم اللوحة، الماركة، الشاصي...
+  deleteConfirm: هل أنت متأكد من حذف هذه السيارة؟
+  deleteSuccess: تم حذف السيارة بنجاح
+  createSuccess: تم إضافة السيارة بنجاح
+  updateSuccess: تم تحديث بيانات السيارة بنجاح
+  noImage: لا توجد صورة
+  viewImage: عرض الصورة
+
+customers:
+  title: إدارة العملاء
+  list: قائمة العملاء
+  create: إضافة عميل جديد
+  edit: تعديل بيانات العميل
+  name: اسم العميل
+  nationalId: رقم الهوية الوطنية / الإقامة
+  mobile: رقم الجوال
+  address: العنوان
+  searchPlaceholder: ابحث بالاسم، رقم الهوية أو الجوال...
+  deleteConfirm: هل أنت متأكد من حذف هذا العميل؟
+  deleteSuccess: تم حذف العميل بنجاح
+  createSuccess: تم إضافة العميل بنجاح
+  updateSuccess: تم تحديث بيانات العميل بنجاح
+  validations:
+    nameRequired: اسم العميل مطلوب
+    nationalIdRequired: رقم الهوية مطلوب
+    mobileRequired: رقم الجوال مطلوب
+    addressRequired: العنوان مطلوب
+
+branches:
+  title: إدارة الفروع
+  list: قائمة الفروع
+  create: إضافة فرع جديد
+  edit: تعديل بيانات الفرع
+  name: اسم الفرع
+  address: عنوان الفرع
+  mobile: رقم هاتف الفرع
+  searchPlaceholder: ابحث باسم الفرع أو العنوان...
+  deleteConfirm: هل أنت متأكد من حذف هذا الفرع؟
+  deleteSuccess: تم حذف الفرع بنجاح
+  createSuccess: تم إضافة الفرع بنجاح
+  updateSuccess: تم تحديث بيانات الفرع بنجاح
+  validations:
+    nameRequired: اسم الفرع مطلوب
+    addressRequired: عنوان الفرع مطلوب
+    mobileRequired: رقم هاتف الفرع مطلوب
+
+contractTypes:
+  title: أنواع العقود
+  list: قائمة أنواع العقود
+  readOnlyNotice: أنواع العقود هي بيانات مرجعية ثانوية للقراءة فقط ولا يمكن تعديلها أو حذفها
+  code: الكود
+  nameAr: الاسم بالعربية
+  nameEn: الاسم بالإنجليزية
+  descriptionAr: الوصف بالعربية
+  descriptionEn: الوصف بالإنجليزية
+  status: الحالة
+  active: مفعّل
+  inactive: معطّل
+
+roles:
+  title: الأدوار والصلاحيات
+  list: قائمة الأدوار
+  create: إنشاء دور جديد
+  edit: تعديل الدور والصلاحيات
+  name: اسم الدور
+  description: الوصف
+  isSystemRole: دور نظام (غير قابل للحذف)
+  permissions: الصلاحيات
+  permissionsCount: عدد الصلاحيات
+  modules: الوحدات
+  selectAll: تحديد الكل
+  deselectAll: إلغاء تحديد الكل
+  deleteConfirm: هل أنت متأكد من حذف هذا الدور؟
+  deleteSuccess: تم حذف الدور بنجاح
+  createSuccess: تم إنشاء الدور بنجاح
+  updateSuccess: تم تحديث الدور وصلاحياته بنجاح
+  cannotDeleteSystemRole: لا يمكن حذف أدوار النظام الأساسية
+
+users:
+  title: إدارة المستخدمين
+  list: قائمة المستخدمين
+  fullName: الاسم الكامل
+  email: البريد الإلكتروني
+  mobile: رقم الجوال
+  roles: الأدوار الممنوحة
+  status: حالة الحساب
+  active: نشط
+  inactive: معطل
+  activate: تفعيل
+  deactivate: تعطيل
+  editRoles: تعديل الأدوار الممنوحة
+  statusChangedSuccess: تم تحديث حالة الحساب بنجاح
+  rolesUpdatedSuccess: تم تحديث أدوار المستخدم بنجاح
+
+userMenu:
+  profile: الملف الشخصي
+  logout: تسجيل الخروج
+  theme: المظهر
+  dark: داكن
+  light: فاتح
+  language: اللغة
+
+notifications:
+  title: الإشعارات
+  empty: لا توجد إشعارات حالياً
+  clear: مسح الكل
+
+notify:
+  welcome: مرحباً بك في نظام إدارة معارض وتأجير السيارات!
