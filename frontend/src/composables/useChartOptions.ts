@@ -161,7 +161,7 @@ export function useChartOptions(props: ChartProps) {
       },
       tooltip: {
         valueFormatter: (value: any) =>
-          typeof value === 'number' ? value.toLocaleString() : `${value}`,
+          typeof value === 'number' ? value.toLocaleString('en-US') : `${value}`,
       },
     }
 

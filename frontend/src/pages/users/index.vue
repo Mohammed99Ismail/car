@@ -221,7 +221,7 @@ const columns = computed<DataTableColumns<UserDto>>(() => [
     key: 'createdDate',
     width: 130,
     render(row) {
-      return row.createdDate ? new Date(row.createdDate).toLocaleDateString(locale.value) : '-'
+      return row.createdDate ? new Date(row.createdDate).toLocaleDateString('en-GB') : '-'
     },
   },
   {

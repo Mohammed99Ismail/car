@@ -372,7 +372,7 @@ const columns: DataTableColumns<CarDto> = [
     key: 'purchasePrice',
     minWidth: 130,
     render(row) {
-      return `${row.purchasePrice.toLocaleString()} ${t('common.currency')}`
+      return `${row.purchasePrice.toLocaleString('en-US')} ${t('common.currency')}`
     },
   },
   {

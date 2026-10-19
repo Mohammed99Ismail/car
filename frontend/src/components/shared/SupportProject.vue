@@ -83,7 +83,7 @@ async function getGithubStarsCount() {
 
 .rtl {
     .support-button {
-      font-family:Shabnam;
+      font-family: 'Cairo', sans-serif;
     }
   .github-button,
   .coffee-button {

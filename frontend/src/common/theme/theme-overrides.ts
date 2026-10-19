@@ -8,6 +8,8 @@ const themeOverrides: GlobalThemeOverrides = {
     borderRadius: '5px',
     borderRadiusSmall: '3px',
     borderColor: '#e4e7ec',
+    fontFamily: "'Cairo', 'Inter var', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+    fontFamilyMono: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
   },
   Card: {
     borderRadius: '7px',
@@ -35,6 +37,8 @@ export const darkThemeOverrides: GlobalThemeOverrides = {
     cardColor: '#202c4633',
     popoverColor: '#0f172a',
     modalColor: '#1c202c',
+    fontFamily: "'Cairo', 'Inter var', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+    fontFamilyMono: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
   },
   Card: {
     borderRadius: '7px',

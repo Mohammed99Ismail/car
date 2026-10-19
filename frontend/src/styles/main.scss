@@ -43,6 +43,12 @@
 }
 
 
+* {
+  font-variant-numeric: normal lining-nums tabular-nums;
+  -webkit-font-feature-settings: "lnum" 1, "tnum" 1;
+  font-feature-settings: "lnum" 1, "tnum" 1;
+}
+
 html,
 body,
 .n-drawer,
@@ -50,14 +56,7 @@ body,
   height: 100%;
   margin: 0;
   padding: 0;
-  font-family: 'Inter var',
-    'ui-sans-serif',
-    'system-ui',
-    'sans-serif',
-    'Apple Color Emoji',
-    'Segoe UI Emoji',
-    'Segoe UI Symbol',
-    'Noto Color Emoji'
+  font-family: 'Cairo', 'Inter var', 'ui-sans-serif', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 body {
@@ -72,7 +71,7 @@ body {
 }
 
 .ql-editor {
-  font-family: 'Inter var', 'ui-sans-serif', ;
+  font-family: 'Cairo', 'Inter var', 'ui-sans-serif', system-ui, sans-serif;
 }
 
 .rtl {
@@ -80,21 +79,21 @@ body {
   body,
   .n-drawer,
   #app {
-    font-family: Shabnam;
+    font-family: 'Cairo', 'Inter var', 'ui-sans-serif', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     direction: rtl;
 
     .p-component {
-      font-family: Shabnam;
+      font-family: 'Cairo', 'Inter var', 'ui-sans-serif', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     }
   }
 
   .n-notification-main__content,
   .n-base-select-menu .n-base-select-option {
-    font-family: Shabnam !important;
+    font-family: 'Cairo', 'Inter var', 'ui-sans-serif', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
   }
 
   .ql-editor {
-    font-family: Shabnam;
+    font-family: 'Cairo', 'Inter var', 'ui-sans-serif', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     text-align: right;
   }
 

@@ -40,7 +40,7 @@ const options = {
 
 .ql-editor {
   min-height: 180px;
-  font-family: Shabnam;
+  font-family: 'Cairo', 'Inter var', sans-serif;
 }
 
 .dark {

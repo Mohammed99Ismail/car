@@ -151,7 +151,7 @@ router.beforeEach(() => {
   line-height: 1;
 
   .main-title {
-    font-family: Quicksand, Shabnam;
+    font-family: Quicksand, 'Cairo', sans-serif;
     font-size: 1.3rem;
     font-weight: 500;
     user-select: none;

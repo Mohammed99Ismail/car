@@ -1,26 +1,7 @@
-@font-face {
-  font-family: Shabnam;
-  font-style: normal;
-  font-weight: normal;
-  src: url("@/assets/fonts/shabnam/Shabnam-FD.eot");
-  src: url("@/assets/fonts/shabnam/Shabnam-FD.eot?#iefix") format("embedded-opentype"),
-    /* IE6-8 */ url("@/assets/fonts/shabnam/Shabnam-FD.woff2") format("woff2"),
-    /* FF39+,Chrome36+, Opera24+*/ url("@/assets/fonts/shabnam/Shabnam-FD.woff")
-      format("woff"),
-    /* FF3.6+, IE9, Chrome6+, Saf5.1+*/ url("@/assets/fonts/shabnam/Shabnam-FD.ttf")
-      format("truetype");
-}
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
 
-
+// Alias Shabnam to Cairo and modern system fonts to ensure Latin digits (123456789)
 @font-face {
-  font-family: Shabnam;
-  font-style: normal;
-  font-weight: bold;
-  src: url("@/assets/fonts/shabnam/Shabnam-Bold-FD.eot");
-  src: url("@/assets/fonts/shabnam/Shabnam-Bold-FD.eot?#iefix") format("embedded-opentype"),
-    /* IE6-8 */ url("@/assets/fonts/shabnam/Shabnam-Bold-FD.woff2") format("woff2"),
-    /* FF39+,Chrome36+, Opera24+*/ url("@/assets/fonts/shabnam/Shabnam-Bold-FD.woff")
-      format("woff"),
-    /* FF3.6+, IE9, Chrome6+, Saf5.1+*/ url("@/assets/fonts/shabnam/Shabnam-Bold-FD.ttf")
-      format("truetype");
+  font-family: 'Shabnam';
+  src: local('Cairo'), local('Segoe UI'), local('Tahoma'), local('Arial');
 }
