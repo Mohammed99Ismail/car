@@ -77,13 +77,13 @@ meta:
       <div class="relative z-10 max-w-2xl">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-semibold mb-3">
           <CheckCircleIcon class="w-4 h-4 text-emerald-300" />
-          <span>النظام متصل وقيد العمل بكفاءة عالية</span>
+          <span>{{ t('dashboard.systemOnline') }}</span>
         </div>
         <h1 class="text-3xl font-extrabold tracking-tight">
-          مرحباً بك، {{ accountStore.user?.fullName || 'المسؤول' }} 👋
+          {{ t('dashboard.welcome', { name: accountStore.user?.fullName || t('dashboard.adminRole') }) }}
         </h1>
         <p class="mt-2 text-blue-100 text-sm md:text-base leading-relaxed">
-          نظام إدارة معرض وتأجير السيارات المتكامل — لوحة تحكم ذكية وشاملة لمتابعة الأسطول، الفروع، العملاء، والصلاحيات بدقة وسرعة فائقة.
+          {{ t('dashboard.welcomeSubtitle') }}
         </p>
 
         <div class="mt-6 flex flex-wrap gap-3">
@@ -93,7 +93,7 @@ meta:
             class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white text-blue-700 font-semibold hover:bg-blue-50 transition shadow-sm text-sm"
           >
             <AddIcon class="w-4 h-4" />
-            <span>إضافة سيارة جديدة</span>
+            <span>{{ t('dashboard.addCar') }}</span>
           </RouterLink>
 
           <RouterLink
@@ -102,7 +102,15 @@ meta:
             class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold backdrop-blur-md transition text-sm"
           >
             <AddIcon class="w-4 h-4" />
-            <span>إضافة عميل جديد</span>
+            <span>{{ t('dashboard.addCustomer') }}</span>
+          </RouterLink>
+
+          <RouterLink
+            to="/lookups"
+            class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-semibold backdrop-blur-md transition text-sm"
+          >
+            <span>🗂️</span>
+            <span>{{ t('dashboard.lookups') }}</span>
           </RouterLink>
         </div>
       </div>
@@ -123,7 +131,7 @@ meta:
             <CarsIcon class="w-6 h-6" />
           </div>
           <span class="text-xs font-semibold px-2 py-1 rounded bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300">
-            الأسطول
+            {{ t('dashboard.fleet') }}
           </span>
         </div>
 
@@ -132,13 +140,13 @@ meta:
             {{ stats.carsCount }}
           </div>
           <div class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
-            إجمالي السيارات المسجلة
+            {{ t('dashboard.totalCars') }}
           </div>
         </div>
 
         <div class="mt-4 flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 group-hover:translate-x-1 transition">
-          <span>عرض الأسطول</span>
-          <ArrowRightIcon class="w-3.5 h-3.5" />
+          <span>{{ t('dashboard.viewFleet') }}</span>
+          <ArrowRightIcon class="w-3.5 h-3.5" :class="{ 'rotate-180': !useLayoutStore().isRtl }" />
         </div>
       </RouterLink>
 
@@ -152,7 +160,7 @@ meta:
             <CustomersIcon class="w-6 h-6" />
           </div>
           <span class="text-xs font-semibold px-2 py-1 rounded bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-300">
-            العملاء
+            {{ t('dashboard.customers') }}
           </span>
         </div>
 
@@ -161,13 +169,13 @@ meta:
             {{ stats.customersCount }}
           </div>
           <div class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
-            إجمالي العملاء
+            {{ t('dashboard.totalCustomers') }}
           </div>
         </div>
 
         <div class="mt-4 flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 group-hover:translate-x-1 transition">
-          <span>إدارة العملاء</span>
-          <ArrowRightIcon class="w-3.5 h-3.5" />
+          <span>{{ t('dashboard.manageCustomers') }}</span>
+          <ArrowRightIcon class="w-3.5 h-3.5" :class="{ 'rotate-180': !useLayoutStore().isRtl }" />
         </div>
       </RouterLink>
 
@@ -181,7 +189,7 @@ meta:
             <BranchesIcon class="w-6 h-6" />
           </div>
           <span class="text-xs font-semibold px-2 py-1 rounded bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300">
-            الفروع
+            {{ t('dashboard.branches') }}
           </span>
         </div>
 
@@ -190,13 +198,13 @@ meta:
             {{ stats.branchesCount }}
           </div>
           <div class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
-            فروع المعرض
+            {{ t('dashboard.showroomBranches') }}
           </div>
         </div>
 
         <div class="mt-4 flex items-center gap-1 text-xs font-semibold text-purple-600 dark:text-purple-400 group-hover:translate-x-1 transition">
-          <span>عرض الفروع</span>
-          <ArrowRightIcon class="w-3.5 h-3.5" />
+          <span>{{ t('dashboard.viewBranches') }}</span>
+          <ArrowRightIcon class="w-3.5 h-3.5" :class="{ 'rotate-180': !useLayoutStore().isRtl }" />
         </div>
       </RouterLink>
 
@@ -210,7 +218,7 @@ meta:
             <ContractTypesIcon class="w-6 h-6" />
           </div>
           <span class="text-xs font-semibold px-2 py-1 rounded bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-300">
-            مرجعي
+            {{ t('dashboard.contractTypes') }}
           </span>
         </div>
 
@@ -219,13 +227,13 @@ meta:
             {{ stats.contractTypesCount }}
           </div>
           <div class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
-            أنواع العقود المعتمدة
+            {{ t('dashboard.approvedContracts') }}
           </div>
         </div>
 
         <div class="mt-4 flex items-center gap-1 text-xs font-semibold text-amber-600 dark:text-amber-400 group-hover:translate-x-1 transition">
-          <span>عرض الأنواع</span>
-          <ArrowRightIcon class="w-3.5 h-3.5" />
+          <span>{{ t('dashboard.viewContracts') }}</span>
+          <ArrowRightIcon class="w-3.5 h-3.5" :class="{ 'rotate-180': !useLayoutStore().isRtl }" />
         </div>
       </RouterLink>
     </div>
@@ -235,43 +243,43 @@ meta:
       <!-- Fleet & Showroom Overview -->
       <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-100 dark:border-slate-700/60 shadow-sm">
         <h2 class="font-bold text-lg text-slate-800 dark:text-white mb-3 flex items-center gap-2">
-          <span>🚙</span> إدارة الأسطول والسيارات
+          <span>🚙</span> {{ t('dashboard.fleetManagement') }}
         </h2>
         <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">
-          تسجيل كامل لـ 12 حقلاً معتمداً لكل سيارة تشمل: الماركة، الموديل، سنة الصنع، اللون، اللوحة، الفرع، تاريخ وسعر الشراء، الهيكل، المحرك، الصورة، والملاحظات.
+          {{ t('dashboard.fleetSubtitle') }}
         </p>
         <RouterLink
           to="/cars"
           class="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
         >
-          <span>الانتقال إلى صفحة السيارات</span>
-          <ArrowRightIcon class="w-4 h-4" />
+          <span>{{ t('dashboard.viewFleet') }}</span>
+          <ArrowRightIcon class="w-4 h-4" :class="{ 'rotate-180': !useLayoutStore().isRtl }" />
         </RouterLink>
       </div>
 
       <!-- Security & Permissions Overview -->
       <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-100 dark:border-slate-700/60 shadow-sm">
         <h2 class="font-bold text-lg text-slate-800 dark:text-white mb-3 flex items-center gap-2">
-          <span>🛡️</span> الصلاحيات وإدارة المستخدمين
+          <span>🛡️</span> {{ t('dashboard.rolesAndUsers') }}
         </h2>
         <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">
-          تحكم ديناميكي كامل في إنشاء الأدوار وتعديل صلاحيات كل دور بحرية، مع تفعيل وتعطيل حسابات المستخدمين وتعيين الأدوار بمرونة.
+          {{ t('dashboard.rolesSubtitle') }}
         </p>
         <div class="flex items-center gap-4">
           <RouterLink
             to="/roles"
             class="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
           >
-            <span>الأدوار والصلاحيات</span>
-            <ArrowRightIcon class="w-4 h-4" />
+            <span>{{ t('roles.title') }}</span>
+            <ArrowRightIcon class="w-4 h-4" :class="{ 'rotate-180': !useLayoutStore().isRtl }" />
           </RouterLink>
           <span class="text-slate-300 dark:text-slate-600">|</span>
           <RouterLink
             to="/users"
             class="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
           >
-            <span>إدارة المستخدمين</span>
-            <ArrowRightIcon class="w-4 h-4" />
+            <span>{{ t('users.title') }}</span>
+            <ArrowRightIcon class="w-4 h-4" :class="{ 'rotate-180': !useLayoutStore().isRtl }" />
           </RouterLink>
         </div>
       </div>

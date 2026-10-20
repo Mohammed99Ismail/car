@@ -24,6 +24,11 @@ const themeOverrides: GlobalThemeOverrides = {
   Notification: {
     padding: '15px',
   },
+  Switch: {
+    railColorActive: '#10b981',
+    railColor: '#cbd5e1',
+    buttonColor: '#ffffff',
+  },
 }
 
 export const darkThemeOverrides: GlobalThemeOverrides = {
@@ -63,6 +68,11 @@ export const darkThemeOverrides: GlobalThemeOverrides = {
     borderRadius: '0',
     borderColorPopover: '#1c2334',
     colorHoverPopover: '#1c202c',
+  },
+  Switch: {
+    railColorActive: '#10b981',
+    railColor: '#334155',
+    buttonColor: '#ffffff',
   },
   Menu: {},
 }

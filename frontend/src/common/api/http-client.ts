@@ -35,6 +35,17 @@ function httpClient(baseApi: string | null = null): AxiosInstance {
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`
       }
+      try {
+        const layoutStored = localStorage.getItem('layout')
+        const activeLang = layoutStored ? JSON.parse(layoutStored)?.activeLanguage : null
+        if (config.headers) {
+          config.headers['Accept-Language'] = activeLang || 'ar'
+        }
+      } catch {
+        if (config.headers) {
+          config.headers['Accept-Language'] = 'ar'
+        }
+      }
       return config
     },
     (error) => Promise.reject(error),
@@ -70,7 +81,8 @@ function httpClient(baseApi: string | null = null): AxiosInstance {
         isRefreshing = true
 
         try {
-          const res = await axios.post(`${baseURL}/auth/refresh-token`, {
+          const cleanBase = (baseURL || '').replace(/\/+$/, '')
+          const res = await axios.post(`${cleanBase}/auth/refresh-token`, {
             accessToken,
             refreshToken,
           })

@@ -1,5 +1,5 @@
-title: Yummy Admin
-description: Free Vue 3 Dashboard
+title: Car Showroom & Rental
+description: Smart Management System for Car Showroom and Rental
 direction: ltr
 currencySign: $
 home: Home
@@ -146,32 +146,29 @@ customize:
   theme: Theme
   title: Customize
 dashboard:
-  activeOrders: Active Orders
-  genderChart:
-    title: Customer's Gender
-  locationChart:
-    title: Customer's Location
-  monthlySell: Monthly Sell
-  recentOrders: Recent Orders
-  registerSource:
-    subtitle: Total Registers
-    title: Register Source
-  revenueChart:
-    subtitle: Total Revenue balance
-    title: Revenue Chart
-  sellChart:
-    title: Daily Sell and Revenue
-  summary: Summary
-  transactions: Transactions
-  trendingProducts: Trending Products
-  userPlatforms:
-    subtitle: Total Users
-    title: User Platforms
-  welcome:
-    congratulations1: You reached to
-    congratulations2: sales.
-    greeting_message: Have a nice day! We are happy to see you here.
-    title: Welcome to Yummy Admin
+  systemOnline: System online & operational
+  welcome: Welcome, {name} 👋
+  welcomeSubtitle: Complete Car Showroom & Rental Management System — Intelligent dashboard to monitor fleet, branches, customers, and permissions with high precision.
+  addCar: Add New Car
+  addCustomer: Add New Customer
+  lookups: Reference Data (Lookups)
+  fleet: Fleet
+  totalCars: Total Registered Cars
+  viewFleet: View Fleet
+  customers: Customers
+  totalCustomers: Total Customers
+  manageCustomers: Manage Customers
+  branches: Branches
+  showroomBranches: Showroom Branches
+  viewBranches: View Branches
+  contractTypes: Contract Types
+  approvedContracts: Approved Contract Types
+  viewContracts: View Types
+  fleetManagement: Fleet & Cars Management
+  fleetSubtitle: 'Full registry with 12 approved fields per car: make, model, year, color, plate, branch, purchase date/price, VIN, engine, image, and notes.'
+  rolesAndUsers: Roles & Users Management
+  rolesSubtitle: Full dynamic control over role creation and permissions, with user account activation/deactivation and flexible role assignments.
+  adminRole: Administrator
 analyticsDashboard:
   visitors: Visitors
   visits: Visits
@@ -228,6 +225,10 @@ menu:
   cars: Cars
   branches: Branches
   contractTypes: Contract Types
+  lookups: Lookups
+  lookupsHub: Lookups Hub
+  carMakes: Car Makes
+  carModels: Car Models
   roles: Roles & Permissions
   dashboard: Dashboard
   eCommerce: eCommerce
@@ -275,9 +276,7 @@ notifications:
   stockWarning: Product stock is getting low
   orderCanceled: An order was canceled
 notify:
-  welcome: >-
-    Welcome to Yummy Admin! Free Admin Panel based on NaiveUI and Vue3, please
-    Support this project by giving a star ⭐️ on GitHub
+  welcome: Welcome to Car Showroom & Rental Management System
 orders:
   customer: Customer
   itemsCount: Items Count
@@ -306,29 +305,56 @@ products:
   stoke: Stoke
   deleteMessage: Product was deleted!
 profile:
-  changePassword: Change Password
-  confirmPassword: Confirm Password
+  title: User Profile
+  subtitle: Manage your personal account information, password, and attached documents
+  personalInfo: Personal Info
+  security: Security & Password
+  attachments: Documents & Files
+  fullName: Full Name
   email: Email
+  phone: Phone Number
+  avatar: Profile Picture
+  changeAvatar: Change Picture
+  uploadAvatar: Upload New Photo
+  deleteAvatar: Delete Photo
+  confirmDeleteAvatar: Are you sure you want to delete your profile photo?
+  roles: Roles & Permissions
+  status: Account Status
+  active: Active
+  inactive: Inactive
+  joinedDate: Joined Date
+  saveChanges: Save Changes
+  reset: Reset
+  oldPassword: Current Password
+  newPassword: New Password
+  confirmPassword: Confirm New Password
+  changePasswordBtn: Update Password
+  passwordHint: Password must be at least 6 characters
+  passwordMismatch: Passwords do not match
+  uploadDocument: Attach New Document
+  documentType: Document Type
+  documentName: File Name
+  fileSize: Size
+  uploadDate: Upload Date
+  actions: Actions
+  selectDocumentType: Select document type
+  dragOrClick: Click to select a file or drag and drop here
+  supportedFiles: Supports PDF, images and documents up to 10 MB
+  uploadBtn: Upload Document
+  noAttachments: No documents attached yet
+  download: Download / Preview
+  delete: Delete
+  confirmDelete: Are you sure you want to delete this file?
+  documentTypes:
+    nationalId: National ID / Iqama
+    drivingLicense: Driving License
+    contract: Employment Contract / Authorization
+    certificate: Certificate / Qualification
+    other: Other Document
+  # legacy compatibility
   firstName: First Name
   lastName: Last Name
-  location: Location
-  newPassword: New Password
-  notificationType: Notification Type
-  notificationTypes:
-    newMessage: New Message
-    newOrder: New Order
-    newRegister: New Register
-    outOfStock: Out Of Stock
-  notifications: Notifications
-  oldPassword: Old Password
-  personalInfo: Personal Info
-  phone: Phone
-  push: Push
   save: Save
-  security: Security
-  sms: Sms
-  title: Profile
-  username: UserName
 register:
   button: Register
   haveAccount: Have Account?
@@ -345,11 +371,11 @@ reviews:
   rate: Rate
 support:
   buyMeCoffee:
-    title: Buy me coffee
-    tooltip: Support this project by buying me a coffee
+    title: Support
+    tooltip: Support
   github:
-    title: Star On Github
-    tooltip: Support this project by giving a star ⭐️ on GitHub
+    title: Support
+    tooltip: Support
 todoApp:
   completed: Completed
   createGroup:
@@ -467,6 +493,8 @@ users:
   inactive: Inactive
   activate: Activate
   deactivate: Deactivate
+  cannotModifySelf: You cannot modify or deactivate your own account
+  confirmDeactivate: Are you sure you want to deactivate this account?
   editRoles: Manage Roles
   createdDate: Created Date
   searchPlaceholder: Search by full name or email...
@@ -481,4 +509,53 @@ users:
     passwordMin: Password must be at least 8 characters
     passwordMismatch: Passwords do not match
 
+lookups:
+  title: Lookups
+  subtitle: Manage master data and reference tables including car makes, car models, and contract types
+  hub: Lookups Hub
+  quickNav: Quick Navigation
+  makesCount: Total Makes
+  modelsCount: Total Models
+  contractTypesCount: Contract Types
+  manageMakes: Manage Car Makes
+  manageModels: Manage Car Models
+  manageContractTypes: View Contract Types
+  selectLookup: Select lookup...
+  actions: Quick Actions
+  allLookups: All Lookups
 
+carMakes:
+  title: Car Makes
+  subtitle: Manage car brands and manufacturers available in showroom and rental fleet
+  list: Car Makes List
+  create: Add New Make
+  edit: Edit Make
+  name: Make / Manufacturer Name
+  modelsCount: Models Count
+  searchPlaceholder: Search by make name (e.g. Toyota, Honda, Mercedes)...
+  deleteConfirm: Are you sure you want to delete this make?
+  deleteSuccess: Make deleted successfully
+  createSuccess: Make created successfully
+  updateSuccess: Make updated successfully
+  validations:
+    nameRequired: Please enter make name
+
+carModels:
+  title: Car Models
+  subtitle: Manage car models and link them to their respective manufacturers
+  list: Car Models List
+  create: Add New Model
+  edit: Edit Model
+  name: Model Name
+  make: Manufacturer (Make)
+  allMakes: All Makes
+  filterByMake: Filter by Make
+  selectMake: Select make...
+  searchPlaceholder: Search by model or make (e.g. Camry, Sonata)...
+  deleteConfirm: Are you sure you want to delete this model?
+  deleteSuccess: Model deleted successfully
+  createSuccess: Model created successfully
+  updateSuccess: Model updated successfully
+  validations:
+    nameRequired: Please enter model name
+    makeRequired: Please select make

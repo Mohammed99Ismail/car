@@ -23,8 +23,10 @@ async function handleResetPassword() {
     if (!errors) {
       const success = await accountStore.resetPassword(resetInfo.value)
       if (success) {
-        useNotifyStore().success(t('forgot.resetSuccess'))
+        useNotifyStore().success(t('forgot.resetSuccess') || 'تم إعادة تعيين كلمة المرور بنجاح')
         setTimeout(() => router.push('/account/login'), 800)
+      } else {
+        useNotifyStore().error('فشل إعادة تعيين كلمة المرور. قد يكون الرابط منتهي الصلاحية أو مستخدم مسبقاً.')
       }
     }
   })
@@ -33,7 +35,7 @@ async function handleResetPassword() {
 const rules: FormRules = {
   email: [
     {
-      required: true,
+      required: false,
       type: 'email',
       trigger: ['blur', 'change'],
       message: t('forgot.emailValidation'),

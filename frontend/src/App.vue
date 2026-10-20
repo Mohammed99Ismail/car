@@ -2,6 +2,10 @@
 import {
   darkTheme,
   lightTheme,
+  arDZ,
+  dateArDZ,
+  enUS,
+  dateEnUS,
   unstableAlertRtl,
   unstableBadgeRtl,
   unstableButtonGroupRtl,
@@ -141,11 +145,31 @@ function setThemeColor(newValue: string) {
 }
 
 const placement = computed(() => layout.isRtl ? 'bottom-left' : 'bottom-right')
+
+const naiveLocale = computed(() => (layout.activeLanguage === 'en' ? enUS : arDZ))
+const naiveDateLocale = computed(() => (layout.activeLanguage === 'en' ? dateEnUS : dateArDZ))
+
+watch(
+  () => layout.activeLanguage,
+  (newLang) => {
+    if (newLang) {
+      layout.changeLanguage(newLang)
+    }
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
-  <n-config-provider inline-theme-disabled :theme="activeTheme" :theme-overrides="activeThemeOverrides" :rtl="rtlStyles"
-    :preflight-style-disabled="false">
+  <n-config-provider
+    inline-theme-disabled
+    :theme="activeTheme"
+    :theme-overrides="activeThemeOverrides"
+    :rtl="rtlStyles"
+    :locale="naiveLocale"
+    :date-locale="naiveDateLocale"
+    :preflight-style-disabled="false"
+  >
     <n-loading-bar-provider>
       <n-notification-provider :placement="placement">
         <n-message-provider :placement="placement">

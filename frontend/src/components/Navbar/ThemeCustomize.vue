@@ -2,30 +2,23 @@
 import { PaintBrush24Regular as CustomizeIcon } from '@vicons/fluent'
 
 const { t } = useI18n()
-const showCustomizeDialog = ref(false)
-
-function toggleDialog() {
-  showCustomizeDialog.value = !showCustomizeDialog.value
-}
 </script>
 
 <template>
   <div v-bind="$attrs">
     <n-tooltip placement="top" trigger="hover">
       <template #trigger>
-        <n-popover trigger="click" :show-arrow="false" style="width: 390px;max-height: 550px;">
+        <n-popover trigger="click" placement="bottom" :show-arrow="false" style="width: 320px;">
           <template #trigger>
-            <div v-bind="$attrs">
-              <n-button quaternary circle @click="toggleDialog()">
-                <template #icon>
-                  <NIcon size="1.4rem">
-                    <CustomizeIcon />
-                  </NIcon>
-                </template>
-              </n-button>
-            </div>
+            <n-button quaternary circle>
+              <template #icon>
+                <NIcon size="1.4rem">
+                  <CustomizeIcon />
+                </NIcon>
+              </template>
+            </n-button>
           </template>
-          <div class="px-1">
+          <div class="p-2">
             <customize-dialog />
           </div>
         </n-popover>

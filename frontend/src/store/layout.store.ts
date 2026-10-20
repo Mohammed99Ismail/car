@@ -1,9 +1,9 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
+import i18n from '~/modules/i18n'
 
 export const useLayoutStore = defineStore(
   'layout',
   () => {
-    const { t, locale } = useI18n()
     const collapsed = ref(false)
     const forceCollapsed = ref(false)
     const mobileMenuClosed = ref(true)
@@ -45,12 +45,42 @@ export const useLayoutStore = defineStore(
       isDark.value = !isDark.value
     }
 
+    function t(key: string, ...args: any[]): string {
+      try {
+        return (i18n.global.t as any)(key, ...args)
+      } catch {
+        return key
+      }
+    }
+
+    function applyLanguageToDomAndI18n(lang: string) {
+      if (!lang) return
+      if (i18n?.global?.locale) {
+        if (typeof i18n.global.locale === 'object' && 'value' in i18n.global.locale) {
+          i18n.global.locale.value = lang
+        } else {
+          (i18n.global.locale as any) = lang
+        }
+      }
+
+      isRtl.value = lang === 'ar' || lang === 'fa'
+
+      if (typeof document !== 'undefined') {
+        const dir = isRtl.value ? 'rtl' : 'ltr'
+        document.documentElement.setAttribute('dir', dir)
+        document.documentElement.setAttribute('lang', lang)
+        const body = document.querySelector('body') as HTMLElement | null
+        if (body) {
+          if (isRtl.value) body.classList.add('rtl')
+          else body.classList.remove('rtl')
+        }
+      }
+    }
+
     function changeLanguage(lang: string) {
+      if (!lang) return
       activeLanguage.value = lang
-      locale.value = lang
-      const dir = t('direction')
-      isRtl.value = dir !== null && dir === 'rtl'
-      showWelcome()
+      applyLanguageToDomAndI18n(lang)
     }
 
     function setThemeColor(color: string) {
@@ -58,15 +88,8 @@ export const useLayoutStore = defineStore(
     }
 
     function showWelcome() {
-      useNotifyStore().clear()
-      setTimeout(() => {
-        useNotifyStore().notify({
-          body: t('notify.welcome'),
-          type: 'success',
-          duration: 10000,
-        })
-        isWelcomeShown.value = true
-      }, 1500)
+      // Promo welcome toast disabled
+      isWelcomeShown.value = true
     }
 
     function resetWelcomeState() {

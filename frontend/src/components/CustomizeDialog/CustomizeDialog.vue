@@ -4,13 +4,11 @@ import {
   WeatherMoon48Regular as MoonIcon,
   WeatherSunny48Regular as SunIcon,
 } from '@vicons/fluent'
-import { storeToRefs } from 'pinia'
 import useColors from '~/composables/useColors'
 
 const { t } = useI18n()
 const customColor = ref('')
 const layout = useLayoutStore()
-const { isRtl, isFluid, flatDesign } = storeToRefs(layout)
 function setLight() {
   if (layout.isDark) layout.toggleTheme()
 }
@@ -96,25 +94,6 @@ watch(
         </label>
         <input type="color" ref="colorPickerRef"  v-model="customColor" class="invisible" style="width:15px" value="#1dbbce" id="colorPicker">
       </div>
-  </div>
-  <div class="section">
-    <NTag type="primary" :bordered="false" size="small" class="mb-3 font-bold">
-      {{ t('customize.layout') }}
-    </NTag>
-
-    <div py-3>
-      <n-switch v-model:value="isFluid" />
-      {{ t('customize.fluid') }}
-    </div>
-    <div py-3>
-      <n-switch v-model:value="isRtl" />
-      {{ t('customize.rtl') }}
-
-    </div>
-    <div py-3>
-      <n-switch v-model:value="flatDesign" />
-      {{t('customize.flatDesign')}}
-    </div>
   </div>
 </template>
 

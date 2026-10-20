@@ -1,5 +1,5 @@
-title: ادمین پنل یامی
-description: داشبورد رایگان vue3
+title: مدیریت نمایشگاه و اجاره خودرو
+description: سامانه مدیریت نمایشگاه و اجاره خودرو
 direction: rtl
 currencySign: ریال
 home: خانه
@@ -265,9 +265,7 @@ notifications:
   stockWarning: موجودی محصول در حال کاهش است
   orderCanceled: یک سفارش لغو شد
 notify:
-  welcome: >-
-    به پنل ادمین یامی خوش آمدید، لطفا این پروژه را با دادن یک ستاره ⭐️ در گیت
-    هاب پشتیبانی کنید
+  welcome: به سامانه مدیریت نمایشگاه و اجاره خودرو خوش آمدید
 orders:
   customer: نام مشتری
   itemsCount: تعداد محصولات

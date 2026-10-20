@@ -7,7 +7,7 @@ import {
 } from '@vicons/fluent'
 import { useDebounceFn } from '@vueuse/core'
 import type { DataTableColumns, FormInst, FormRules } from 'naive-ui'
-import { NButton, NSpace, NSwitch, NTag } from 'naive-ui'
+import { NButton, NSpace, NSwitch, NTag, NTooltip } from 'naive-ui'
 import type { BilingualLookupDto } from '~/models/ApiResponse'
 import { isApiSuccess, localizedName } from '~/models/ApiResponse'
 import type { UserDto } from '~/models/User'
@@ -16,6 +16,7 @@ import { useUserService } from '~/services/user.service'
 
 const { t, locale } = useI18n()
 const message = useMessage()
+const dialog = useDialog()
 const userService = useUserService()
 const lookupService = useLookupService()
 const accountStore = useAccountStore()
@@ -23,6 +24,7 @@ const accountStore = useAccountStore()
 // List state
 const users = ref<UserDto[]>([])
 const loading = ref(false)
+const togglingUserId = ref<number | null>(null)
 const totalCount = ref(0)
 const queryParams = reactive({ pageIndex: 1, pageSize: 10, search: '' })
 
@@ -107,16 +109,47 @@ const debouncedSearch = useDebounceFn(() => {
 }, 300)
 
 async function handleToggleActive(user: UserDto, value: boolean) {
+  const currentUserId = Number(accountStore.user?.userId || (accountStore.user as any)?.id)
+  if (user.id === currentUserId) {
+    message.warning(t('users.cannotModifySelf'))
+    return
+  }
+
+  if (!value) {
+    dialog.warning({
+      title: t('users.deactivate'),
+      content: t('users.confirmDeactivate'),
+      positiveText: t('common.confirm'),
+      negativeText: t('common.cancel'),
+      onPositiveClick: async () => {
+        await executeStatusChange(user, false)
+      },
+    })
+    return
+  }
+
+  await executeStatusChange(user, true)
+}
+
+async function executeStatusChange(user: UserDto, value: boolean) {
+  togglingUserId.value = user.id
   const previous = user.isActive
   user.isActive = value
   try {
     const res = await userService.setStatus(user.id, value)
-    if (isApiSuccess(res)) message.success(t('users.statusChangedSuccess'))
-    else user.isActive = previous
-  }
-  catch (err) {
+    if (isApiSuccess(res)) {
+      message.success(res.message || t('users.statusChangedSuccess'))
+    } else {
+      user.isActive = previous
+      message.error(res.message || t('common.500Message'))
+    }
+  } catch (err: any) {
     user.isActive = previous
+    const msg = err?.response?.data?.message || err?.message || t('common.500Message')
+    message.error(msg)
     console.error('Error changing status', err)
+  } finally {
+    togglingUserId.value = null
   }
 }
 
@@ -227,13 +260,57 @@ const columns = computed<DataTableColumns<UserDto>>(() => [
   {
     title: t('users.status'),
     key: 'isActive',
-    width: 100,
+    width: 170,
     render(row) {
-      return h(NSwitch, {
+      const currentUserId = Number(accountStore.user?.userId || (accountStore.user as any)?.id)
+      const isSelf = row.id === currentUserId
+      const isToggling = togglingUserId.value === row.id
+
+      const statusTag = h(
+        NTag,
+        {
+          type: row.isActive ? 'success' : 'default',
+          size: 'small',
+          round: true,
+          bordered: false,
+          class: 'font-semibold',
+        },
+        {
+          default: () => (row.isActive ? t('users.active') : t('users.inactive')),
+        },
+      )
+
+      if (isSelf) {
+        return h('div', { class: 'flex items-center gap-2' }, [
+          statusTag,
+          h(
+            NTooltip,
+            { trigger: 'hover' },
+            {
+              trigger: () =>
+                h(NSwitch, {
+                  value: row.isActive,
+                  disabled: true,
+                  size: 'small',
+                }),
+              default: () => t('users.cannotModifySelf'),
+            },
+          ),
+        ])
+      }
+
+      const switchControl = h(NSwitch, {
         value: row.isActive,
-        disabled: !canUpdate.value || row.id === Number(accountStore.user?.id),
-        'onUpdate:value': (val: boolean) => handleToggleActive(row, val),
+        loading: isToggling,
+        disabled: !canUpdate.value || isToggling,
+        size: 'small',
+        'onUpdate:value': (newVal: boolean) => handleToggleActive(row, newVal),
       })
+
+      return h('div', { class: 'flex items-center gap-2' }, [
+        statusTag,
+        switchControl,
+      ])
     },
   },
   {

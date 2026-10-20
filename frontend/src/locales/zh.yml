@@ -1,5 +1,5 @@
-title: 美味管理系统
-description: 免费的Vue 3仪表板
+title: 汽车展厅与租赁管理系统
+description: 汽车展厅与租赁智能管理系统
 currencySign: ¥
 direction: ltr
 home: 首页
@@ -260,7 +260,7 @@ notifications:
   stockWarning: 产品库存不足
   orderCanceled: 订单已取消
 notify:
-  welcome: 欢迎使用 YummyAdmin！基于 Naive UI 和 Vue 的免费管理面板，请在 GitHub 上点赞⭐️来支持此项目
+  welcome: 欢迎使用汽车展厅与租赁管理系统
 orders:
   customer: 客户名称
   itemsCount: 项目数量

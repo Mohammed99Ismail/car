@@ -11,7 +11,7 @@ import type {
 const handlers = [
   http.post('*/api/account/login', async ({ request }) => {
     const user = (await request.json()) as LoginViewModel
-    if (user.username === 'Yummy' && user.password === 'Admin!') {
+    if (user.username === 'Admin' && user.password === 'Admin!') {
       const response: LoginResponse = {
         token: 'JWT_Fake_Token',
         isSucceed: true,
@@ -28,7 +28,7 @@ const handlers = [
 
   http.post('*/api/account/register', async ({ request }) => {
     const user = (await request.json()) as RegisterViewModel
-    if (user.username.toLowerCase() === 'yummy')
+    if (user.username.toLowerCase() === 'admin')
       return HttpResponse.json(null, {
         status: 400,
         statusText: 'user name is already taken!',
@@ -44,7 +44,7 @@ const handlers = [
 
   http.post('*/api/account/forget-password', async ({ request }) => {
     const user = (await request.json()) as ForgetPasswordViewModel
-    if (user.email !== 'yummy@admin.io')
+    if (user.email !== 'admin@carshowroom.com')
       return HttpResponse.json(null, {
         status: 400,
         statusText: 'Email is not found',

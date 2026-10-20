@@ -51,7 +51,7 @@ function sendInitialMessages(_id: string, client: any) {
     const secondMessage = {
       id: faker.string.uuid(),
       senderId: faker.string.uuid(),
-      content: `Please support this project by giving a star in <a target="_blank" href='https://github.com/doroudi/yummyadmin'>Github</a>`,
+      content: 'Welcome to the Car Showroom support center. How can we help you today?',
       created: new Date(),
       updated: new Date(),
     }

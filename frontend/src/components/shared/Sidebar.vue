@@ -8,6 +8,12 @@ import {
   VehicleCar24Filled as CarsIconActive,
   Building24Regular as BranchesIcon,
   Building24Filled as BranchesIconActive,
+  Table24Regular as LookupsIcon,
+  Table24Filled as LookupsIconActive,
+  Tag24Regular as MakesIcon,
+  Tag24Filled as MakesIconActive,
+  Shapes24Regular as ModelsIcon,
+  Shapes24Filled as ModelsIconActive,
   DocumentBulletList24Regular as ContractTypesIcon,
   DocumentBulletList24Filled as ContractTypesIconActive,
   ShieldKeyhole24Regular as RolesIcon,
@@ -71,13 +77,54 @@ const menuOptions = computed<SidebarMenuOption[]>(() => {
     })
   }
 
+  // Lookups Submenu (Dropdown list button for all lookups)
+  const lookupChildren: SidebarMenuOption[] = [
+    {
+      label: t('menu.lookupsHub'),
+      route: '/lookups',
+      key: 'lookups',
+      icon: LookupsIcon,
+      activeIcon: LookupsIconActive,
+    },
+  ]
+
+  if (accountStore.hasPermission('CarMakes.View')) {
+    lookupChildren.push({
+      label: t('menu.carMakes'),
+      route: '/car-makes',
+      key: 'car-makes',
+      icon: MakesIcon,
+      activeIcon: MakesIconActive,
+    })
+  }
+
+  if (accountStore.hasPermission('CarModels.View')) {
+    lookupChildren.push({
+      label: t('menu.carModels'),
+      route: '/car-models',
+      key: 'car-models',
+      icon: ModelsIcon,
+      activeIcon: ModelsIconActive,
+    })
+  }
+
   if (accountStore.hasPermission('ContractTypes.View')) {
-    options.push({
+    lookupChildren.push({
       label: t('menu.contractTypes'),
       route: '/contract-types',
       key: 'contract-types',
       icon: ContractTypesIcon,
       activeIcon: ContractTypesIconActive,
+    })
+  }
+
+  if (lookupChildren.length > 0) {
+    options.push({
+      label: t('menu.lookups'),
+      key: 'lookups-group',
+      icon: LookupsIcon,
+      activeIcon: LookupsIconActive,
+      children: lookupChildren,
     })
   }
 
@@ -114,7 +161,7 @@ router.beforeEach(() => {
 <template>
   <n-layout-sider :native-scrollbar="false" collapse-mode="width" :collapsed-width="mobileMode ? 0 : 64"
     :collapsed="effectiveCollapsed"
-    :class="{ 'collapsed': effectiveCollapsed, 'mobile-mode': mobileMode, 'support-mode': layoutStore.supportEnabled }">
+    :class="{ 'collapsed': effectiveCollapsed, 'mobile-mode': mobileMode }">
     <div class="logo-container mb-4">
       <div flex w-full justify-between items-center>
         <div flex w-full justify-start items-center>

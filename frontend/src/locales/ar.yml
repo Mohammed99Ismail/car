@@ -149,9 +149,14 @@ menu:
   customers: العملاء
   branches: الفروع
   contractTypes: أنواع العقود
+  lookups: البيانات المرجعية
+  lookupsHub: لوحة القوائم المرجعية
+  carMakes: أنواع وماركات السيارات
+  carModels: موديلات السيارات
   roles: الأدوار والصلاحيات
   users: المستخدمين
   profile: الملف الشخصي
+  accountSettings: إعدادات الحساب
   settings: الإعدادات
   login: تسجيل الدخول
   register: تسجيل حساب
@@ -278,6 +283,8 @@ users:
   inactive: معطل
   activate: تفعيل
   deactivate: تعطيل
+  cannotModifySelf: لا يمكنك تعديل أو تعطيل حسابك الحالي
+  confirmDeactivate: هل أنت متأكد من رغبتك في تعطيل هذا الحساب؟
   editRoles: تعديل الأدوار الممنوحة
   createdDate: تاريخ الإنشاء
   searchPlaceholder: ابحث بالاسم الكامل أو البريد الإلكتروني...
@@ -292,6 +299,54 @@ users:
     passwordMin: كلمة المرور يجب أن لا تقل عن 8 خانات
     passwordMismatch: كلمة المرور غير متطابقة
 
+
+profile:
+  title: الملف الشخصي
+  subtitle: إدارة بيانات الحساب الشخصية، كلمة المرور والمستندات المرفقة
+  personalInfo: البيانات الشخصية
+  security: الأمان وكلمة المرور
+  attachments: المستندات والملفات
+  fullName: الاسم الكامل
+  email: البريد الإلكتروني
+  phone: رقم الهاتف
+  avatar: الصورة الشخصية
+  changeAvatar: تغيير الصورة
+  uploadAvatar: رفع صورة جديدة
+  deleteAvatar: حذف الصورة
+  confirmDeleteAvatar: هل أنت متأكد من رغبتك في حذف الصورة الشخصية؟
+  roles: الأدوار والصلاحيات
+  status: حالة الحساب
+  active: نشط
+  inactive: معطل
+  joinedDate: تاريخ الانضمام
+  saveChanges: حفظ التعديلات
+  reset: إعادة تعيين
+  oldPassword: كلمة المرور الحالية
+  newPassword: كلمة المرور الجديدة
+  confirmPassword: تأكيد كلمة المرور الجديدة
+  changePasswordBtn: تحديث كلمة المرور
+  passwordHint: يجب أن تحتوي كلمة المرور على 6 خانات على الأقل
+  passwordMismatch: كلمتا المرور غير متطابقتين
+  uploadDocument: إرفاق مستند جديد
+  documentType: نوع المستند
+  documentName: اسم الملف
+  fileSize: الحجم
+  uploadDate: تاريخ الرفع
+  actions: الإجراءات
+  selectDocumentType: اختر نوع المستند
+  dragOrClick: اضغط لاختيار ملف أو اسحبه إلى هنا
+  supportedFiles: يدعم ملفات PDF والصور والمستندات بحد أقصى 10 ميجابايت
+  uploadBtn: رفع المستند
+  noAttachments: لا توجد مستندات مرفقة حتى الآن
+  download: تحميل / معاينة
+  delete: حذف
+  confirmDelete: هل أنت متأكد من رغبتك في حذف هذا الملف؟
+  documentTypes:
+    nationalId: بطاقة الهوية / الإقامة
+    drivingLicense: رخصة القيادة
+    contract: عقد عمل / تفويض
+    certificate: شهادة / مؤهل
+    other: مستند آخر
 
 userMenu:
   profile: الملف الشخصي
@@ -308,3 +363,80 @@ notifications:
 
 notify:
   welcome: مرحباً بك في نظام إدارة معارض وتأجير السيارات!
+
+lookups:
+  title: البيانات المرجعية
+  subtitle: إدارة الجداول والمعرّفات الأساسية للنظام بما فيها ماركات وموديلات السيارات وأنواع العقود
+  hub: لوحة القوائم المرجعية
+  quickNav: الانتقال السريع
+  makesCount: إجمالي الماركات
+  modelsCount: إجمالي الموديلات
+  contractTypesCount: أنواع العقود
+  manageMakes: إدارة أنواع السيارات
+  manageModels: إدارة موديلات السيارات
+  manageContractTypes: عرض أنواع العقود
+  selectLookup: اختر قائمة مرجعية...
+  actions: عمليات سريعة
+  allLookups: كافة القوائم المرجعية
+
+carMakes:
+  title: أنواع وماركات السيارات
+  subtitle: إدارة ماركات وأنواع السيارات المتاحة في المعرض وأسطول التأجير
+  list: قائمة الماركات
+  create: إضافة ماركة جديدة
+  edit: تعديل الماركة
+  name: اسم الماركة / الشركة المصنعة
+  modelsCount: عدد الموديلات
+  searchPlaceholder: 'ابحث باسم الماركة (مثل: تويوتا، هيونداي، مرسيدس)...'
+  deleteConfirm: هل أنت متأكد من حذف هذه الماركة؟
+  deleteSuccess: تم حذف الماركة بنجاح
+  createSuccess: تم إضافة الماركة بنجاح
+  updateSuccess: تم تحديث بيانات الماركة بنجاح
+  validations:
+    nameRequired: يرجى إدخال اسم الماركة
+
+carModels:
+  title: موديلات السيارات
+  subtitle: إدارة موديلات وفئات السيارات وربطها بالشركات المصنعة
+  list: قائمة الموديلات
+  create: إضافة موديل جديد
+  edit: تعديل الموديل
+  name: اسم الموديل
+  make: الشركة المصنعة (الماركة)
+  allMakes: جميع الماركات
+  filterByMake: تصفية حسب الماركة
+  selectMake: اختر الماركة...
+  searchPlaceholder: 'ابحث باسم الموديل أو الماركة (مثل: كامري، سوناتا)...'
+  deleteConfirm: هل أنت متأكد من حذف هذا الموديل؟
+  deleteSuccess: تم حذف الموديل بنجاح
+  createSuccess: تم إضافة الموديل بنجاح
+  updateSuccess: تم تحديث بيانات الموديل بنجاح
+  validations:
+    nameRequired: يرجى إدخال اسم الموديل
+    makeRequired: يرجى اختيار الماركة
+
+dashboard:
+  systemOnline: النظام متصل وقيد العمل بكفاءة عالية
+  welcome: مرحباً بك، {name} 👋
+  welcomeSubtitle: نظام إدارة معرض وتأجير السيارات المتكامل — لوحة تحكم ذكية وشاملة لمتابعة الأسطول، الفروع، العملاء، والصلاحيات بدقة وسرعة فائقة.
+  addCar: إضافة سيارة جديدة
+  addCustomer: إضافة عميل جديد
+  lookups: البيانات المرجعية (Lookups)
+  fleet: الأسطول
+  totalCars: إجمالي السيارات المسجلة
+  viewFleet: عرض الأسطول
+  customers: العملاء
+  totalCustomers: إجمالي العملاء
+  manageCustomers: إدارة العملاء
+  branches: الفروع
+  showroomBranches: فروع المعرض
+  viewBranches: عرض الفروع
+  contractTypes: أنواع العقود
+  approvedContracts: أنواع العقود المعتمدة
+  viewContracts: عرض الأنواع
+  fleetManagement: إدارة الأسطول والسيارات
+  fleetSubtitle: 'تسجيل كامل لـ 12 حقلاً معتمداً لكل سيارة تشمل: الماركة، الموديل، سنة الصنع، اللون، اللوحة، الفرع، تاريخ وسعر الشراء، الهيكل، المحرك، الصورة، والملاحظات.'
+  rolesAndUsers: الصلاحيات وإدارة المستخدمين
+  rolesSubtitle: تحكم ديناميكي كامل في إنشاء الأدوار وتعديل صلاحيات كل دور بحرية، مع تفعيل وتعطيل حسابات المستخدمين وتعيين الأدوار بمرونة.
+  adminRole: المسؤول
+

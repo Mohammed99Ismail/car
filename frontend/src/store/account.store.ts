@@ -128,8 +128,13 @@ export const useAccountStore = defineStore(
     async function forgotPassword(model: ForgotPasswordViewModel): Promise<boolean> {
       isLoading.value = true
       try {
-        const response = await accountService.forgotPassword(model)
-        return response.status === ResultStatusEnum.Success
+        const response: any = await accountService.forgotPassword(model)
+        return (
+          response?.isSuccess === true ||
+          response?.resultStatus === 200 ||
+          response?.status === ResultStatusEnum.Success ||
+          response?.status === 0
+        )
       } catch {
         return false
       } finally {
@@ -140,8 +145,13 @@ export const useAccountStore = defineStore(
     async function resetPassword(model: ResetPasswordViewModel): Promise<boolean> {
       isLoading.value = true
       try {
-        const response = await accountService.resetPassword(model)
-        return response.status === ResultStatusEnum.Success
+        const response: any = await accountService.resetPassword(model)
+        return (
+          response?.isSuccess === true ||
+          response?.resultStatus === 200 ||
+          response?.status === ResultStatusEnum.Success ||
+          response?.status === 0
+        )
       } catch {
         return false
       } finally {

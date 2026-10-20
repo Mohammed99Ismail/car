@@ -40,7 +40,8 @@ function activateCurrentRoute() {
       selectedMenuKey.value =
         keys.find(
           (s: SidebarMenuOption) =>
-            s.key?.toLowerCase() === route.name.toLowerCase(),
+            (route.name && s.key?.toLowerCase() === String(route.name).toLowerCase()) ||
+            (s.route && s.route.toLowerCase() === route.path.toLowerCase()),
         )?.key ?? 'dashboard-ecommerce' //default route
 
       menuRef.value?.showOption(selectedMenuKey.value)
@@ -49,7 +50,7 @@ function activateCurrentRoute() {
 }
 
 watch(
-  () => route.name,
+  () => [route.name, route.path],
   () => {
     setTimeout(() => activateCurrentRoute(), 200)
   },
@@ -84,7 +85,10 @@ function convertToMenuOption(item: SidebarMenuOption): MenuOption {
 }
 
 function isActiveRoute(item: SidebarMenuOption) {
-  return selectedMenuKey.value.toLowerCase() === item.key?.toLowerCase()
+  return (
+    selectedMenuKey.value.toLowerCase() === item.key?.toLowerCase() ||
+    (item.route && item.route.toLowerCase() === route.path.toLowerCase())
+  )
 }
 </script>
 

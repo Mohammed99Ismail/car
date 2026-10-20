@@ -17,7 +17,7 @@ const tasks: TaskItem[] = [
     createDate: new Date(),
     isDone: true,
     isToday: true,
-    title: 'Improve YummyAdmin',
+    title: 'Improve System Performance',
   },
   {
     id: 3,
@@ -167,7 +167,7 @@ const handlers = [
 function createFakeTaskGroups(): TaskGroup[] {
   const groups: TaskGroup[] = [
     { id: 1, title: 'My Day', icon: '📅', isToday: true },
-    { id: 2, title: 'YummyAdmin', icon: '😋', bgColor: '#1aa58b' },
+    { id: 2, title: 'CarShowroom', icon: '🚗', bgColor: '#1aa58b' },
     { id: 3, title: 'ToWatch', icon: '🎞️', bgColor: '#e58f6b' },
     { id: 4, title: 'Buy List', icon: '🛒', bgColor: '' },
     { id: 5, title: 'Payments', icon: '💸', bgColor: '' },

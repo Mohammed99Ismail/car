@@ -33,6 +33,14 @@ function changeLanguage(lang: string) {
   language.value = lang
   layoutStore.changeLanguage(lang)
 }
+
+watch(
+  () => layoutStore.activeLanguage,
+  (val) => {
+    if (val) language.value = val
+  },
+  { immediate: true },
+)
 </script>
 
 <template>

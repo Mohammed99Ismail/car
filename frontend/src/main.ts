@@ -30,6 +30,16 @@ async function initializeMocking() {
 }
 
 const routes = setupLayouts(generatedRoutes)
+routes.push(
+  {
+    path: '/reset-password',
+    redirect: (to) => ({ path: '/account/resetpassword', query: to.query }),
+  },
+  {
+    path: '/account/reset-password',
+    redirect: (to) => ({ path: '/account/resetpassword', query: to.query }),
+  },
+)
 const router = createRouter({
   history: createWebHistory(),
   routes,
@@ -77,6 +87,8 @@ router.beforeEach((to, _, next) => {
     '/account/register',
     '/account/forgotpassword',
     '/account/resetpassword',
+    '/account/reset-password',
+    '/reset-password',
     '/404',
     '/error',
     '/maintenance',

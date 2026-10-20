@@ -5,9 +5,6 @@ const layout = useLayoutStore()
 
 onMounted(() => {
   store.getSummaryStat()
-  if (!layout.isWelcomeShown) {
-    layout.showWelcome()
-  }
 })
 </script>
 

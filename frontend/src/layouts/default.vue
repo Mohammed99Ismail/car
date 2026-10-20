@@ -23,9 +23,12 @@ const effectiveFluid = computed(() => {
 watch(
   () => notificationsStore.messages,
   (newVal: ToastNotification[], oldVal: ToastNotification[]) => {
-    if (newVal.length < oldVal.length) return
+    if (!newVal || newVal.length === 0) return
+    if (oldVal && newVal.length < oldVal.length) return
 
     const lastMessage = newVal[newVal.length - 1]
+    if (!lastMessage) return
+
     notification.create({
       type: lastMessage.type,
       content: lastMessage.body,
