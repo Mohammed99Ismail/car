@@ -494,46 +494,40 @@ meta:
         </n-input>
 
         <!-- Make Filter -->
-        <n-select
+        <LookupSelect
           id="cars-filter-make"
           v-model:value="queryParams.makeId"
-          clearable
-          filterable
+          lookup-type="makes"
           :placeholder="t('cars.filterByMake')"
-          :options="makesList.map(m => ({ label: m.name, value: m.id }))"
           @update:value="onFilterMakeChange"
         />
 
         <!-- Model Filter (Dependent) -->
-        <n-select
+        <LookupSelect
           id="cars-filter-model"
           v-model:value="queryParams.modelId"
-          clearable
-          filterable
+          lookup-type="models"
+          :make-id="queryParams.makeId"
           :disabled="!queryParams.makeId"
           :placeholder="t('cars.model')"
-          :options="filterModelsList.map(m => ({ label: m.name, value: m.id }))"
           @update:value="() => { queryParams.pageIndex = 1; loadCars(); }"
         />
 
         <!-- Branch Filter -->
-        <n-select
+        <LookupSelect
           id="cars-filter-branch"
           v-model:value="queryParams.branchId"
-          clearable
-          filterable
+          lookup-type="branches"
           :placeholder="t('cars.filterByBranch')"
-          :options="branchesList.map(b => ({ label: b.name, value: b.id }))"
           @update:value="() => { queryParams.pageIndex = 1; loadCars(); }"
         />
 
         <!-- Year Filter -->
-        <n-select
+        <LookupSelect
           id="cars-filter-year"
           v-model:value="queryParams.manufactureYear"
-          clearable
+          lookup-type="years"
           :placeholder="t('cars.filterByYear')"
-          :options="yearsList.map(y => ({ label: String(y), value: y }))"
           @update:value="() => { queryParams.pageIndex = 1; loadCars(); }"
         />
       </div>
@@ -581,35 +575,34 @@ meta:
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           <!-- 1. Make -->
           <n-form-item path="makeId" :label="t('cars.make')">
-            <n-select
+            <LookupSelect
               id="car-form-make"
               v-model:value="formData.makeId"
-              filterable
+              lookup-type="makes"
               :placeholder="t('common.select')"
-              :options="makesList.map(m => ({ label: m.name, value: m.id }))"
               @update:value="onFormMakeChange"
             />
           </n-form-item>
 
           <!-- 2. Model (Dependent) -->
           <n-form-item path="modelId" :label="t('cars.model')">
-            <n-select
+            <LookupSelect
               id="car-form-model"
               v-model:value="formData.modelId"
-              filterable
+              lookup-type="models"
+              :make-id="formData.makeId"
               :disabled="!formData.makeId"
               :placeholder="formData.makeId ? t('common.select') : 'اختر الماركة أولاً'"
-              :options="formModelsList.map(m => ({ label: m.name, value: m.id }))"
             />
           </n-form-item>
 
           <!-- 3. Year -->
           <n-form-item path="manufactureYear" :label="t('cars.year')">
-            <n-select
+            <LookupSelect
               id="car-form-year"
               v-model:value="formData.manufactureYear"
+              lookup-type="years"
               :placeholder="t('cars.year')"
-              :options="yearsList.map(y => ({ label: String(y), value: y }))"
             />
           </n-form-item>
 
@@ -625,12 +618,11 @@ meta:
 
           <!-- 6. Branch -->
           <n-form-item path="branchId" :label="t('cars.branch')">
-            <n-select
+            <LookupSelect
               id="car-form-branch"
               v-model:value="formData.branchId"
-              filterable
+              lookup-type="branches"
               :placeholder="t('common.select')"
-              :options="branchesList.map(b => ({ label: b.name, value: b.id }))"
             />
           </n-form-item>
 

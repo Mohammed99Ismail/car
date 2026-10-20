@@ -1,118 +1,112 @@
 <script setup lang="ts">
-import { useDebounceFn } from '@vueuse/core'
 import type { SelectOption } from 'naive-ui'
+import { useDebouncedLookup } from '~/composables/useDebouncedLookup'
 
 interface Props {
-  modelValue?: string | number | null
+  value?: number | string | Array<number | string> | null
+  lookupType?: 'makes' | 'models' | 'branches' | 'years' | 'roles' | 'contractTypes'
+  makeId?: number | null
+  fetchFn?: (search?: string) => Promise<SelectOption[]>
+  debounceDelay?: number
   placeholder?: string
-  fetchOptions: (search?: string) => Promise<Array<{ label: string; value: string | number }>>
-  cacheKey?: string
-  disabled?: boolean
   clearable?: boolean
-  depKey?: any
+  disabled?: boolean
+  multiple?: boolean
+  size?: 'small' | 'medium' | 'large'
+  status?: 'warning' | 'error'
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  modelValue: null,
-  placeholder: 'اختر...',
-  cacheKey: '',
-  disabled: false,
+  value: null,
+  lookupType: 'makes',
+  makeId: null,
+  debounceDelay: 300,
   clearable: true,
-  depKey: null,
+  disabled: false,
+  multiple: false,
+  size: 'medium',
 })
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: string | number | null): void
-  (e: 'change', value: string | number | null, option?: SelectOption): void
+  (e: 'update:value', val: any): void
+  (e: 'select-item', item: SelectOption | null): void
+  (e: 'clear'): void
 }>()
 
-const options = ref<SelectOption[]>([])
-const loading = ref(false)
-const searchQuery = ref('')
+const makeIdRef = toRef(props, 'makeId')
 
-// In-memory cache map: cacheKey + depKey + search -> SelectOption[]
-const cache = new Map<string, SelectOption[]>()
+const {
+  loading,
+  options: fetchedOptions,
+  search: debouncedSearch,
+  searchNow,
+  reload,
+} = useDebouncedLookup({
+  type: props.lookupType,
+  makeId: makeIdRef,
+  fetchFn: props.fetchFn,
+  debounceDelay: props.debounceDelay,
+  immediate: true,
+})
 
-function getCacheKey(search: string): string {
-  return `${props.cacheKey}_${String(props.depKey ?? '')}_${search.trim().toLowerCase()}`
-}
+// Keep selected option so label doesn't get cleared during remote searching
+const selectedOptionCache = ref<SelectOption | null>(null)
 
-async function loadData(search = '') {
-  if (props.disabled) return
-
-  const key = getCacheKey(search)
-  if (cache.has(key)) {
-    options.value = cache.get(key)!
-    return
+const mergedOptions = computed<SelectOption[]>(() => {
+  const list = [...fetchedOptions.value]
+  if (
+    selectedOptionCache.value &&
+    !list.some((o) => o.value === selectedOptionCache.value?.value)
+  ) {
+    list.unshift(selectedOptionCache.value)
   }
-
-  loading.value = true
-  try {
-    const data = await props.fetchOptions(search)
-    const mapped: SelectOption[] = data.map((item) => ({
-      label: item.label,
-      value: item.value,
-    }))
-    cache.set(key, mapped)
-    options.value = mapped
-  } catch (err) {
-    console.error('LookupSelect fetch error:', err)
-  } finally {
-    loading.value = false
-  }
-}
-
-const debouncedSearch = useDebounceFn((query: string) => {
-  searchQuery.value = query
-  loadData(query)
-}, 300)
+  return list
+})
 
 function handleSearch(query: string) {
   debouncedSearch(query)
 }
 
-function handleUpdateValue(value: string | number | null, option: SelectOption) {
-  emit('update:modelValue', value)
-  emit('change', value, option)
+function handleUpdateValue(val: any, option: any) {
+  if (option && !Array.isArray(option)) {
+    selectedOptionCache.value = option
+    emit('select-item', option)
+  } else if (!val) {
+    selectedOptionCache.value = null
+    emit('select-item', null)
+  }
+  emit('update:value', val)
 }
 
-// Re-fetch when depKey changes (e.g. make changed -> reload models)
-watch(
-  () => props.depKey,
-  () => {
-    cache.clear()
-    searchQuery.value = ''
-    loadData('')
-  },
-)
+function handleClear() {
+  selectedOptionCache.value = null
+  emit('clear')
+  emit('update:value', null)
+  searchNow('')
+}
 
-watch(
-  () => props.disabled,
-  (val) => {
-    if (!val && options.value.length === 0) {
-      loadData('')
-    }
-  },
-)
-
-onMounted(() => {
-  if (!props.disabled) {
-    loadData('')
-  }
+defineExpose({
+  reload,
+  searchNow,
 })
 </script>
 
 <template>
   <n-select
-    :value="modelValue"
-    :options="options"
-    :loading="loading"
-    :disabled="disabled"
-    :clearable="clearable"
-    :placeholder="placeholder"
+    :value="value"
     filterable
     remote
+    :clearable="clearable"
+    :disabled="disabled"
+    :multiple="multiple"
+    :loading="loading"
+    :options="mergedOptions"
+    :placeholder="placeholder"
+    :size="size"
+    :status="status"
+    class="rounded-xl"
     @search="handleSearch"
     @update:value="handleUpdateValue"
+    @clear="handleClear"
   />
 </template>
