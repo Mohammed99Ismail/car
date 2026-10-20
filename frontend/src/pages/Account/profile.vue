@@ -6,7 +6,7 @@
 meta:
   title: profile
   breadcrumb:
-    - accountSettings
+    - profile
 </route>
 
 <template>

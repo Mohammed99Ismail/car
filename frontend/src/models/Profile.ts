@@ -1,36 +1,41 @@
-export interface Profile {
+export interface UserAttachment {
   id: number
-  username: string
+  fileName: string
+  filePath: string
+  contentType: string
+  fileSizeBytes: number
+  documentType?: string
+  createdDate: string
+}
+
+export interface UserProfile {
+  id: number
+  fullName: string
   email: string
-  firstName: string
-  lastName: string
-  role: string
-  location: string
-  socials: Social[]
-  avatar: string
-  bio: string
-  phone: string
-  address: Address
+  phoneNumber?: string
+  avatarUrl?: string
+  isActive: boolean
+  createdDate: string
+  roles: string[]
+  permissions: string[]
+  attachments: UserAttachment[]
 }
 
-export interface Social {
-  name: string
-  url: string
+export interface UpdateProfileModel {
+  fullName: string
+  phoneNumber?: string
 }
 
-export interface Address {
-  country: string
-  city: string
-  postalCode: string
+export interface ChangePasswordModel {
+  currentPassword: string
+  newPassword: string
+  confirmPassword?: string
 }
 
+// Backward-compatibility aliases
+export type Profile = UserProfile
 export interface ProfileSettings {
-  notifications: NotificationSetting[]
-}
-
-export interface NotificationSetting {
-  type: string
-  email: boolean
-  push: boolean
-  sms: boolean
+  emailNotification: boolean
+  pushNotification: boolean
+  monthlyReport: boolean
 }
