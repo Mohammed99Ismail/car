@@ -10,6 +10,8 @@ appsettings.Development.json
 .vs
 build
 
+
+**/wwwroot/
 ./obj
 ./bin
 ./**/obj

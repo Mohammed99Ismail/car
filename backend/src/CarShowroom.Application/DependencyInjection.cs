@@ -1,6 +1,8 @@
 using System.Reflection;
 using CarShowroom.Application.Features.Auth;
 using CarShowroom.Application.Features.Branches;
+using CarShowroom.Application.Features.CarMakes;
+using CarShowroom.Application.Features.CarModels;
 using CarShowroom.Application.Features.Cars;
 using CarShowroom.Application.Features.Customers;
 using CarShowroom.Application.Features.Lookups;
@@ -28,9 +30,12 @@ public static class DependencyInjection
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ILookupService, LookupService>();
+        services.AddScoped<ICarMakeService, CarMakeService>();
+        services.AddScoped<ICarModelService, CarModelService>();
         services.AddScoped<IBranchService, BranchService>();
         services.AddScoped<ICustomerService, CustomerService>();
         services.AddScoped<ICarService, CarService>();
+        services.AddScoped<CarShowroom.Application.Features.Profile.IProfileService, CarShowroom.Application.Features.Profile.ProfileService>();
 
         return services;
     }

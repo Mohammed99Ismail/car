@@ -37,7 +37,12 @@ public class EmailSender(IOptions<SmtpOptions> options, ILogger<EmailSender> log
 
             if (!string.IsNullOrWhiteSpace(_options.UserName))
             {
-                await client.AuthenticateAsync(_options.UserName, _options.Password, cancellationToken);
+                var password = _options.Password?.Trim() ?? string.Empty;
+                if (_options.Host.Contains("gmail", StringComparison.OrdinalIgnoreCase))
+                {
+                    password = password.Replace(" ", "");
+                }
+                await client.AuthenticateAsync(_options.UserName, password, cancellationToken);
             }
 
             await client.SendAsync(message, cancellationToken);

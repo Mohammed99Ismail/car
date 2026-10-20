@@ -181,5 +181,21 @@ public static class DbInitializer
             await context.SaveChangesAsync(cancellationToken);
             logger.LogInformation("Seeded sample branches.");
         }
+
+        // 8. Seed Sample Customers
+        if (!await context.Customers.AnyAsync(cancellationToken))
+        {
+            var customers = new List<Customer>
+            {
+                new() { Name = "محمد إسماعيل القحطاني", Mobile = "0501234567", NationalId = "1087452391", Address = "الرياض - حي النخيل الغربي", CreatedDate = DateTime.UtcNow },
+                new() { Name = "عبدالله بن خالد الشمري", Mobile = "0558765432", NationalId = "1045982173", Address = "جدة - حي الروضة", CreatedDate = DateTime.UtcNow },
+                new() { Name = "سلطان فهد العتيبي", Mobile = "0541122334", NationalId = "1098234176", Address = "الدمام - حي الشاطئ الشرقي", CreatedDate = DateTime.UtcNow },
+                new() { Name = "سارة أحمد الدوسري", Mobile = "0567788990", NationalId = "2048712390", Address = "الرياض - حي الملقا", CreatedDate = DateTime.UtcNow },
+                new() { Name = "فيصل عبدالعزيز الغامدي", Mobile = "0533344556", NationalId = "1032890145", Address = "مكة المكرمة - حي العوالي", CreatedDate = DateTime.UtcNow }
+            };
+            await context.Customers.AddRangeAsync(customers, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
+            logger.LogInformation("Seeded sample customers.");
+        }
     }
 }

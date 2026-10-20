@@ -536,6 +536,11 @@ namespace CarShowroom.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AvatarUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("avatar_url");
+
                     b.Property<int?>("CreatedByUserId")
                         .HasColumnType("integer")
                         .HasColumnName("created_by_user_id");
@@ -575,6 +580,11 @@ namespace CarShowroom.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("password_hash");
 
+                    b.Property<string>("PhoneNumber")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("phone_number");
+
                     b.HasKey("Id")
                         .HasName("pk_users");
 
@@ -583,6 +593,71 @@ namespace CarShowroom.Infrastructure.Migrations
                         .HasDatabaseName("ix_users_email");
 
                     b.ToTable("users", (string)null);
+                });
+
+            modelBuilder.Entity("CarShowroom.Domain.Entities.UserAttachment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("content_type");
+
+                    b.Property<int?>("CreatedByUserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_date");
+
+                    b.Property<string>("DocumentType")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("document_type");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("file_name");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("file_path");
+
+                    b.Property<long>("FileSizeBytes")
+                        .HasColumnType("bigint")
+                        .HasColumnName("file_size_bytes");
+
+                    b.Property<int?>("LastModifiedByUserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("last_modified_by_user_id");
+
+                    b.Property<DateTime>("LastModifiedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_modified_date");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_user_attachments");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_user_attachments_user_id");
+
+                    b.ToTable("user_attachments", (string)null);
                 });
 
             modelBuilder.Entity("CarShowroom.Domain.Entities.UserRole", b =>
@@ -691,6 +766,18 @@ namespace CarShowroom.Infrastructure.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("CarShowroom.Domain.Entities.UserAttachment", b =>
+                {
+                    b.HasOne("CarShowroom.Domain.Entities.User", "User")
+                        .WithMany("Attachments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_attachments_users_user_id");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("CarShowroom.Domain.Entities.UserRole", b =>
                 {
                     b.HasOne("CarShowroom.Domain.Entities.Role", "Role")
@@ -731,6 +818,8 @@ namespace CarShowroom.Infrastructure.Migrations
 
             modelBuilder.Entity("CarShowroom.Domain.Entities.User", b =>
                 {
+                    b.Navigation("Attachments");
+
                     b.Navigation("RefreshTokens");
 
                     b.Navigation("UserRoles");

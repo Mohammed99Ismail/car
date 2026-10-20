@@ -8,9 +8,23 @@ public class User : AuditedEntityBase
     public required string Email { get; set; }
     public required string PasswordHash { get; set; }
     public bool IsActive { get; set; } = true;
+    public string? PhoneNumber { get; set; }
+    public string? AvatarUrl { get; set; }
 
     public ICollection<UserRole> UserRoles { get; set; } = [];
     public ICollection<RefreshToken> RefreshTokens { get; set; } = [];
+    public ICollection<UserAttachment> Attachments { get; set; } = [];
+}
+
+public class UserAttachment : AuditedEntityBase
+{
+    public int UserId { get; set; }
+    public User User { get; set; } = null!;
+    public required string FileName { get; set; }
+    public required string FilePath { get; set; }
+    public required string ContentType { get; set; }
+    public long FileSizeBytes { get; set; }
+    public string? DocumentType { get; set; }
 }
 
 public class Role : AuditedEntityBase

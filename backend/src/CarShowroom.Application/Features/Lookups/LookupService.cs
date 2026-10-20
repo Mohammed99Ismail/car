@@ -37,6 +37,7 @@ public class LookupService(
 
         var filtered = allMakes
             .Where(m => m.Name.Contains(search.Trim(), StringComparison.OrdinalIgnoreCase))
+            .Take(50)
             .ToList();
 
         return CustomApiResponse<IReadOnlyList<LookupItemDto>>.Success(filtered);
@@ -65,6 +66,7 @@ public class LookupService(
 
         var filtered = allModels
             .Where(m => m.Name.Contains(search.Trim(), StringComparison.OrdinalIgnoreCase))
+            .Take(50)
             .ToList();
 
         return CustomApiResponse<IReadOnlyList<LookupItemDto>>.Success(filtered);
@@ -96,6 +98,7 @@ public class LookupService(
 
         var branches = await source
             .OrderBy(b => b.Name)
+            .Take(50)
             .Select(b => new LookupItemDto(b.Id, b.Name))
             .ToListAsync(cancellationToken);
 

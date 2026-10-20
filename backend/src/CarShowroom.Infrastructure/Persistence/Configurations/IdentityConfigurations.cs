@@ -11,7 +11,8 @@ public class IdentityConfigurations :
     IEntityTypeConfiguration<UserRole>,
     IEntityTypeConfiguration<RolePermission>,
     IEntityTypeConfiguration<RefreshToken>,
-    IEntityTypeConfiguration<PasswordResetToken>
+    IEntityTypeConfiguration<PasswordResetToken>,
+    IEntityTypeConfiguration<UserAttachment>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
@@ -21,6 +22,8 @@ public class IdentityConfigurations :
         builder.HasIndex(u => u.Email).IsUnique();
         builder.Property(u => u.PasswordHash).IsRequired();
         builder.Property(u => u.IsActive).HasDefaultValue(true);
+        builder.Property(u => u.PhoneNumber).HasMaxLength(30);
+        builder.Property(u => u.AvatarUrl).HasMaxLength(500);
     }
 
     public void Configure(EntityTypeBuilder<Role> builder)
@@ -88,6 +91,19 @@ public class IdentityConfigurations :
         builder.HasOne(t => t.User)
             .WithMany()
             .HasForeignKey(t => t.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
+
+    public void Configure(EntityTypeBuilder<UserAttachment> builder)
+    {
+        builder.HasKey(a => a.Id);
+        builder.Property(a => a.FileName).HasMaxLength(256).IsRequired();
+        builder.Property(a => a.FilePath).HasMaxLength(500).IsRequired();
+        builder.Property(a => a.ContentType).HasMaxLength(100).IsRequired();
+        builder.Property(a => a.DocumentType).HasMaxLength(50);
+        builder.HasOne(a => a.User)
+            .WithMany(u => u.Attachments)
+            .HasForeignKey(a => a.UserId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

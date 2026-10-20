@@ -18,6 +18,7 @@ public interface IApplicationDbContext
     DbSet<Branch> Branches { get; }
     DbSet<Customer> Customers { get; }
     DbSet<Car> Cars { get; }
+    DbSet<UserAttachment> UserAttachments { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

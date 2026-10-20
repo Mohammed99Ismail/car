@@ -178,8 +178,10 @@ public class AuthService(
         await context.PasswordResetTokens.AddAsync(resetToken, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
 
-        var baseUrl = string.IsNullOrWhiteSpace(clientOrigin) ? "http://localhost:5173" : clientOrigin.TrimEnd('/');
-        var resetLink = $"{baseUrl}/reset-password?token={Uri.EscapeDataString(rawToken)}";
+        var baseUrl = string.IsNullOrWhiteSpace(clientOrigin) || clientOrigin.Contains(":5041")
+            ? "http://localhost:7000"
+            : clientOrigin.TrimEnd('/');
+        var resetLink = $"{baseUrl}/account/resetpassword?token={Uri.EscapeDataString(rawToken)}&email={Uri.EscapeDataString(user.Email)}";
 
         await emailSender.SendAsync(
             user.Email,
