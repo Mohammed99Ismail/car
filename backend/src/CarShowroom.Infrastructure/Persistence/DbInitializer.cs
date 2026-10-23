@@ -197,5 +197,105 @@ public static class DbInitializer
             await context.SaveChangesAsync(cancellationToken);
             logger.LogInformation("Seeded sample customers.");
         }
+
+        // 9. Seed Contract Terms Configuration
+        if (!await context.ContractTermsConfigs.AnyAsync(cancellationToken))
+        {
+            var config = new ContractTermsConfig
+            {
+                InsurancePercentage = 4.00m,
+                MaintenancePercentage = 5.00m,
+                ReplacementCarPercentage = 1.00m,
+                AdminFeesPercentage = 1.00m,
+                AnnualDepreciationPercentage = 25.00m,
+                LastModifiedDate = DateTime.UtcNow
+            };
+            await context.ContractTermsConfigs.AddAsync(config, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
+            logger.LogInformation("Seeded default contract terms configuration.");
+        }
+
+        // 10. Seed Sample Cars matching examples if cars table is empty
+        if (!await context.Cars.AnyAsync(cancellationToken))
+        {
+            var branch = await context.Branches.FirstOrDefaultAsync(cancellationToken);
+            var toyotaCamry = await context.CarModels.Include(m => m.Make).FirstOrDefaultAsync(m => m.Name == "Camry", cancellationToken);
+            var hondaAccord = await context.CarModels.Include(m => m.Make).FirstOrDefaultAsync(m => m.Name == "Accord", cancellationToken);
+
+            if (branch is not null && toyotaCamry is not null && hondaAccord is not null)
+            {
+                var cars = new List<Car>
+                {
+                    // Example 1 Car: purchase date 8/31/2022, price 39,900 SAR, book value 1 SAR
+                    new()
+                    {
+                        MakeId = toyotaCamry.MakeId,
+                        ModelId = toyotaCamry.Id,
+                        ManufactureYear = 2022,
+                        Color = "أبيض لؤلؤي",
+                        PlateNumber = "أ ب ج 1 2 3 4",
+                        BranchId = branch.Id,
+                        PurchaseDate = DateTime.SpecifyKind(new DateTime(2022, 8, 31), DateTimeKind.Utc),
+                        PurchasePrice = 39900.00m,
+                        BookValue = 1.00m,
+                        ChassisNumber = "JTDBR32K123456789",
+                        EngineNumber = "2AR-FE-987654321",
+                        Notes = "سيارة مثال 1 — مشتراة 31/08/2022 وتجاوزت 4 سنوات (القيمة الدفترية = 1 ريال)",
+                        CreatedDate = DateTime.UtcNow
+                    },
+                    // Example 2 Car: purchase date 4/13/2023, price 111,500 SAR, book value 13,288.36 SAR
+                    new()
+                    {
+                        MakeId = hondaAccord.MakeId,
+                        ModelId = hondaAccord.Id,
+                        ManufactureYear = 2023,
+                        Color = "فضي ميتاليك",
+                        PlateNumber = "س ل م 2 0 2 6",
+                        BranchId = branch.Id,
+                        PurchaseDate = DateTime.SpecifyKind(new DateTime(2023, 4, 13), DateTimeKind.Utc),
+                        PurchasePrice = 111500.00m,
+                        BookValue = 13288.36m,
+                        ChassisNumber = "1HGCV1F1234567890",
+                        EngineNumber = "L15BE-123456789",
+                        Notes = "سيارة مثال 2 — مشتراة 13/04/2023 (القيمة الدفترية = 13,288.36 ريال)",
+                        CreatedDate = DateTime.UtcNow
+                    }
+                };
+                await context.Cars.AddRangeAsync(cars, cancellationToken);
+                await context.SaveChangesAsync(cancellationToken);
+                logger.LogInformation("Seeded sample cars for contract calculation examples.");
+            }
+        }
+
+        // 7. Seed System Settings
+        var existingSettingKeys = await context.SystemSettings
+            .Select(s => s.Key)
+            .ToHashSetAsync(cancellationToken);
+
+        var initialSettings = new List<SystemSetting>
+        {
+            new()
+            {
+                Key = "VAT_PERCENTAGE",
+                NameAr = "ضريبة القيمة المضافة على عقود الإيجار",
+                NameEn = "Rental Value Added Tax (VAT)",
+                Value = "15",
+                DataType = "Percentage",
+                Category = "الضرائب والمالية",
+                IsReadOnly = true,
+                DescriptionAr = "نسبة ضريبة القيمة المضافة الإلزامية (15%) المطبقة على أسعار وقيم عقود الإيجار والخدمات الإيجارية.",
+                DescriptionEn = "Mandatory 15% VAT rate applied on rental contracts, daily leasing, and rental services.",
+                CreatedDate = DateTime.UtcNow
+            }
+        };
+
+        var missingSettings = initialSettings.Where(s => !existingSettingKeys.Contains(s.Key)).ToList();
+        if (missingSettings.Count > 0)
+        {
+            await context.SystemSettings.AddRangeAsync(missingSettings, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
+            logger.LogInformation("Seeded {Count} new system settings.", missingSettings.Count);
+        }
     }
 }
+

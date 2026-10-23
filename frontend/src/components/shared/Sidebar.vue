@@ -16,10 +16,14 @@ import {
   Shapes24Filled as ModelsIconActive,
   DocumentBulletList24Regular as ContractTypesIcon,
   DocumentBulletList24Filled as ContractTypesIconActive,
+  DocumentText24Regular as ContractsIcon,
+  DocumentText24Filled as ContractsIconActive,
   ShieldKeyhole24Regular as RolesIcon,
   ShieldKeyhole24Filled as RolesIconActive,
   Person24Regular as UsersIcon,
   Person24Filled as UsersIconActive,
+  Settings24Regular as SettingsIcon,
+  Settings24Filled as SettingsIconActive,
 } from '@vicons/fluent'
 
 import { storeToRefs } from 'pinia'
@@ -54,6 +58,16 @@ const menuOptions = computed<SidebarMenuOption[]>(() => {
       key: 'cars',
       icon: CarsIcon,
       activeIcon: CarsIconActive,
+    })
+  }
+
+  if (accountStore.hasPermission('Contracts.View')) {
+    options.push({
+      label: t('menu.contracts'),
+      route: '/contracts',
+      key: 'contracts',
+      icon: ContractsIcon,
+      activeIcon: ContractsIconActive,
     })
   }
 
@@ -147,6 +161,15 @@ const menuOptions = computed<SidebarMenuOption[]>(() => {
       activeIcon: UsersIconActive,
     })
   }
+
+  // System Settings (Always accessible for administrators / settings view)
+  options.push({
+    label: t('menu.settings'),
+    route: '/settings',
+    key: 'settings',
+    icon: SettingsIcon,
+    activeIcon: SettingsIconActive,
+  })
 
   return options
 })
