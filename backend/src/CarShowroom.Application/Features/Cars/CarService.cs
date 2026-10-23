@@ -6,16 +6,49 @@ using CarShowroom.Application.Features.Cars.Dtos;
 using CarShowroom.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
+using CarShowroom.Application.Features.Contracts.Services;
+
 namespace CarShowroom.Application.Features.Cars;
 
 public class CarService(
     IApplicationDbContext context,
-    IFileStorage fileStorage) : ICarService
+    IFileStorage fileStorage,
+    IContractCalculationService calculationService) : ICarService
 {
     private static readonly HashSet<string> AllowedImageExtensions = new(StringComparer.OrdinalIgnoreCase)
     {
         ".jpg", ".jpeg", ".png", ".webp"
     };
+
+    private CarDto MapCarToDto(Car c)
+    {
+        var (calculatedBookValue, accumulatedDepr, productiveAge) = calculationService.CalculateCarBookValue(
+            c.PurchasePrice, c.PurchaseDate);
+
+        var effectiveBookValue = c.BookValue > 0 ? c.BookValue : calculatedBookValue;
+
+        return new CarDto(
+            c.Id,
+            c.MakeId,
+            c.Make?.Name ?? string.Empty,
+            c.ModelId,
+            c.Model?.Name ?? string.Empty,
+            c.ManufactureYear,
+            c.Color,
+            c.PlateNumber,
+            c.BranchId,
+            c.Branch?.Name ?? string.Empty,
+            c.PurchaseDate,
+            c.PurchasePrice,
+            effectiveBookValue,
+            accumulatedDepr,
+            productiveAge,
+            c.ImagePath,
+            c.ChassisNumber,
+            c.EngineNumber,
+            c.Notes,
+            c.CreatedDate);
+    }
 
     public async Task<CustomApiResponse<PagedListModel<CarDto>>> GetCarsAsync(
         CarQueryParameters query, CancellationToken cancellationToken = default)
@@ -52,29 +85,19 @@ public class CarService(
         }
 
         var paged = await source.ToPagedListAsync(
-            c => new CarDto(
-                c.Id,
-                c.MakeId,
-                c.Make.Name,
-                c.ModelId,
-                c.Model.Name,
-                c.ManufactureYear,
-                c.Color,
-                c.PlateNumber,
-                c.BranchId,
-                c.Branch.Name,
-                c.PurchaseDate,
-                c.PurchasePrice,
-                c.ImagePath,
-                c.ChassisNumber,
-                c.EngineNumber,
-                c.Notes,
-                c.CreatedDate),
             query,
             nameof(Car.Id),
             cancellationToken);
 
-        return CustomApiResponse<PagedListModel<CarDto>>.Success(paged);
+        var dtos = paged.Data.Select(MapCarToDto).ToList();
+
+        return CustomApiResponse<PagedListModel<CarDto>>.Success(new PagedListModel<CarDto>
+        {
+            Data = dtos,
+            Length = paged.Length,
+            Page = paged.Page,
+            Limit = paged.Limit
+        });
     }
 
     public async Task<CustomApiResponse<CarDto>> GetCarByIdAsync(int id, CancellationToken cancellationToken = default)
@@ -91,26 +114,7 @@ public class CarService(
             return CustomApiResponse<CarDto>.NotFound(Msg.NotFound(Msg.Car));
         }
 
-        var dto = new CarDto(
-            car.Id,
-            car.MakeId,
-            car.Make.Name,
-            car.ModelId,
-            car.Model.Name,
-            car.ManufactureYear,
-            car.Color,
-            car.PlateNumber,
-            car.BranchId,
-            car.Branch.Name,
-            car.PurchaseDate,
-            car.PurchasePrice,
-            car.ImagePath,
-            car.ChassisNumber,
-            car.EngineNumber,
-            car.Notes,
-            car.CreatedDate);
-
-        return CustomApiResponse<CarDto>.Success(dto);
+        return CustomApiResponse<CarDto>.Success(MapCarToDto(car));
     }
 
     public async Task<CustomApiResponse<CarDto>> CreateCarAsync(
@@ -146,6 +150,8 @@ public class CarService(
         if (await context.Cars.AnyAsync(c => c.EngineNumber.ToLower() == engine.ToLower(), cancellationToken))
             return CustomApiResponse<CarDto>.Conflict(Msg.AlreadyExists(Msg.EngineNumber));
 
+        var (calcBookValue, _, _) = calculationService.CalculateCarBookValue(request.PurchasePrice, request.PurchaseDate);
+
         var car = new Car
         {
             MakeId = request.MakeId,
@@ -156,6 +162,7 @@ public class CarService(
             BranchId = request.BranchId,
             PurchaseDate = request.PurchaseDate.ToUniversalTime(),
             PurchasePrice = request.PurchasePrice,
+            BookValue = (request.BookValue.HasValue && request.BookValue.Value > 0) ? request.BookValue.Value : calcBookValue,
             ChassisNumber = chassis,
             EngineNumber = engine,
             Notes = request.Notes?.Trim(),
@@ -215,6 +222,8 @@ public class CarService(
         car.BranchId = request.BranchId;
         car.PurchaseDate = request.PurchaseDate.ToUniversalTime();
         car.PurchasePrice = request.PurchasePrice;
+        var (calcBookValue, _, _) = calculationService.CalculateCarBookValue(request.PurchasePrice, request.PurchaseDate);
+        car.BookValue = (request.BookValue.HasValue && request.BookValue.Value > 0) ? request.BookValue.Value : calcBookValue;
         car.ChassisNumber = chassis;
         car.EngineNumber = engine;
         car.Notes = request.Notes?.Trim();

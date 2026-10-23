@@ -127,7 +127,7 @@ meta:
         :columns="columns"
         :data="contractTypes"
         :loading="loading"
-        :scroll-x="600"
+        :scroll-x="750"
         :row-key="(row: ContractTypeDto) => row.id"
         :bordered="false"
         class="min-h-[220px]"

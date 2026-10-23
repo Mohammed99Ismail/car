@@ -337,7 +337,7 @@ meta:
         :columns="columns"
         :data="roles"
         :loading="loading"
-        :scroll-x="650"
+        :scroll-x="850"
         :bordered="false"
         class="min-h-[250px]"
       />

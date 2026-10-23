@@ -3,7 +3,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <Layout class="flex justify-center items-center h-100vh">
+  <div class="flex justify-center items-center h-100vh">
     <div class="error-message z-10">
       <img src="@/assets/images/404.svg" class="w-130" />
 
@@ -13,7 +13,7 @@ const { t } = useI18n()
 
       <BackHomeButton />
     </div>
-  </Layout>
+  </div>
 </template>
 
 <route lang="yaml">

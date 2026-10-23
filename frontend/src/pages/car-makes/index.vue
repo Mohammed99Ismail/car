@@ -336,7 +336,7 @@ meta:
         :columns="columns"
         :data="carMakes"
         :loading="loading"
-        :scroll-x="700"
+        :scroll-x="850"
         :row-key="(row: CarMakeDto) => row.id"
         :bordered="false"
         class="min-h-[280px]"

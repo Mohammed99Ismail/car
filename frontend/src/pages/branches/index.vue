@@ -291,7 +291,7 @@ meta:
         :columns="columns"
         :data="branches"
         :loading="loading"
-        :scroll-x="650"
+        :scroll-x="850"
         :row-key="(row: BranchDto) => row.id"
         :pagination="{
           page: queryParams.pageIndex,

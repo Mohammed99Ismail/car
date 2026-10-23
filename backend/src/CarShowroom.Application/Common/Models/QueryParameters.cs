@@ -6,7 +6,7 @@ namespace CarShowroom.Application.Common.Models;
 public class QueryParameters
 {
     /// <summary>Set The Maximum Page Size</summary>
-    private const int MAX_PAGE_SIZE = 100;
+    private const int MAX_PAGE_SIZE = 10000;
 
     /// <summary>Set the default Page size 10</summary>
     private int _pageSize = 10;

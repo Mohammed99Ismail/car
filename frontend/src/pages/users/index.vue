@@ -404,7 +404,7 @@ meta:
         :data="users"
         :loading="loading"
         :row-key="(row: UserDto) => row.id"
-        :scroll-x="800"
+        :scroll-x="1000"
         :pagination="{
           page: queryParams.pageIndex,
           pageSize: queryParams.pageSize,

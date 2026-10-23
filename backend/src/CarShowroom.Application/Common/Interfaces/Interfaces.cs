@@ -19,6 +19,9 @@ public interface IApplicationDbContext
     DbSet<Customer> Customers { get; }
     DbSet<Car> Cars { get; }
     DbSet<UserAttachment> UserAttachments { get; }
+    DbSet<Contract> Contracts { get; }
+    DbSet<ContractTermsConfig> ContractTermsConfigs { get; }
+    DbSet<SystemSetting> SystemSettings { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

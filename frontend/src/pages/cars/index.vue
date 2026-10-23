@@ -65,6 +65,7 @@ const formData = reactive<{
   branchId: number | null
   purchaseDate: number | null
   purchasePrice: number | null
+  bookValue: number | null
   imagePath: string | null
   chassisNumber: string
   engineNumber: string
@@ -78,11 +79,23 @@ const formData = reactive<{
   branchId: null,
   purchaseDate: Date.now(),
   purchasePrice: null,
+  bookValue: null,
   imagePath: null,
   chassisNumber: '',
   engineNumber: '',
   notes: null,
 })
+
+function calculateEstimatedBookValue(price: number | null, purchaseDateMs: number | null): number {
+  if (!price || price <= 0 || !purchaseDateMs) return 0
+  const purchaseDate = new Date(purchaseDateMs)
+  const now = new Date()
+  const diffDays = Math.max(0, (now.getTime() - purchaseDate.getTime()) / (1000 * 3600 * 24))
+  const diffYears = diffDays / 365.25
+  if (diffYears >= 4) return 1.00
+  const depr = price * 0.25 * diffYears
+  return Math.max(1.00, Number((price - depr).toFixed(2)))
+}
 
 const uploadingImage = ref(false)
 
@@ -96,6 +109,7 @@ const rules: FormRules = {
   branchId: [{ required: true, type: 'number', message: 'الفرع مطلوب', trigger: ['blur', 'change'] }],
   purchaseDate: [{ required: true, type: 'number', message: 'تاريخ الشراء مطلوب', trigger: ['blur', 'change'] }],
   purchasePrice: [{ required: true, type: 'number', message: 'سعر الشراء مطلوب', trigger: ['blur', 'input'] }],
+  bookValue: [{ type: 'number', min: 0, message: 'القيمة الدفترية يجب أن تكون أكبر من أو تساوي 0', trigger: ['blur', 'input'] }],
   chassisNumber: [{ required: true, message: 'رقم الشاسيه / الهيكل مطلوب', trigger: ['blur', 'input'] }],
   engineNumber: [{ required: true, message: 'رقم المحرك مطلوب', trigger: ['blur', 'input'] }],
 }
@@ -199,6 +213,7 @@ function openAddModal() {
     branchId: null,
     purchaseDate: Date.now(),
     purchasePrice: null,
+    bookValue: null,
     imagePath: null,
     chassisNumber: '',
     engineNumber: '',
@@ -228,6 +243,7 @@ async function openEditModal(car: CarDto) {
     branchId: car.branchId,
     purchaseDate: car.purchaseDate ? new Date(car.purchaseDate).getTime() : Date.now(),
     purchasePrice: car.purchasePrice,
+    bookValue: car.bookValue ?? null,
     imagePath: car.imagePath,
     chassisNumber: car.chassisNumber,
     engineNumber: car.engineNumber,
@@ -253,6 +269,7 @@ async function handleSave() {
         branchId: formData.branchId!,
         purchaseDate: new Date(formData.purchaseDate!).toISOString(),
         purchasePrice: Number(formData.purchasePrice),
+        bookValue: formData.bookValue !== null && formData.bookValue !== undefined ? Number(formData.bookValue) : null,
         chassisNumber: formData.chassisNumber.trim(),
         engineNumber: formData.engineNumber.trim(),
         notes: formData.notes?.trim() || null,
@@ -373,6 +390,24 @@ const columns: DataTableColumns<CarDto> = [
     minWidth: 130,
     render(row) {
       return `${row.purchasePrice.toLocaleString('en-US')} ${t('common.currency')}`
+    },
+  },
+  {
+    title: t('cars.bookValue'),
+    key: 'bookValue',
+    minWidth: 140,
+    render(row) {
+      return h(
+        NTag,
+        {
+          type: (row.bookValue ?? 0) <= 1 ? 'warning' : 'success',
+          bordered: false,
+          class: 'font-mono font-bold',
+        },
+        {
+          default: () => `${(row.bookValue ?? 0).toLocaleString('en-US')} ${t('common.currency')}`,
+        },
+      )
     },
   },
   {
@@ -541,7 +576,7 @@ meta:
         :data="cars"
         :loading="loading"
         :row-key="(row: CarDto) => row.id"
-        :scroll-x="1150"
+        :scroll-x="1450"
         :pagination="{
           page: queryParams.pageIndex,
           pageSize: queryParams.pageSize,
@@ -649,6 +684,39 @@ meta:
                 {{ t('common.currency') }}
               </template>
             </n-input-number>
+          </n-form-item>
+
+          <!-- 9. Book Value (Editable & Auto-calculated) -->
+          <n-form-item path="bookValue" :label="t('cars.bookValue')">
+            <div class="space-y-1 w-full">
+              <n-input-number
+                id="car-form-bookvalue"
+                v-model:value="formData.bookValue"
+                :min="0"
+                :precision="2"
+                class="w-full"
+                placeholder="0.00 (تلقائي إن تُرِك فارغاً)"
+              >
+                <template #suffix>
+                  {{ t('common.currency') }}
+                </template>
+              </n-input-number>
+              <div class="flex items-center justify-between text-[11px] text-slate-500 pt-0.5">
+                <span>
+                  المحسوبة:
+                  <strong class="text-blue-600 font-mono">
+                    {{ calculateEstimatedBookValue(formData.purchasePrice, formData.purchaseDate) }} {{ t('common.currency') }}
+                  </strong>
+                </span>
+                <button
+                  type="button"
+                  class="text-blue-600 hover:text-blue-700 underline cursor-pointer font-medium"
+                  @click="formData.bookValue = calculateEstimatedBookValue(formData.purchasePrice, formData.purchaseDate)"
+                >
+                  تطبيق
+                </button>
+              </div>
+            </div>
           </n-form-item>
 
           <!-- 9. Chassis Number -->

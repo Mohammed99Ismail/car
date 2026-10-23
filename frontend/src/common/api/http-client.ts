@@ -24,6 +24,7 @@ function httpClient(baseApi: string | null = null): AxiosInstance {
 
   const client = axios.create({
     baseURL,
+    timeout: 20000,
     headers: {
       'Content-Type': 'application/json',
     },
