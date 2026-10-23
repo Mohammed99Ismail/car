@@ -41,9 +41,9 @@ watch(
 </script>
 
 <template>
-  <n-layout has-sider position="absolute">
+  <n-layout has-sider position="absolute" class="w-full max-w-full overflow-hidden">
     <Sidebar />
-    <n-layout :native-scrollbar="false" position="static">
+    <n-layout :native-scrollbar="false" position="static" class="w-full max-w-full overflow-hidden">
       <div class="main-content flex-1 dark:bg-slate-800 dark:text-white my-2">
         <Navbar />
         <div class="relative h-full">

@@ -15,9 +15,6 @@ export default defineConfig({
   server: {
     port: 7000,
     host: true,
-    hmr: {
-      host: 'localhost',
-    },
     proxy: {
       '/api': {
         target: 'http://localhost:5041',
@@ -28,6 +25,20 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
+  },
+  optimizeDeps: {
+    include: [
+      'vue',
+      'vue-router',
+      'pinia',
+      'vue-i18n',
+      '@vueuse/core',
+      'naive-ui',
+      '@vicons/fluent',
+      'axios',
+      'xlsx',
+      'echarts',
+    ],
   },
   assetsInclude: ['**/*.yml', '**/*.yaml'],
   resolve: {
