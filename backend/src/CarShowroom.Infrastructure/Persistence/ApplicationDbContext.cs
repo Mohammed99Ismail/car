@@ -22,6 +22,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Customer> Customers => Set<Customer>();
     public DbSet<Car> Cars => Set<Car>();
     public DbSet<UserAttachment> UserAttachments => Set<UserAttachment>();
+    public DbSet<Contract> Contracts => Set<Contract>();
+    public DbSet<ContractTermsConfig> ContractTermsConfigs => Set<ContractTermsConfig>();
+    public DbSet<SystemSetting> SystemSettings => Set<SystemSetting>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

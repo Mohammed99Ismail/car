@@ -36,6 +36,9 @@ public static class DependencyInjection
         services.AddScoped<ICustomerService, CustomerService>();
         services.AddScoped<ICarService, CarService>();
         services.AddScoped<CarShowroom.Application.Features.Profile.IProfileService, CarShowroom.Application.Features.Profile.ProfileService>();
+        services.AddScoped<CarShowroom.Application.Features.Contracts.Services.IContractCalculationService, CarShowroom.Application.Features.Contracts.Services.ContractCalculationService>();
+        services.AddScoped<CarShowroom.Application.Features.Contracts.Services.IContractService, CarShowroom.Application.Features.Contracts.Services.ContractService>();
+        services.AddScoped<CarShowroom.Application.Features.Settings.Services.ISettingsService, CarShowroom.Application.Features.Settings.Services.SettingsService>();
 
         return services;
     }

@@ -10,7 +10,10 @@ public class ShowroomConfigurations :
     IEntityTypeConfiguration<ContractType>,
     IEntityTypeConfiguration<Branch>,
     IEntityTypeConfiguration<Customer>,
-    IEntityTypeConfiguration<Car>
+    IEntityTypeConfiguration<Car>,
+    IEntityTypeConfiguration<ContractTermsConfig>,
+    IEntityTypeConfiguration<Contract>,
+    IEntityTypeConfiguration<SystemSetting>
 {
     public void Configure(EntityTypeBuilder<CarMake> builder)
     {
@@ -73,6 +76,7 @@ public class ShowroomConfigurations :
         builder.HasIndex(c => c.EngineNumber).IsUnique();
 
         builder.Property(c => c.PurchasePrice).HasPrecision(18, 2);
+        builder.Property(c => c.BookValue).HasPrecision(18, 2);
         builder.Property(c => c.ImagePath).HasMaxLength(500);
         builder.Property(c => c.Notes).HasMaxLength(1000);
 
@@ -91,4 +95,102 @@ public class ShowroomConfigurations :
             .HasForeignKey(c => c.BranchId)
             .OnDelete(DeleteBehavior.Restrict);
     }
+
+    public void Configure(EntityTypeBuilder<ContractTermsConfig> builder)
+    {
+        builder.HasKey(c => c.Id);
+        builder.Property(c => c.InsurancePercentage).HasPrecision(5, 2);
+        builder.Property(c => c.MaintenancePercentage).HasPrecision(5, 2);
+        builder.Property(c => c.ReplacementCarPercentage).HasPrecision(5, 2);
+        builder.Property(c => c.AdminFeesPercentage).HasPrecision(5, 2);
+        builder.Property(c => c.AnnualDepreciationPercentage).HasPrecision(5, 2);
+    }
+
+    public void Configure(EntityTypeBuilder<Contract> builder)
+    {
+        builder.HasKey(c => c.Id);
+
+        builder.Property(c => c.ContractNumber).HasMaxLength(50).IsRequired();
+        builder.HasIndex(c => c.ContractNumber).IsUnique();
+
+        builder.Property(c => c.Status).HasMaxLength(30).IsRequired();
+        builder.Property(c => c.Notes).HasMaxLength(2000);
+        builder.Property(c => c.YearlyBreakdownJson).HasColumnType("text");
+
+        // Precisions for financials
+        builder.Property(c => c.PeriodMonths).HasPrecision(18, 2);
+        builder.Property(c => c.TotalPrice).HasPrecision(18, 2);
+        builder.Property(c => c.PaidPrice).HasPrecision(18, 2);
+        builder.Property(c => c.RemainingPrice).HasPrecision(18, 2);
+        builder.Property(c => c.MonthlyRent).HasPrecision(18, 2);
+        builder.Property(c => c.DownPayment).HasPrecision(18, 2);
+        builder.Property(c => c.ExcessMileageFee).HasPrecision(18, 2);
+        builder.Property(c => c.ExcessMileageCost).HasPrecision(18, 2);
+
+        builder.Property(c => c.InsurancePercentage).HasPrecision(5, 2);
+        builder.Property(c => c.MaintenancePercentage).HasPrecision(5, 2);
+        builder.Property(c => c.ReplacementCarPercentage).HasPrecision(5, 2);
+        builder.Property(c => c.AdminFeesPercentage).HasPrecision(5, 2);
+        builder.Property(c => c.AnnualDepreciationPercentage).HasPrecision(5, 2);
+
+        builder.Property(c => c.CarPurchasePriceSnapshot).HasPrecision(18, 2);
+        builder.Property(c => c.CarBookValueSnapshot).HasPrecision(18, 2);
+        builder.Property(c => c.CarAccumulatedDepreciationSnapshot).HasPrecision(18, 2);
+        builder.Property(c => c.CarProductiveAgeSnapshot).HasPrecision(18, 2);
+
+        builder.Property(c => c.TotalEstimatedRevenue).HasPrecision(18, 2);
+        builder.Property(c => c.TotalEstimatedCost).HasPrecision(18, 2);
+        builder.Property(c => c.ExpectedProfit).HasPrecision(18, 2);
+        builder.Property(c => c.MonthlyCompanyProfit).HasPrecision(18, 2);
+        builder.Property(c => c.AdjustedMonthlyRent).HasPrecision(18, 2);
+        builder.Property(c => c.DownPaymentMonthlyDiscount).HasPrecision(18, 2);
+
+        // Tax specifics
+        builder.Property(c => c.IsTaxApplied).HasDefaultValue(true);
+        builder.Property(c => c.TaxPercentage).HasPrecision(5, 2);
+        builder.Property(c => c.MonthlyTaxAmount).HasPrecision(18, 2);
+        builder.Property(c => c.MonthlyRentWithTax).HasPrecision(18, 2);
+        builder.Property(c => c.TotalTaxAmount).HasPrecision(18, 2);
+        builder.Property(c => c.TotalPriceWithTax).HasPrecision(18, 2);
+
+        builder.HasOne(c => c.ContractType)
+            .WithMany()
+            .HasForeignKey(c => c.ContractTypeId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(c => c.Car)
+            .WithMany()
+            .HasForeignKey(c => c.CarId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(c => c.Branch)
+            .WithMany()
+            .HasForeignKey(c => c.BranchId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(c => c.Customer)
+            .WithMany()
+            .HasForeignKey(c => c.CustomerId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasOne(c => c.User)
+            .WithMany()
+            .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.SetNull);
+    }
+
+    public void Configure(EntityTypeBuilder<SystemSetting> builder)
+    {
+        builder.HasKey(s => s.Id);
+        builder.Property(s => s.Key).HasMaxLength(100).IsRequired();
+        builder.HasIndex(s => s.Key).IsUnique();
+        builder.Property(s => s.NameAr).HasMaxLength(200).IsRequired();
+        builder.Property(s => s.NameEn).HasMaxLength(200).IsRequired();
+        builder.Property(s => s.Value).HasMaxLength(1000).IsRequired();
+        builder.Property(s => s.DataType).HasMaxLength(50).IsRequired();
+        builder.Property(s => s.Category).HasMaxLength(100).IsRequired();
+        builder.Property(s => s.DescriptionAr).HasMaxLength(500);
+        builder.Property(s => s.DescriptionEn).HasMaxLength(500);
+    }
 }
+

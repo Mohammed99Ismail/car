@@ -83,6 +83,11 @@ namespace CarShowroom.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<decimal>("BookValue")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("book_value");
+
                     b.Property<int>("BranchId")
                         .HasColumnType("integer")
                         .HasColumnName("branch_id");
@@ -237,6 +242,307 @@ namespace CarShowroom.Infrastructure.Migrations
                         .HasDatabaseName("ix_car_models_make_id_name");
 
                     b.ToTable("car_models", (string)null);
+                });
+
+            modelBuilder.Entity("CarShowroom.Domain.Entities.Contract", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ActualEndMileage")
+                        .HasColumnType("integer")
+                        .HasColumnName("actual_end_mileage");
+
+                    b.Property<decimal>("AdjustedMonthlyRent")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("adjusted_monthly_rent");
+
+                    b.Property<decimal?>("AdminFeesPercentage")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("numeric(5,2)")
+                        .HasColumnName("admin_fees_percentage");
+
+                    b.Property<decimal?>("AnnualDepreciationPercentage")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("numeric(5,2)")
+                        .HasColumnName("annual_depreciation_percentage");
+
+                    b.Property<int>("BranchId")
+                        .HasColumnType("integer")
+                        .HasColumnName("branch_id");
+
+                    b.Property<decimal>("CarAccumulatedDepreciationSnapshot")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("car_accumulated_depreciation_snapshot");
+
+                    b.Property<decimal>("CarBookValueSnapshot")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("car_book_value_snapshot");
+
+                    b.Property<int>("CarId")
+                        .HasColumnType("integer")
+                        .HasColumnName("car_id");
+
+                    b.Property<decimal>("CarProductiveAgeSnapshot")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("car_productive_age_snapshot");
+
+                    b.Property<decimal>("CarPurchasePriceSnapshot")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("car_purchase_price_snapshot");
+
+                    b.Property<string>("ContractNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("contract_number");
+
+                    b.Property<int>("ContractTypeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("contract_type_id");
+
+                    b.Property<int?>("CreatedByUserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_date");
+
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("integer")
+                        .HasColumnName("customer_id");
+
+                    b.Property<decimal?>("DownPayment")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("down_payment");
+
+                    b.Property<decimal>("DownPaymentMonthlyDiscount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("down_payment_monthly_discount");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("end_date");
+
+                    b.Property<decimal?>("ExcessMileageCost")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("excess_mileage_cost");
+
+                    b.Property<decimal?>("ExcessMileageFee")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("excess_mileage_fee");
+
+                    b.Property<decimal>("ExpectedProfit")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("expected_profit");
+
+                    b.Property<decimal?>("InsurancePercentage")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("numeric(5,2)")
+                        .HasColumnName("insurance_percentage");
+
+                    b.Property<bool>("IsTaxApplied")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_tax_applied");
+
+                    b.Property<int?>("LastModifiedByUserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("last_modified_by_user_id");
+
+                    b.Property<DateTime>("LastModifiedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_modified_date");
+
+                    b.Property<decimal?>("MaintenancePercentage")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("numeric(5,2)")
+                        .HasColumnName("maintenance_percentage");
+
+                    b.Property<int?>("MileageLimit")
+                        .HasColumnType("integer")
+                        .HasColumnName("mileage_limit");
+
+                    b.Property<decimal>("MonthlyCompanyProfit")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("monthly_company_profit");
+
+                    b.Property<decimal?>("MonthlyRent")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("monthly_rent");
+
+                    b.Property<decimal>("MonthlyRentWithTax")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("monthly_rent_with_tax");
+
+                    b.Property<decimal>("MonthlyTaxAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("monthly_tax_amount");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)")
+                        .HasColumnName("notes");
+
+                    b.Property<decimal>("PaidPrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("paid_price");
+
+                    b.Property<int>("PeriodDays")
+                        .HasColumnType("integer")
+                        .HasColumnName("period_days");
+
+                    b.Property<decimal>("PeriodMonths")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("period_months");
+
+                    b.Property<decimal>("RemainingPrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("remaining_price");
+
+                    b.Property<decimal?>("ReplacementCarPercentage")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("numeric(5,2)")
+                        .HasColumnName("replacement_car_percentage");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("start_date");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("status");
+
+                    b.Property<decimal>("TaxPercentage")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("numeric(5,2)")
+                        .HasColumnName("tax_percentage");
+
+                    b.Property<decimal>("TotalEstimatedCost")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("total_estimated_cost");
+
+                    b.Property<decimal>("TotalEstimatedRevenue")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("total_estimated_revenue");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("total_price");
+
+                    b.Property<decimal>("TotalPriceWithTax")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("total_price_with_tax");
+
+                    b.Property<decimal>("TotalTaxAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("total_tax_amount");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.Property<string>("YearlyBreakdownJson")
+                        .HasColumnType("text")
+                        .HasColumnName("yearly_breakdown_json");
+
+                    b.HasKey("Id")
+                        .HasName("pk_contracts");
+
+                    b.HasIndex("BranchId")
+                        .HasDatabaseName("ix_contracts_branch_id");
+
+                    b.HasIndex("CarId")
+                        .HasDatabaseName("ix_contracts_car_id");
+
+                    b.HasIndex("ContractNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ix_contracts_contract_number");
+
+                    b.HasIndex("ContractTypeId")
+                        .HasDatabaseName("ix_contracts_contract_type_id");
+
+                    b.HasIndex("CustomerId")
+                        .HasDatabaseName("ix_contracts_customer_id");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_contracts_user_id");
+
+                    b.ToTable("contracts", (string)null);
+                });
+
+            modelBuilder.Entity("CarShowroom.Domain.Entities.ContractTermsConfig", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("AdminFeesPercentage")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("numeric(5,2)")
+                        .HasColumnName("admin_fees_percentage");
+
+                    b.Property<decimal>("AnnualDepreciationPercentage")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("numeric(5,2)")
+                        .HasColumnName("annual_depreciation_percentage");
+
+                    b.Property<decimal>("InsurancePercentage")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("numeric(5,2)")
+                        .HasColumnName("insurance_percentage");
+
+                    b.Property<DateTime>("LastModifiedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_modified_date");
+
+                    b.Property<decimal>("MaintenancePercentage")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("numeric(5,2)")
+                        .HasColumnName("maintenance_percentage");
+
+                    b.Property<decimal>("ReplacementCarPercentage")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("numeric(5,2)")
+                        .HasColumnName("replacement_car_percentage");
+
+                    b.HasKey("Id")
+                        .HasName("pk_contract_terms_configs");
+
+                    b.ToTable("contract_terms_configs", (string)null);
                 });
 
             modelBuilder.Entity("CarShowroom.Domain.Entities.ContractType", b =>
@@ -527,6 +833,91 @@ namespace CarShowroom.Infrastructure.Migrations
                     b.ToTable("role_permissions", (string)null);
                 });
 
+            modelBuilder.Entity("CarShowroom.Domain.Entities.SystemSetting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("category");
+
+                    b.Property<int?>("CreatedByUserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_date");
+
+                    b.Property<string>("DataType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("data_type");
+
+                    b.Property<string>("DescriptionAr")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("description_ar");
+
+                    b.Property<string>("DescriptionEn")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("description_en");
+
+                    b.Property<bool>("IsReadOnly")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_read_only");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("key");
+
+                    b.Property<int?>("LastModifiedByUserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("last_modified_by_user_id");
+
+                    b.Property<DateTime>("LastModifiedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_modified_date");
+
+                    b.Property<string>("NameAr")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("name_ar");
+
+                    b.Property<string>("NameEn")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("name_en");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("value");
+
+                    b.HasKey("Id")
+                        .HasName("pk_system_settings");
+
+                    b.HasIndex("Key")
+                        .IsUnique()
+                        .HasDatabaseName("ix_system_settings_key");
+
+                    b.ToTable("system_settings", (string)null);
+                });
+
             modelBuilder.Entity("CarShowroom.Domain.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -719,6 +1110,52 @@ namespace CarShowroom.Infrastructure.Migrations
                         .HasConstraintName("fk_car_models_car_makes_make_id");
 
                     b.Navigation("Make");
+                });
+
+            modelBuilder.Entity("CarShowroom.Domain.Entities.Contract", b =>
+                {
+                    b.HasOne("CarShowroom.Domain.Entities.Branch", "Branch")
+                        .WithMany()
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_contracts_branches_branch_id");
+
+                    b.HasOne("CarShowroom.Domain.Entities.Car", "Car")
+                        .WithMany()
+                        .HasForeignKey("CarId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_contracts_cars_car_id");
+
+                    b.HasOne("CarShowroom.Domain.Entities.ContractType", "ContractType")
+                        .WithMany()
+                        .HasForeignKey("ContractTypeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_contracts_contract_types_contract_type_id");
+
+                    b.HasOne("CarShowroom.Domain.Entities.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_contracts_customers_customer_id");
+
+                    b.HasOne("CarShowroom.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_contracts_users_user_id");
+
+                    b.Navigation("Branch");
+
+                    b.Navigation("Car");
+
+                    b.Navigation("ContractType");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("CarShowroom.Domain.Entities.PasswordResetToken", b =>

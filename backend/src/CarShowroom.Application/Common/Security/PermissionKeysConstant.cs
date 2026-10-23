@@ -80,6 +80,20 @@ public static class PermissionKeysConstant
         public const string DELETE_KEY = "delete-car-models";
     }
 
+    public static class Contracts
+    {
+        public const string VIEW_KEY = "view-contracts";
+        public const string CREATE_KEY = "create-contracts";
+        public const string UPDATE_KEY = "update-contracts";
+        public const string DELETE_KEY = "delete-contracts";
+    }
+
+    public static class Settings
+    {
+        public const string VIEW_KEY = "view-settings";
+        public const string UPDATE_KEY = "update-settings";
+    }
+
     /// <summary>All permissions with stable Ids — used for seeding the permissions table.</summary>
     public static readonly IReadOnlyList<PermissionInfo> All =
     [
@@ -92,6 +106,9 @@ public static class PermissionKeysConstant
         new(60, ContractTypes.VIEW_KEY, "contract-types", "عرض أنواع العقود", "View contract types"),
         .. Crud(70, "car-makes", "أنواع وماركات السيارات", "Car makes", CarMakes.VIEW_KEY, CarMakes.CREATE_KEY, CarMakes.UPDATE_KEY, CarMakes.DELETE_KEY),
         .. Crud(80, "car-models", "موديلات السيارات", "Car models", CarModels.VIEW_KEY, CarModels.CREATE_KEY, CarModels.UPDATE_KEY, CarModels.DELETE_KEY),
+        .. Crud(90, "contracts", "العقود", "Contracts", Contracts.VIEW_KEY, Contracts.CREATE_KEY, Contracts.UPDATE_KEY, Contracts.DELETE_KEY),
+        new(110, Settings.VIEW_KEY, "settings", "عرض إعدادات النظام", "View system settings"),
+        new(111, Settings.UPDATE_KEY, "settings", "تعديل إعدادات النظام", "Update system settings"),
     ];
 
     private static PermissionInfo[] Crud(int baseId, string module, string ar, string en,

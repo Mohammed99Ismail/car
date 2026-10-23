@@ -224,6 +224,7 @@ menu:
   customers: Customers
   cars: Cars
   branches: Branches
+  contracts: Contracts
   contractTypes: Contract Types
   lookups: Lookups
   lookupsHub: Lookups Hub
@@ -409,6 +410,7 @@ cars:
   branch: Branch
   purchaseDate: Purchase Date
   purchasePrice: Purchase Price
+  bookValue: Book Value
   imagePath: Car Image
   uploadImage: Upload Car Image
   chassisNumber: Chassis Number
@@ -559,3 +561,87 @@ carModels:
   validations:
     nameRequired: Please enter model name
     makeRequired: Please select make
+
+contracts:
+  title: Contracts Management
+  subtitle: Intelligent rental, service, and lease-to-own contracts with real-time depreciation and comprehensive financial reports
+  list: Contracts List
+  createNew: Create New Contract
+  edit: Edit Contract
+  report: Comprehensive Financial Report
+  termsConfig: 4 Terms Configuration
+  termsConfigTitle: Annual Terms Depreciation Configuration
+  termsConfigSubtitle: Configure default annual percentages for the 4 terms (Insurance, Maintenance, Replacement Car, Admin Fees, and Depreciation Rate).
+  types:
+    service: Service Contract
+    shortTerm: Short-term / On-demand Rental
+    longTerm: Long-term Rental
+    leaseToOwn: Lease-to-Own / Rent-to-Own
+  stepType: 1. Contract Type
+  stepCar: 2. Vehicle & Book Value
+  stepBeneficiary: 3. Beneficiary & Branch
+  stepPeriod: 4. Duration & Dates
+  stepFinancials: 5. Financials & Rent
+  stepTerms: 6. 4 Terms Deduction Percentages
+  stepLiveCalc: Live Financial Calculation Summary
+  carSelectionPlaceholder: Search by plate letters/numbers, make, or model...
+  customerSelectionPlaceholder: Select customer...
+  userSelectionPlaceholder: Select showroom employee / user...
+  branchSelectionPlaceholder: Select branch...
+  contractNumber: Contract #
+  contractType: Contract Type
+  car: Car
+  beneficiary: Beneficiary
+  branch: Branch
+  plateNumber: Plate Number
+  purchaseDate: Purchase Date
+  purchasePrice: Purchase Price
+  bookValue: Book Value
+  accumulatedDepreciation: Accumulated Depreciation
+  productiveAge: Productive Age
+  years: yrs
+  months: mos
+  days: days
+  sar: SAR
+  km: km
+  startDate: Start Date
+  endDate: End Date
+  periodDays: Duration (Days)
+  periodMonths: Duration (Months)
+  contractYears: Contract Years (Depreciation)
+  monthlyRent: Monthly Rent
+  downPayment: Down Payment
+  mileageLimit: Mileage Limit
+  excessMileageFee: Excess Mileage Fee
+  actualEndMileage: Return Mileage
+  excessMileageCost: Excess Mileage Cost
+  insurance: Comprehensive Insurance
+  maintenance: Maintenance
+  replacementCar: Replacement Car
+  adminFees: Admin Fees
+  depreciation: Annual Depreciation
+  financialSummary: Financial Summary & Profits
+  totalRevenue: Total Estimated Revenue
+  totalCosts: Total Estimated Costs
+  expectedProfit: Expected Profit
+  monthlyProfit: Monthly Company Profit
+  adjustedRent: Adjusted Monthly Rent
+  downPaymentDiscount: Down Payment Monthly Discount
+  totalPrice: Total Price
+  paidPrice: Paid Price
+  remainingPrice: Remaining Price
+  status: Status
+  notes: Notes
+  active: Active
+  completed: Completed
+  cancelled: Cancelled
+  printReport: Print Report
+  downloadPdf: Download PDF
+  reportHeading: Car Rental Contract Report
+  showroomTitle: Car Showroom & Rental Company
+  deleteConfirm: Are you sure you want to delete this contract?
+  deleteSuccess: Contract deleted successfully
+  createSuccess: Contract created successfully
+  updateSuccess: Contract updated successfully
+  termsUpdateSuccess: Default percentages updated successfully
+

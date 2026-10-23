@@ -175,3 +175,144 @@ body.rtl .n-base-select-menu {
   direction: ltr;
   text-align: left;
 }
+
+// ---------------------------------------------------------------------------
+// Fix Naive UI Data Table horizontal scrolling in RTL & LTR
+// Ensures table body content, table header, and table elements expand to
+// the full natural content width (max-content), and at least 100% of container.
+// This ensures Naive UI's scrollbar container measures the true scrollWidth
+// and never clamps horizontal scrolling prematurely, allowing the scrollbar
+// thumb to reach the far left in Arabic and far right in English cleanly.
+// ---------------------------------------------------------------------------
+.n-data-table {
+  width: 100%;
+
+  .n-data-table-base-table-body {
+    .n-scrollbar-content {
+      min-width: 100% !important;
+      width: max-content !important;
+    }
+
+    .n-data-table-table {
+      min-width: 100% !important;
+      width: max-content !important;
+    }
+  }
+
+  .n-data-table-base-table-header {
+    .n-data-table-table {
+      min-width: 100% !important;
+      width: max-content !important;
+    }
+  }
+
+  .n-data-table-td,
+  .n-data-table-th {
+    white-space: nowrap;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Global Print Media Rules for Official Reports
+// ---------------------------------------------------------------------------
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm 10mm;
+  }
+
+  // 1. Completely hide all app layout chrome, sidebars, navbars, and buttons
+  .n-layout-sider,
+  .n-layout-sider-scroll-container,
+  aside,
+  nav,
+  header,
+  .navbar,
+  .n-page-header,
+  .logo-container,
+  .print\:hidden,
+  .no-print,
+  .dark-mode-container,
+  #theme-toggle,
+  .preloader,
+  .n-notification-container,
+  .n-message-container,
+  .n-modal-container {
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  // 2. Reset full app wrapper so document flows naturally across printed pages
+  html,
+  body {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: static !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .n-layout,
+  .n-layout--static-positioned,
+  .n-layout--absolute-positioned,
+  .n-layout-scroll-container,
+  .main-content,
+  .relative,
+  .n-scrollbar,
+  .n-scrollbar-container,
+  .n-scrollbar-content,
+  .md-container {
+    position: static !important;
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    transform: none !important;
+  }
+
+  // 3. Report container styles
+  #printable-report {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+  }
+
+  .break-inside-avoid,
+  .avoid-break {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

@@ -148,6 +148,7 @@ menu:
   cars: السيارات
   customers: العملاء
   branches: الفروع
+  contracts: العقود
   contractTypes: أنواع العقود
   lookups: البيانات المرجعية
   lookupsHub: لوحة القوائم المرجعية
@@ -179,6 +180,7 @@ cars:
   branch: الفرع الحالي
   purchaseDate: تاريخ الشراء
   purchasePrice: سعر الشراء
+  bookValue: القيمة الدفترية
   imagePath: صورة السيارة
   uploadImage: رفع صورة السيارة
   chassisNumber: رقم الشاصي / الهيكل
@@ -440,3 +442,85 @@ dashboard:
   rolesSubtitle: تحكم ديناميكي كامل في إنشاء الأدوار وتعديل صلاحيات كل دور بحرية، مع تفعيل وتعطيل حسابات المستخدمين وتعيين الأدوار بمرونة.
   adminRole: المسؤول
 
+contracts:
+  title: إدارة العقود
+  subtitle: عقود تأجير وخدمة وتمليك ذكية مع حسابات إهلاك لحظية وتقارير مالية تفصيلية
+  list: قائمة العقود
+  createNew: إنشاء عقد جديد
+  edit: تعديل العقد
+  report: التقرير المالي الشامل
+  termsConfig: إعدادات نسب البنود الأربعة
+  termsConfigTitle: إعدادات نسب بنود الإهلاك السنوية
+  termsConfigSubtitle: ضبط النسب المئوية الافتراضية للبنود الأربعة (التأمين، الصيانة، السيارة البديلة، المصاريف الإدارية، ونسبة الإهلاك) لتطبيقها تلقائياً على العقود الجديدة مع إمكانية التعديل اليدوي لكل عقد.
+  types:
+    service: عقد خدمة
+    shortTerm: عقد إيجار قصير الأجل (أو حسب الطلب)
+    longTerm: عقد إيجار طويل الأجل
+    leaseToOwn: عقد إيجار منتهي بالتمليك
+  stepType: 1. تحديد نوع العقد
+  stepCar: 2. اختيار السيارة والقيمة الدفترية
+  stepBeneficiary: 3. المستفيد والفرع
+  stepPeriod: 4. فترة العقد والتواريخ
+  stepFinancials: 5. البيانات المالية والإيجار
+  stepTerms: 6. نسب البنود الأربعة للإهلاك
+  stepLiveCalc: الملخص المالي والحسابات اللحظية
+  carSelectionPlaceholder: ابحث برقم اللوحة (حروف أو أرقام) أو الماركة أو الموديل...
+  customerSelectionPlaceholder: اختر العميل المستفيد...
+  userSelectionPlaceholder: اختر الموظف / مستخدم النظام المستفيد...
+  branchSelectionPlaceholder: اختر الفرع...
+  contractNumber: رقم العقد
+  contractType: نوع العقد
+  car: السيارة
+  beneficiary: المستفيد
+  branch: الفرع
+  plateNumber: رقم اللوحة
+  purchaseDate: تاريخ الشراء
+  purchasePrice: القيمة الشرائية
+  bookValue: القيمة الدفترية
+  accumulatedDepreciation: مجمع الإهلاك
+  productiveAge: العمر الإنتاجي
+  years: سنة
+  months: شهر
+  days: يوم
+  sar: ر.س
+  km: كم
+  startDate: تاريخ بداية العقد
+  endDate: تاريخ نهاية العقد
+  periodDays: المدة بالأيام
+  periodMonths: المدة بالشهور
+  contractYears: سنوات العقد للإهلاك
+  monthlyRent: قسط الإيجار الشهري
+  downPayment: الدفعة المقدمة
+  mileageLimit: الحد الأقصى للمسافة
+  excessMileageFee: رسوم الكيلومتر الزائد
+  actualEndMileage: قراءة العداد عند الإرجاع
+  excessMileageCost: إجمالي رسوم الكيلومترات الزائدة
+  insurance: التأمين الشامل
+  maintenance: الصيانة
+  replacementCar: سيارة بديلة
+  adminFees: مصاريف إدارية
+  depreciation: الإهلاك السنوي
+  financialSummary: الملخص المالي والأرباح
+  totalRevenue: إجمالي الإيرادات التقديرية
+  totalCosts: إجمالي التكاليف التقديرية
+  expectedProfit: الأرباح المتوقعة
+  monthlyProfit: الفائدة الشهرية للشركة
+  adjustedRent: الإيجار الشهري بعد خصم الدفعة
+  downPaymentDiscount: خصم الدفعة المقدمة شهرياً
+  totalPrice: إجمالي العقد
+  paidPrice: المدفوع
+  remainingPrice: المتبقي
+  status: الحالة
+  notes: الملاحظات
+  active: ساري
+  completed: مكتمل
+  cancelled: ملغي
+  printReport: طباعة التقرير
+  downloadPdf: تحميل PDF
+  reportHeading: تقرير عقد تأجير سيارة
+  showroomTitle: شركة معرض وتأجير السيارات
+  deleteConfirm: هل أنت متأكد من حذف هذا العقد؟
+  deleteSuccess: تم حذف العقد بنجاح
+  createSuccess: تم إنشاء العقد بنجاح
+  updateSuccess: تم تحديث بيانات العقد بنجاح
+  termsUpdateSuccess: تم تحديث النسب الافتراضية بنجاح
