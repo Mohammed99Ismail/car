@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import {
   Add24Regular as AddIcon,
-  Delete24Regular as DeleteIcon,
-  Edit24Regular as EditIcon,
   ArrowClockwise24Regular as RefreshIcon,
+  Delete24Regular as DeleteIcon,
+  DocumentTable24Regular as ExcelIcon,
+  Edit24Regular as EditIcon,
   Search24Regular as SearchIcon,
 } from '@vicons/fluent'
 import { useDebounceFn } from '@vueuse/core'
 import type { DataTableColumns, FormInst, FormRules } from 'naive-ui'
-import { NButton, NSpace, NTag } from 'naive-ui'
+import { NButton, NIcon, NSpace, NTag } from 'naive-ui'
+import ExportExcelModal from '~/components/common/ExportExcelModal.vue'
 import { ResultStatusEnum, isApiSuccess } from '~/models/ApiResponse'
 import type {
   CreateCustomerDto,
@@ -16,6 +18,7 @@ import type {
   UpdateCustomerDto,
 } from '~/models/Customer'
 import { useCustomerService } from '~/services/customer.service'
+import { exportToExcel } from '~/utils/excelExport'
 
 const { t } = useI18n()
 const dialog = useDialog()
@@ -32,6 +35,71 @@ const queryParams = reactive({
   pageSize: 10,
   search: '',
 })
+
+// Export Excel State
+const showExportModal = ref(false)
+const exporting = ref(false)
+
+const customerExcelColumns = [
+  { header: 'م', key: '#', width: 8 },
+  { header: 'اسم العميل', key: 'name', width: 28 },
+  { header: 'رقم الهوية الوطنية / الإقامة', key: 'nationalId', width: 24 },
+  { header: 'رقم الجوال', key: 'mobile', width: 20 },
+  { header: 'العنوان', key: 'address', width: 32 },
+  {
+    header: 'تاريخ التسجيل',
+    key: 'createdDate',
+    width: 20,
+    formatter: (val: string) => {
+      if (!val) return '—'
+      const d = new Date(val)
+      return isNaN(d.getTime()) ? val : d.toLocaleDateString('ar-EG')
+    },
+  },
+]
+
+async function handleExport({ scope, count, format = 'xlsx' }: { scope: 'all' | 'page' | 'custom'; count: number; format?: 'xlsx' | 'xlsm' }) {
+  exporting.value = true
+  try {
+    let exportData: CustomerDto[] = []
+
+    if (scope === 'page') {
+      exportData = [...customers.value]
+    } else {
+      // Fetch requested quantity matching current filter/search
+      const res = await customerService.getPaged({
+        pageIndex: 1,
+        pageSize: count,
+        search: queryParams.search || undefined,
+      })
+      if (isApiSuccess(res) && res.data) {
+        exportData = res.data.items
+      }
+    }
+
+    if (!exportData || exportData.length === 0) {
+      message.warning('لا توجد بيانات عملاء مطابقة للتصدير')
+      return
+    }
+
+    const today = new Date().toISOString().slice(0, 10)
+    exportToExcel({
+      filename: `قائمة_العملاء_${today}`,
+      sheetName: 'العملاء',
+      format,
+      columns: customerExcelColumns,
+      data: exportData,
+    })
+
+    message.success(`تم تصدير ${exportData.length} عميل إلى ملف .${format} بنجاح`)
+    showExportModal.value = false
+  } catch (err) {
+    console.error('Error exporting customers to Excel:', err)
+    message.error('حدث خطأ أثناء تصدير ملف الإكسيل للعملاء')
+  } finally {
+    exporting.value = false
+  }
+}
 
 // Modal & Form State
 const showModal = ref(false)
@@ -170,6 +238,7 @@ const columns: DataTableColumns<CustomerDto> = [
   {
     title: t('customers.name'),
     key: 'name',
+    minWidth: 160,
     render(row) {
       return h('div', { class: 'font-semibold text-slate-800 dark:text-white' }, row.name)
     },
@@ -177,6 +246,7 @@ const columns: DataTableColumns<CustomerDto> = [
   {
     title: t('customers.nationalId'),
     key: 'nationalId',
+    minWidth: 140,
     render(row) {
       return h(
         NTag,
@@ -188,6 +258,7 @@ const columns: DataTableColumns<CustomerDto> = [
   {
     title: t('customers.mobile'),
     key: 'mobile',
+    minWidth: 140,
     render(row) {
       return h('div', { dir: 'ltr', class: 'font-mono text-left' }, row.mobile)
     },
@@ -195,6 +266,7 @@ const columns: DataTableColumns<CustomerDto> = [
   {
     title: t('customers.address'),
     key: 'address',
+    minWidth: 200,
   },
   {
     title: t('common.actions'),
@@ -280,6 +352,16 @@ meta:
           <template #icon><RefreshIcon class="w-4 h-4" /></template>
           {{ t('common.refresh') }}
         </n-button>
+        <n-button
+          secondary
+          class="!text-emerald-700 dark:!text-emerald-400 !border-emerald-300 dark:!border-emerald-700 hover:!bg-emerald-50 dark:hover:!bg-emerald-950/40"
+          @click="showExportModal = true"
+        >
+          <template #icon>
+            <n-icon><ExcelIcon class="w-4 h-4 text-emerald-600 dark:text-emerald-400" /></n-icon>
+          </template>
+          تصدير إكسيل
+        </n-button>
         <n-button v-can="'Customers.Create'" type="primary" @click="openAddModal">
           <template #icon><AddIcon class="w-5 h-5" /></template>
           {{ t('customers.create') }}
@@ -308,7 +390,7 @@ meta:
         :columns="columns"
         :data="customers"
         :loading="loading"
-        :scroll-x="750"
+        :scroll-x="900"
         :row-key="(row: CustomerDto) => row.id"
         :pagination="{
           page: queryParams.pageIndex,
@@ -372,5 +454,15 @@ meta:
         </div>
       </template>
     </n-modal>
+
+    <!-- Excel Export Modal -->
+    <ExportExcelModal
+      v-model:show="showExportModal"
+      title="تصدير قائمة العملاء إلى إكسيل (Excel)"
+      :total-count="totalCount"
+      :current-page-count="customers.length"
+      :loading="exporting"
+      @export="handleExport"
+    />
   </div>
 </template>
