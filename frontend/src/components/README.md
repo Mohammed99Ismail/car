@@ -1,10 +1,23 @@
-## Components
+# مكونات النظام النشطة (Active System Components)
 
-Components in this dir will be auto-registered and on-demand, powered by [`unplugin-vue-components`](https://github.com/antfu/unplugin-vue-components).
+يحتوي هذا المجلد حصراً على المكونات المستخدمة فعلياً في نظام إدارة معرض السيارات (Car Showroom Management System).
 
+تم فصل كافة مكونات قالب Yummy غير المستخدمة إلى المجلد المرجعي: [`src/old/components/`](../old/components/).
 
-### Icons
+---
 
-You can use icons from almost any icon sets by the power of [Iconify](https://iconify.design/).
+## هيكل المكونات (Component Structure)
 
-It will only bundle the icons you use. Check out [`unplugin-icons`](https://github.com/antfu/unplugin-icons) for more details.
+- **`Navbar/`**: شريط التنقل العلوي، معلومات المستخدم، الإشعارات، وزر تغيير الثيم.
+- **`Profile/`**: مكونات الملف الشخصي وتعديل الحساب.
+- **`common/`**: المكونات العامة المشتركة بين صفحات النظام:
+  - `ExportExcelModal.vue`: نافذة تصدير بيانات الجداول (العملاء، العقود) إلى ملف Excel مع خيارات التصفية والتحكم في عدد السجلات.
+- **`shared/`**: المكونات الهيكلية المشتركة:
+  - `Sidebar.vue`: القائمة الجانبية للنظام.
+  - `SidebarMenu.vue`: عناصر شجرة القوائم والروابط.
+  - `DarkModeContainer.vue`: حاوية وتأثيرات الوضع الليلي المتوافقة مع كافة الشاشات.
+  - `LookupSelect.vue`: حقل اختيار بيانات الجداول المرجعية (Lookups).
+  - `LookupsNav.vue`: شريط التبويبات والتنقل الخاص بالجداول المرجعية.
+- **`CustomIcons/`**: الأيقونات المخصصة للنظام.
+- **`CustomizeDialog/`**: نافذة تخصيص إعدادات العرض والألوان.
+- **`Site.vue`**: الحاوية الرئيسية للتخطيط.

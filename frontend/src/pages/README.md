@@ -1,20 +1,25 @@
-## File-based Routing
+# صفحات النظام النشطة (Active System Pages)
 
-Routes will be auto-generated for Vue files in this dir with the same file structure.
-Check out [`vite-plugin-pages`](https://github.com/hannoeru/vite-plugin-pages) for more details.
+يحتوي هذا المجلد حصراً على صفحات نظام إدارة معرض السيارات (Car Showroom Management System).
 
-### Path Aliasing
+تم فصل كافة صفحات نموذج Yummy غير المستخدمة إلى المجلد المرجعي: [`src/old/pages/`](../old/pages/).
 
-`~/` is aliased to `./src/` folder.
+---
 
-For example, instead of having
+## أقسام وصفحات النظام (System Sections)
 
-```ts
-import { isDark } from '../../../../composables'
-```
-
-now, you can use
-
-```ts
-import { isDark } from '~/composables'
-```
+- **`index.vue`**: لوحة التحكم الرئيسية (Dashboard) وإحصائيات النظام.
+- **`cars/`**: إدارة أسطول السيارات (قائمة السيارات، إضافة، تعديل، فحص الحالة).
+- **`contracts/`**: إدارة العقود (عقود الإيجار، البيع، تقارير العقود، الطباعة، وتصدير Excel).
+- **`contract-types/`**: أنواع ونماذج العقود.
+- **`Customers/`**: إدارة العملاء وبياناتهم وتصدير Excel.
+- **`branches/`**: إدارة الفروع.
+- **`car-makes/`**: الشركات المصنعة للسيارات (Marques).
+- **`car-models/`**: موديلات وفئات السيارات.
+- **`lookups/`**: إدارة الجداول المرجعية وتصنيفات النظام.
+- **`roles/`**: إدارة الأدوار والصلاحيات.
+- **`users/`**: إدارة مستخدمي النظام وموظفي الفروع.
+- **`settings/`**: إعدادات النظام العامة (نسبة الضريبة، العملة، إلخ).
+- **`Account/`**: إعدادات الحساب الشخصي وتسجيل الدخول.
+- **`Error.vue` & `[...all].vue`**: صفحات معالجة الخطأ 404.
+- **`Maintenance.vue`**: صفحة وضع الصيانة.
