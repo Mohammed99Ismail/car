@@ -1,6 +1,15 @@
 {
-  "appName": "إدارة معرض وتأجير السيارات",
-  "companyName": "شركة معرض وتأجير السيارات",
-  "subTitle": "المملكة العربية السعودية • سجل تجاري معتمد • شبكة الفروع وخدمات الأسطول",
+  "appName": {
+    "ar": "إدارة معرض وتأجير السيارات",
+    "en": "Car Showroom & Rental Management"
+  },
+  "companyName": {
+    "ar": "شركة معرض وتأجير السيارات",
+    "en": "Car Showroom & Rental Company"
+  },
+  "subTitle": {
+    "ar": "المملكة العربية السعودية • سجل تجاري معتمد • شبكة الفروع وخدمات الأسطول",
+    "en": "Kingdom of Saudi Arabia • Certified Commercial Registration • Fleet & Branch Network"
+  },
   "logo": "logo.png"
 }

@@ -48,10 +48,10 @@ const formData = reactive<{
   permissionIds: [],
 })
 
-const rules: FormRules = {
-  nameAr: [{ required: true, message: 'الاسم بالعربية مطلوب', trigger: ['blur', 'input'] }],
-  nameEn: [{ required: true, message: 'Name in English is required', trigger: ['blur', 'input'] }],
-}
+const rules = computed<FormRules>(() => ({
+  nameAr: [{ required: true, message: t('roles.validations.nameArRequired'), trigger: ['blur', 'input'] }],
+  nameEn: [{ required: true, message: t('roles.validations.nameEnRequired'), trigger: ['blur', 'input'] }],
+}))
 
 // All flat permissions list for select/deselect all
 const allPermissionIds = computed<number[]>(() => {
@@ -218,7 +218,7 @@ const columns = computed<DataTableColumns<RoleDto>>(() => [
           h('div', { class: 'text-xs text-slate-400 font-mono' }, secondaryName),
         ]),
         row.isSystem
-          ? h(NTag, { type: 'warning', size: 'small', bordered: false }, { default: () => 'نظام' })
+          ? h(NTag, { type: 'warning', size: 'small', bordered: false }, { default: () => t('roles.systemTag') })
           : null,
       ])
     },
@@ -231,19 +231,19 @@ const columns = computed<DataTableColumns<RoleDto>>(() => [
       return h(
         NTag,
         { type: 'info', bordered: false, class: 'font-mono' },
-        { default: () => `${row.permissionsCount} صلاحية` },
+        { default: () => t('roles.permissionsUnit', { count: row.permissionsCount }) },
       )
     },
   },
   {
-    title: 'عدد المستخدمين',
+    title: t('roles.usersCount'),
     key: 'usersCount',
     width: 130,
     render(row) {
       return h(
         NTag,
         { type: 'default', bordered: false },
-        { default: () => `${row.usersCount} مستخدم` },
+        { default: () => t('roles.usersUnit', { count: row.usersCount }) },
       )
     },
   },
@@ -360,12 +360,12 @@ meta:
           require-mark-placement="right-hanging"
         >
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            <n-form-item path="nameAr" label="الاسم (بالعربية)">
-              <n-input id="role-name-ar" v-model:value="formData.nameAr" placeholder="مثال: مدير المبيعات" autofocus />
+            <n-form-item path="nameAr" :label="t('roles.nameAr')">
+              <n-input id="role-name-ar" v-model:value="formData.nameAr" :placeholder="t('roles.nameArPlaceholder')" autofocus />
             </n-form-item>
 
-            <n-form-item path="nameEn" label="Name (English)">
-              <n-input id="role-name-en" v-model:value="formData.nameEn" placeholder="e.g. Sales Manager" dir="ltr" />
+            <n-form-item path="nameEn" :label="t('roles.nameEn')">
+              <n-input id="role-name-en" v-model:value="formData.nameEn" :placeholder="t('roles.nameEnPlaceholder')" dir="ltr" />
             </n-form-item>
           </div>
 
@@ -376,11 +376,11 @@ meta:
                 <h3 class="font-bold flex items-center gap-2">
                   <span>🔑</span> {{ t('roles.permissions') }}
                   <n-tag size="small" type="primary" round>
-                    {{ formData.permissionIds.length }} مختارة
+                    {{ t('roles.selectedCount', { count: formData.permissionIds.length }) }}
                   </n-tag>
                 </h3>
                 <p class="text-xs text-slate-400 mt-1">
-                  حدد الصلاحيات المطلوبة لهذا الدور بدقة
+                  {{ t('roles.permissionsHelp') }}
                 </p>
               </div>
 
@@ -412,7 +412,7 @@ meta:
                     📁 {{ mod.module }}
                   </span>
                   <n-button size="tiny" text type="primary" @click="toggleModulePermissions(mod)">
-                    تحديد / إلغاء الوحدة
+                    {{ t('roles.toggleModule') }}
                   </n-button>
                 </div>
 

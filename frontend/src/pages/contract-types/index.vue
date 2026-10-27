@@ -9,7 +9,7 @@ import { isApiSuccess } from '~/models/ApiResponse'
 import type { ContractTypeDto } from '~/models/ContractType'
 import { useContractTypeService } from '~/services/contract-type.service'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const contractTypeService = useContractTypeService()
 
 const contractTypes = ref<ContractTypeDto[]>([])
@@ -29,7 +29,7 @@ async function loadContractTypes() {
   }
 }
 
-const columns: DataTableColumns<ContractTypeDto> = [
+const columns = computed<DataTableColumns<ContractTypeDto>>(() => [
   {
     title: '#',
     key: 'id',
@@ -43,7 +43,7 @@ const columns: DataTableColumns<ContractTypeDto> = [
     },
   },
   {
-    title: 'نوع العقد (عربي)',
+    title: t('contractTypes.nameAr'),
     key: 'nameAr',
     render(row) {
       return h('div', { class: 'font-bold text-slate-800 dark:text-white text-base flex items-center gap-2' }, [
@@ -53,25 +53,25 @@ const columns: DataTableColumns<ContractTypeDto> = [
     },
   },
   {
-    title: 'Contract Type (English)',
+    title: t('contractTypes.nameEn'),
     key: 'nameEn',
     render(row) {
       return h('div', { class: 'font-mono font-medium text-slate-600 dark:text-slate-300' }, row.nameEn)
     },
   },
   {
-    title: 'النوع',
+    title: t('contractTypes.type'),
     key: 'type',
-    width: 130,
+    width: 140,
     render() {
       return h(
         NTag,
         { type: 'warning', bordered: false, class: 'rounded-lg font-medium' },
-        { default: () => 'مرجعي ثابت' },
+        { default: () => t('contractTypes.fixedLookup') },
       )
     },
   },
-]
+])
 
 onMounted(() => {
   loadContractTypes()
@@ -99,7 +99,7 @@ meta:
           {{ t('menu.contractTypes') }}
         </h1>
         <p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5 ms-1">
-          أنواع العقود المعتمدة في النظام (إيجار يومي، أسبوعي، شهري، وبيع معرض) للقراءة فقط
+          {{ t('contractTypes.subtitle') }}
         </p>
       </div>
 
@@ -117,7 +117,7 @@ meta:
         <InfoIcon class="w-5 h-5 text-blue-500" />
       </template>
       <div class="text-sm font-medium">
-        هذا الجدول مرجعي للقراءة فقط بدون عمليات تعديل أو حذف لضمان سلامة العقود المسجلة بالمعرض.
+        {{ t('contractTypes.readOnlyAlert') }}
       </div>
     </n-alert>
 

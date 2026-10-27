@@ -6,6 +6,7 @@ import {
   Search24Regular as SearchIcon,
   Copy24Regular as CopyIcon,
   Checkmark24Regular as CheckIcon,
+  Sparkle24Regular as SparkleIcon,
 } from '@vicons/fluent'
 import type { DataTableColumns } from 'naive-ui'
 import {
@@ -23,6 +24,7 @@ import { isApiSuccess } from '~/models/ApiResponse'
 import type { SystemSettingDto } from '~/models/Settings'
 import { useSettingsService } from '~/services/settings.service'
 
+const { t, locale } = useI18n()
 const message = useMessage()
 const router = useRouter()
 const accountStore = useAccountStore()
@@ -80,15 +82,15 @@ const filteredSettings = computed(() => {
 function copyToClipboard(text: string) {
   navigator.clipboard.writeText(text)
   copiedKey.value = text
-  message.success(`تم نسخ الرمز: ${text}`)
+  message.success(t('settings.copiedKey', { key: text }))
   setTimeout(() => {
     if (copiedKey.value === text) copiedKey.value = null
   }, 2000)
 }
 
-const columns: DataTableColumns<SystemSettingDto> = [
+const columns = computed<DataTableColumns<SystemSettingDto>>(() => [
   {
-    title: 'رمز الإعداد (Key)',
+    title: t('settings.key'),
     key: 'key',
     width: 200,
     render(row) {
@@ -120,18 +122,21 @@ const columns: DataTableColumns<SystemSettingDto> = [
     },
   },
   {
-    title: 'اسم الإعداد',
+    title: t('settings.name'),
     key: 'nameAr',
     minWidth: 220,
     render(row) {
+      const isEn = locale.value?.startsWith('en')
+      const primaryName = isEn ? row.nameEn : row.nameAr
+      const secondaryName = isEn ? row.nameAr : row.nameEn
       return h('div', { class: 'space-y-0.5' }, [
-        h('div', { class: 'font-black text-slate-800 dark:text-white text-sm' }, row.nameAr),
-        h('div', { class: 'font-mono text-[11px] text-slate-400 dark:text-slate-500' }, row.nameEn),
+        h('div', { class: 'font-black text-slate-800 dark:text-white text-sm' }, primaryName),
+        h('div', { class: 'font-mono text-[11px] text-slate-400 dark:text-slate-500' }, secondaryName),
       ])
     },
   },
   {
-    title: 'التصنيف',
+    title: t('settings.category'),
     key: 'category',
     width: 150,
     render(row) {
@@ -146,7 +151,7 @@ const columns: DataTableColumns<SystemSettingDto> = [
     },
   },
   {
-    title: 'القيمة المعتمدة',
+    title: t('settings.value'),
     key: 'value',
     width: 150,
     render(row) {
@@ -161,9 +166,9 @@ const columns: DataTableColumns<SystemSettingDto> = [
     },
   },
   {
-    title: 'صلاحية التعديل',
+    title: t('settings.editPermission'),
     key: 'isReadOnly',
-    width: 150,
+    width: 160,
     render(row) {
       return row.isReadOnly
         ? h(
@@ -175,30 +180,32 @@ const columns: DataTableColumns<SystemSettingDto> = [
             },
             {
               icon: () => h(NIcon, { component: LockIcon, class: 'w-3.5 h-3.5' }),
-              default: () => 'للقراءة فقط (ReadOnly)',
+              default: () => t('settings.readOnly'),
             },
           )
         : h(
             NTag,
             { type: 'success', bordered: false, class: 'rounded-lg text-xs font-bold' },
-            { default: () => 'قابل للتعديل' },
+            { default: () => t('settings.editable') },
           )
     },
   },
   {
-    title: 'الوصف ونطاق التطبيق',
+    title: t('settings.description'),
     key: 'descriptionAr',
     minWidth: 280,
     render(row) {
+      const isEn = locale.value?.startsWith('en')
+      const desc = isEn ? (row.descriptionEn || row.descriptionAr) : row.descriptionAr
       return h(
         'div',
         { class: 'text-xs text-slate-600 dark:text-slate-300 leading-relaxed' },
-        row.descriptionAr || '—',
+        desc || '—',
       )
     },
   },
   {
-    title: 'تاريخ التحديث',
+    title: t('settings.lastModified'),
     key: 'lastModifiedDate',
     width: 130,
     render(row) {
@@ -206,15 +213,15 @@ const columns: DataTableColumns<SystemSettingDto> = [
       return h(
         'div',
         { class: 'text-[11px] font-mono text-slate-500' },
-        new Date(d).toLocaleDateString('ar-SA'),
+        new Date(d).toLocaleDateString(locale.value?.startsWith('en') ? 'en-US' : 'ar-SA'),
       )
     },
   },
-]
+])
 
 onMounted(() => {
   if (!accountStore.hasPermission('Settings.View')) {
-    message.error('عفواً، ليس لديك صلاحية للوصول إلى إعدادات النظام')
+    message.error(t('common.403Error'))
     router.replace('/')
     return
   }
@@ -239,14 +246,14 @@ meta:
         <div>
           <div class="flex items-center gap-2">
             <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
-              إعدادات النظام العامة
+              {{ t('settings.title') }}
             </h1>
             <n-tag type="info" size="small" round :bordered="false" class="font-bold text-[11px]">
-              System Settings
+              {{ t('settings.tag') }}
             </n-tag>
           </div>
           <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            إدارة وضبط المتغيرات والمعايير التشغيلية والنسب المالية المعتمدة في النظام
+            {{ t('settings.subtitle') }}
           </p>
         </div>
       </div>
@@ -256,7 +263,7 @@ meta:
           <template #icon>
             <n-icon :component="RefreshIcon" />
           </template>
-          تحديث البيانات
+          {{ t('common.refresh') }}
         </n-button>
       </div>
     </div>
@@ -272,7 +279,7 @@ meta:
           class="rounded-xl font-bold"
           @click="selectedCategory = 'ALL'"
         >
-          الكل ({{ settingsList.length }})
+          {{ t('common.all') }} ({{ settingsList.length }})
         </n-button>
         <n-button
           v-for="cat in categories"
@@ -291,7 +298,7 @@ meta:
       <div class="w-full sm:w-72">
         <n-input
           v-model:value="searchQuery"
-          placeholder="بحث بالرمز أو اسم الإعداد..."
+          :placeholder="t('settings.searchPlaceholder')"
           clearable
           class="rounded-xl"
         >
@@ -308,7 +315,7 @@ meta:
         <div class="flex items-center gap-2">
           <span class="w-2.5 h-2.5 rounded-full bg-blue-600 inline-block" />
           <h2 class="text-base font-black text-slate-800 dark:text-white">
-            قائمة الإعدادات والمتغيرات المعتمدة
+            {{ t('settings.tableTitle') }}
           </h2>
           <span class="text-xs text-slate-400 font-mono">({{ filteredSettings.length }})</span>
         </div>
@@ -329,10 +336,10 @@ meta:
     <div class="p-5 rounded-2xl bg-gradient-to-r from-slate-50 to-blue-50/40 dark:from-slate-800/60 dark:to-slate-800 border border-blue-100 dark:border-slate-700/80 space-y-2">
       <div class="flex items-center gap-2 text-blue-700 dark:text-blue-400 font-black text-sm">
         <n-icon size="18" :component="SparkleIcon" />
-        <span>بنية ديناميكية جاهزة لإضافة إعدادات جديدة للنظام في أي وقت</span>
+        <span>{{ t('settings.bannerTitle') }}</span>
       </div>
       <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-        تم ربط هذا الجدول بمحرك إعدادات ديناميكي في قاعدة البيانات والباك إند، بحيث يمكن في أي وقت إضافة أي متغيرات أو قيم جديدة للنظام (مثل فترات السماح، شروط العقود، أرقام السجلات أو الرسوم الإضافية) لتظهر تلقائياً في هذا الجدول دون أي تعديل في بنية البرمجيات.
+        {{ t('settings.bannerDesc') }}
       </p>
     </div>
   </div>

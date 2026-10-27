@@ -36,8 +36,11 @@ import themeOverrides, {
   darkThemeOverrides,
 } from '~/common/theme/theme-overrides'
 import useColors from './composables/useColors'
+import { appConfig } from '~/config/app.config'
 
 const layout = useLayoutStore()
+const route = useRoute()
+const { t } = useI18n()
 
 /** Fixed 5th series colour, so multi-series charts stay distinguishable. */
 const ACCENT_CHART_COLOR = '#ff7300'
@@ -154,6 +157,12 @@ watch(
   (newLang) => {
     if (newLang) {
       layout.changeLanguage(newLang)
+      nextTick(() => {
+        const baseTitle = appConfig.appName || t('title')
+        let title = baseTitle
+        if (route.meta?.title) title = `${t(`menu.${route.meta.title}`)} - ${baseTitle}`
+        document.title = title
+      })
     }
   },
   { immediate: true },

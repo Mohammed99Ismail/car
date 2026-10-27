@@ -34,6 +34,7 @@ common:
   date: التاريخ
   day: يوم
   delete: حذف
+  exportExcel: تصدير إكسيل
   deleteConfirm: هل أنت متأكد من حذف هذا العنصر؟
   deleteMultipleConfirm: هل أنت متأكد من حذف العناصر المحددة؟
   deletedMessage: تم الحذف بنجاح
@@ -200,6 +201,7 @@ cars:
 
 customers:
   title: إدارة العملاء
+  subtitle: إدارة بيانات العملاء، أرقام الهوية الوطنية وبيانات التواصل
   list: قائمة العملاء
   create: إضافة عميل جديد
   edit: تعديل بيانات العميل
@@ -207,11 +209,18 @@ customers:
   nationalId: رقم الهوية الوطنية / الإقامة
   mobile: رقم الجوال
   address: العنوان
+  totalCountPrefix: "إجمالي: {count} عميل"
   searchPlaceholder: ابحث بالاسم، رقم الهوية أو الجوال...
+  exportTitle: تصدير قائمة العملاء إلى إكسيل (Excel)
   deleteConfirm: هل أنت متأكد من حذف هذا العميل؟
   deleteSuccess: تم حذف العميل بنجاح
   createSuccess: تم إضافة العميل بنجاح
   updateSuccess: تم تحديث بيانات العميل بنجاح
+  placeholders:
+    name: الاسم الكامل للعميل
+    nationalId: رقم الهوية الوطنية أو الإقامة
+    mobile: "رقم الجوال (مثال: +966500000000)"
+    address: العنوان التفصيلي
   validations:
     nameRequired: اسم العميل مطلوب
     nationalIdRequired: رقم الهوية مطلوب
@@ -238,35 +247,54 @@ branches:
 
 contractTypes:
   title: أنواع العقود
+  subtitle: أنواع العقود المعتمدة في النظام (إيجار يومي، أسبوعي، شهري، وبيع معرض) للقراءة فقط
   list: قائمة أنواع العقود
   readOnlyNotice: أنواع العقود هي بيانات مرجعية ثانوية للقراءة فقط ولا يمكن تعديلها أو حذفها
+  readOnlyAlert: هذا الجدول مرجعي للقراءة فقط بدون عمليات تعديل أو حذف لضمان سلامة العقود المسجلة بالمعرض.
   code: الكود
-  nameAr: الاسم بالعربية
-  nameEn: الاسم بالإنجليزية
+  nameAr: نوع العقد (عربي)
+  nameEn: Contract Type (English)
   descriptionAr: الوصف بالعربية
   descriptionEn: الوصف بالإنجليزية
+  type: النوع
+  fixedLookup: مرجعي ثابت
   status: الحالة
   active: مفعّل
   inactive: معطّل
 
 roles:
   title: الأدوار والصلاحيات
+  subtitle: إدارة الأدوار وتحديد الصلاحيات الممنوحة لكل دور بمرونة كاملة
   list: قائمة الأدوار
   create: إنشاء دور جديد
   edit: تعديل الدور والصلاحيات
   name: اسم الدور
   description: الوصف
   isSystemRole: دور نظام (غير قابل للحذف)
+  systemTag: نظام
   permissions: الصلاحيات
   permissionsCount: عدد الصلاحيات
+  permissionsUnit: "{count} صلاحية"
+  usersCount: عدد المستخدمين
+  usersUnit: "{count} مستخدم"
   modules: الوحدات
   selectAll: تحديد الكل
   deselectAll: إلغاء تحديد الكل
+  selectedCount: "{count} مختارة"
+  permissionsHelp: حدد الصلاحيات المطلوبة لهذا الدور بدقة
+  toggleModule: تحديد / إلغاء الوحدة
+  nameAr: الاسم (بالعربية)
+  nameEn: Name (English)
+  nameArPlaceholder: "مثال: مدير المبيعات"
+  nameEnPlaceholder: "e.g. Sales Manager"
   deleteConfirm: هل أنت متأكد من حذف هذا الدور؟
   deleteSuccess: تم حذف الدور بنجاح
   createSuccess: تم إنشاء الدور بنجاح
   updateSuccess: تم تحديث الدور وصلاحياته بنجاح
   cannotDeleteSystemRole: لا يمكن حذف أدوار النظام الأساسية
+  validations:
+    nameArRequired: الاسم بالعربية مطلوب
+    nameEnRequired: Name in English is required
 
 users:
   title: إدارة المستخدمين
@@ -535,6 +563,28 @@ contracts:
   active: ساري
   completed: مكتمل
   cancelled: ملغي
+  periodAndDates: المدة والتواريخ
+  rentAndFinancials: الإيجار والماليات
+  statsTotal: إجمالي العقود
+  statsActive: عقود سارية
+  statsRevenue: الإيرادات التقديرية
+  statsProfit: الأرباح المتوقعة
+  filterTypePlaceholder: جميع أنواع العقود
+  filterBranchPlaceholder: جميع الفروع
+  filterStatusPlaceholder: جميع الحالات
+  searchPlaceholder: "بحث برقم العقد، اسم العميل، رقم اللوحة..."
+  deleteConfirmTitle: تأكيد حذف العقد
+  deleteConfirmMessage: 'هل أنت متأكد من حذف العقد رقم "{number}"؟ لا يمكن التراجع عن هذا الإجراء.'
+  systemEmployee: موظف النظام
+  serviceContractForShowroom: عقد خدمة للمعرض
+  taxIncluded: شامل 15% ضريبة
+  taxExempt: معفى
+  beforeTax: قبل الضريبة
+  downPaymentShort: دفعة
+  totalShort: الإجمالي
+  profitShort: فائدة
+  perMonth: /شهر
+  exportTitle: تصدير قائمة العقود إلى إكسيل (Excel)
   printReport: طباعة التقرير
   downloadPdf: تحميل PDF
   reportHeading: تقرير عقد تأجير سيارة
@@ -544,3 +594,94 @@ contracts:
   createSuccess: تم إنشاء العقد بنجاح
   updateSuccess: تم تحديث بيانات العقد بنجاح
   termsUpdateSuccess: تم تحديث النسب الافتراضية بنجاح
+  reportBackToList: العودة لقائمة العقود
+  reportTitlePrefix: "تقرير العقد رقم: {number}"
+  reportPreparing: جاري تجهيز تقرير العقد والحسابات المالية...
+  reportBranch: الفرع المصدر
+  reportCertifiedBadge: تقرير عقد معتمد
+  reportParty1Title: الطرف الأول (المؤجر / المعرض)
+  reportName: "الاسم:"
+  reportBranchLabel: "الفرع:"
+  reportStatusLabel: "حالة العقد:"
+  reportStatusActive: ساري العمل به
+  reportIssueDate: "تاريخ الإصدار:"
+  reportParty2Title: الطرف الثاني (المستفيد)
+  reportEmployee: "الموظف المسؤول:"
+  reportEmail: "البريد الإلكتروني:"
+  reportEmployeeRole: "الصفة:"
+  reportEmployeeRoleDesc: مستخدم نظام / موظف بالمعرض (عقد خدمة)
+  reportCustomerName: "اسم العميل:"
+  reportNationalId: "رقم الهوية الوطنية:"
+  reportMobile: "رقم الجوال:"
+  reportVehicleTitle: بيانات السيارة والقيمة الدفترية ومجمع الإهلاك
+  reportColor: "اللون:"
+  reportChassis: "رقم الشاسيه (الهيكل):"
+  reportPlateCountry: KSA • المملكة
+  reportPurchaseDate: تاريخ الشراء الأساسي
+  reportPurchasePrice: القيمة الشرائية للسيارة (جديدة)
+  reportBookValueStart: القيمة الدفترية عند بدء العقد
+  reportAccumulatedDepreciation: مجمع الإهلاك المسجل للسيارة
+  reportProductiveAge: العمر التشغيلي للسيارة
+  reportPeriodTitle: فترة وسريان العقد
+  reportTotalPeriod: "المدة الإجمالية:"
+  reportPercentagesTitle: نسب بنود الإهلاك السنوية المعتمدة بالعقد
+  reportFinancialTitle: الملخص المالي ومصفوفة الأرباح التقديرية للمعرض
+  reportSignaturesTitle: التواقيع والإقرار القانوني المعتمد
+  reportParty1Sign: توقيع وختم الطرف الأول (المعرض / المؤجر)
+  reportParty2Sign: توقيع الطرف الثاني (المستأجر / المستفيد)
+  reportOfficialStamp: الختم الرسمي
+  reportSignatureAndName: التوقيع والاسم
+  reportFooterNote: المملكة العربية السعودية • تم توليد هذا المستند إلكترونياً من نظام إدارة معرض وتأجير السيارات • صالح ومعتمد نظامياً
+  reportDepreciationBasis: "• أساس الإهلاك: 25% سنوياً على 4 سنوات"
+  reportExceededAge: "• تجاوزت 4 سنوات (القيمة الدفترية = 1 ريال فقط)"
+  reportShortTermNotice: "عقد إيجار قصير الأجل / حسب الطلب (حساب يومي):"
+  reportDailyRent: "الإيجار اليومي:"
+  reportActualRentDays: "أيام الإيجار الفعلي:"
+  reportTotalRentDue: "إجمالي الإيجار المستحق:"
+  reportYearlyScheduleLeaseToOwn: جدول تكاليف التأمين الشامل وإهلاك السيارة لعقد الإيجار المنتهي بالتمليك
+  reportYearlyScheduleGeneral: جدول بنود الخصم الأربعة وإهلاك السيارة التفصيلي بالسنوات
+  reportScheduleSubtitleLease: "(التأمين: {ins}% • إهلاك كامل القيمة الدفترية للسيارة)"
+  reportScheduleSubtitleGeneral: "(التأمين: {ins}% • الصيانة: {maint}% • البديلة: {rep}% • الإدارية: {admin}%)"
+  reportYearCol: السنة
+  reportNetCarValueCol: صافي قيمة السيارة خلال مدة العقد
+  reportDepreciationCol: إهلاك السيارة
+  reportInsuranceCol: التأمين الشامل
+  reportTotalCostCol: إجمالي التكلفة التقديرية
+  reportMonthlyCostCol: التكلفة الشهرية للسيارة
+  reportYearPrefix: "السنة {year}"
+  reportTransfersToCustomer: "(تؤول للعميل)"
+  reportEstInsurance: "تقدير تأمين شامل للسيارة:"
+  reportEstDepreciationLease: "إهلاك السيارة (القيمة الدفترية كاملة):"
+  reportEstMaintenance: "تقدير تكلفة الصيانة:"
+  reportEstReplacement: "تقدير سيارة بديلة:"
+  reportEstAdminFees: "تقدير مصاريف إدارية:"
+  reportRentBeforeDown: "قيمة قسط الإيجار الشهري قبل الدفعة المقدمة:"
+  reportVatStatement: بيان احتساب ضريبة القيمة المضافة (VAT) المعتمدة بالنظام
+  reportVatAppliedBadge: ضريبة القيمة المضافة 15% (مطبقة على العميل)
+  reportVatExemptBadge: معفى من الضريبة (غير مطبقة)
+  reportRentBeforeTax: قسط الإيجار قبل الضريبة
+  reportVatAmountLabel: "مبلغ الضريبة ({percent})"
+  reportMonthlyDueFromCustomer: الإيجار الشهري المستحق على العميل
+  reportTotalContractWithTax: إجمالي قيمة العقد شامل الضريبة
+  reportNotesTerms: "ملاحظات وشروط خاصة:"
+  reportGeneratedNote: "تم إصدار هذا التقرير آلياً عبر نظام {app} بتاريخ: {date}"
+
+settings:
+  title: إعدادات النظام العامة
+  subtitle: إدارة وضبط المتغيرات والمعايير التشغيلية والنسب المالية المعتمدة في النظام
+  tag: System Settings
+  tableTitle: قائمة الإعدادات والمتغيرات المعتمدة
+  searchPlaceholder: بحث بالرمز أو اسم الإعداد...
+  key: رمز الإعداد (Key)
+  name: اسم الإعداد
+  category: التصنيف
+  value: القيمة المعتمدة
+  editPermission: صلاحية التعديل
+  readOnly: للقراءة فقط (ReadOnly)
+  editable: قابل للتعديل
+  description: الوصف ونطاق التطبيق
+  lastModified: تاريخ التحديث
+  copiedKey: "تم نسخ الرمز: {key}"
+  bannerTitle: بنية ديناميكية جاهزة لإضافة إعدادات جديدة للنظام في أي وقت
+  bannerDesc: تم ربط هذا الجدول بمحرك إعدادات ديناميكي في قاعدة البيانات والباك إند، بحيث يمكن في أي وقت إضافة أي متغيرات أو قيم جديدة للنظام (مثل فترات السماح، شروط العقود، أرقام السجلات أو الرسوم الإضافية) لتظهر تلقائياً في هذا الجدول دون أي تعديل في بنية البرمجيات.
+

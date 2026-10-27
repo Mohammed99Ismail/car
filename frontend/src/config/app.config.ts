@@ -1,25 +1,88 @@
 /**
  * ==============================================================================
- * محرك إعدادات النظام والهوية البصرية (App Branding Engine)
+ * محرك إعدادات النظام والهوية البصرية المعرب والمترجم (App Branding Engine)
  * ==============================================================================
  *
- * لتغيير اسم المعرض أو الشعار بسهولة تامة وبدون كتابة أي كود برمجي:
+ * لتغيير اسم المعرض أو الشعار أو العناوين بالعربية والإنجليزية بسهولة تامة:
  * فقط افتح ملف: app.config.json
  *
- * 1. appName: اسم النظام في السايدبار وأعلى الصفحة.
- * 2. companyName: اسم المعرض/الشركة في ترويسة التقارير.
- * 3. subTitle: السجل التجاري / الوصف بالتقارير.
- * 4. logo: اسم صورة الشعار داخل مجلد src/assets (مثال: "logo.png" أو "my-logo.svg").
- *    فقط ضع صورتك داخل مجلد assets واكتب اسمها في ملف app.config.json!
+ * يدعم كلاً من التنسيقين:
+ * 1. تنسيق الكائن ثنائي اللغة (الأفضل والأشمل):
+ *    "appName": { "ar": "اسم بالعربي", "en": "Name in English" }
+ * 2. التنسيق المنفصل:
+ *    "appNameAr": "...", "appNameEn": "..."
+ * 3. التنسيق البسيط (قيمة واحدة لكلا اللغتين):
+ *    "appName": "..."
  */
 
+import { reactive } from 'vue'
 import rawConfig from './app.config.json'
+import i18n from '~/modules/i18n'
 
 // استيراد كافة ملفات الصور من مجلد assets تلقائياً لدعم التغيير الفوري بمجرد كتابة اسم أي صورة
 const assetImages = import.meta.glob('../assets/**/*.{png,jpg,jpeg,svg,webp,ico,gif}', {
   eager: true,
   import: 'default',
 }) as Record<string, string>
+
+/**
+ * استخراج اللغة الحالية النشطة
+ */
+function getCurrentLocale(): string {
+  try {
+    if (i18n?.global?.locale) {
+      const loc = i18n.global.locale
+      const val = typeof loc === 'object' && 'value' in loc ? (loc as any).value : loc
+      if (typeof val === 'string') return val
+    }
+  } catch {}
+
+  if (typeof localStorage !== 'undefined') {
+    try {
+      const stored = localStorage.getItem('layout')
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        if (parsed?.activeLanguage) return parsed.activeLanguage
+      }
+    } catch {}
+  }
+
+  return 'ar'
+}
+
+/**
+ * دالة مساعدة لاستخراج النص حسب اللغة المحددة مع دعم جميع الهياكل
+ */
+function resolveLocalized(
+  value: any,
+  lang?: string,
+  fallbackAr?: string,
+  fallbackEn?: string,
+  defaultAr = '',
+  defaultEn = '',
+): string {
+  const targetLang = (lang || getCurrentLocale()).toLowerCase()
+  const isEn = targetLang.startsWith('en')
+
+  // 1. إذا كانت القيمة كائناً يحتوي على ar و en
+  if (value && typeof value === 'object' && !Array.isArray(value)) {
+    if (isEn && value.en) return String(value.en)
+    if (!isEn && value.ar) return String(value.ar)
+    return String(value.ar || value.en || (isEn ? defaultEn : defaultAr))
+  }
+
+  // 2. إذا كانت هناك حقول مسطحة منفصلة (Ar و En)
+  if (isEn && fallbackEn) return String(fallbackEn)
+  if (!isEn && fallbackAr) return String(fallbackAr)
+
+  // 3. إذا كانت القيمة نصاً مفرداً
+  if (typeof value === 'string' && value.trim()) {
+    return value
+  }
+
+  // 4. القيمة الافتراضية
+  return isEn ? (defaultEn || defaultAr) : (defaultAr || defaultEn)
+}
 
 /**
  * دالة البحث وحل مسار الشعار تلقائياً من مجلد assets
@@ -46,11 +109,9 @@ function resolveLogoPath(logoInput?: string): string {
 
   // 2. البحث الدقيق داخل مجلد assets
   for (const [key, resolvedUrl] of Object.entries(assetImages)) {
-    // تطابق المسار النسبي (مثلاً: images/logo.png)
     if (key.endsWith('/' + clean) || key.endsWith(clean)) {
       return resolvedUrl
     }
-    // تطابق اسم الملف فقط (مثلاً: logo.png)
     const filename = key.split('/').pop()
     if (filename && filename.toLowerCase() === clean.toLowerCase()) {
       return resolvedUrl
@@ -78,6 +139,15 @@ export interface AppBrandingConfig {
   subTitle: string
   logoPath: string
   logoAlt: string
+  appNameAr: string
+  appNameEn: string
+  companyNameAr: string
+  companyNameEn: string
+  subTitleAr: string
+  subTitleEn: string
+  getAppName: (lang?: string) => string
+  getCompanyName: (lang?: string) => string
+  getSubTitle: (lang?: string) => string
   constraints: {
     sidebarLogoMaxW: number
     sidebarLogoMaxH: number
@@ -87,12 +157,42 @@ export interface AppBrandingConfig {
   }
 }
 
-export const appConfig: AppBrandingConfig = {
-  appName: rawConfig.appName || 'إدارة معرض وتأجير السيارات',
-  companyName: rawConfig.companyName || 'شركة معرض وتأجير السيارات',
-  subTitle: rawConfig.subTitle || 'المملكة العربية السعودية • سجل تجاري معتمد • شبكة الفروع وخدمات الأسطول',
-  logoPath: resolveLogoPath(rawConfig.logo),
-  logoAlt: rawConfig.appName || 'شعار معرض وتأجير السيارات',
+const raw: any = rawConfig
+
+export const appConfig: AppBrandingConfig = reactive({
+  appNameAr: resolveLocalized(raw.appName, 'ar', raw.appNameAr, raw.appNameEn, 'إدارة معرض وتأجير السيارات', 'Car Showroom & Rental Management'),
+  appNameEn: resolveLocalized(raw.appName, 'en', raw.appNameAr, raw.appNameEn, 'إدارة معرض وتأجير السيارات', 'Car Showroom & Rental Management'),
+
+  companyNameAr: resolveLocalized(raw.companyName, 'ar', raw.companyNameAr, raw.companyNameEn, 'شركة معرض وتأجير السيارات', 'Car Showroom & Rental Company'),
+  companyNameEn: resolveLocalized(raw.companyName, 'en', raw.companyNameAr, raw.companyNameEn, 'شركة معرض وتأجير السيارات', 'Car Showroom & Rental Company'),
+
+  subTitleAr: resolveLocalized(raw.subTitle, 'ar', raw.subTitleAr, raw.subTitleEn, 'المملكة العربية السعودية • سجل تجاري معتمد • شبكة الفروع وخدمات الأسطول', 'Kingdom of Saudi Arabia • Certified Commercial Registration • Fleet & Branch Network'),
+  subTitleEn: resolveLocalized(raw.subTitle, 'en', raw.subTitleAr, raw.subTitleEn, 'المملكة العربية السعودية • سجل تجاري معتمد • شبكة الفروع وخدمات الأسطول', 'Kingdom of Saudi Arabia • Certified Commercial Registration • Fleet & Branch Network'),
+
+  getAppName(lang?: string) {
+    return resolveLocalized(raw.appName, lang, raw.appNameAr, raw.appNameEn, this.appNameAr, this.appNameEn)
+  },
+  getCompanyName(lang?: string) {
+    return resolveLocalized(raw.companyName, lang, raw.companyNameAr, raw.companyNameEn, this.companyNameAr, this.companyNameEn)
+  },
+  getSubTitle(lang?: string) {
+    return resolveLocalized(raw.subTitle, lang, raw.subTitleAr, raw.subTitleEn, this.subTitleAr, this.subTitleEn)
+  },
+
+  get appName() {
+    return this.getAppName()
+  },
+  get companyName() {
+    return this.getCompanyName()
+  },
+  get subTitle() {
+    return this.getSubTitle()
+  },
+  get logoAlt() {
+    return this.appName
+  },
+
+  logoPath: resolveLogoPath(raw.logo),
   constraints: {
     sidebarLogoMaxW: 42,
     sidebarLogoMaxH: 42,
@@ -100,6 +200,6 @@ export const appConfig: AppBrandingConfig = {
     reportLogoMaxH: 56,
     maxTitleChars: 50,
   },
-}
+})
 
 export default appConfig

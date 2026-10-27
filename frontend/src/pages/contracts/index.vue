@@ -46,6 +46,7 @@ import { useLookupService } from '~/services/lookup.service'
 import ExportExcelModal from '~/components/common/ExportExcelModal.vue'
 import { exportToExcel, type ExcelColumn } from '~/utils/excelExport'
 
+const { t, locale } = useI18n()
 const router = useRouter()
 const dialog = useDialog()
 const message = useMessage()
@@ -424,21 +425,21 @@ async function saveTermsConfig() {
 // Delete Contract
 function handleDelete(row: ContractDto) {
   dialog.warning({
-    title: 'تأكيد حذف العقد',
-    content: `هل أنت متأكد من حذف العقد رقم "${row.contractNumber}"؟ لا يمكن التراجع عن هذا الإجراء.`,
-    positiveText: 'نعم، احذف',
-    negativeText: 'إلغاء',
+    title: t('contracts.deleteConfirmTitle'),
+    content: t('contracts.deleteConfirmMessage', { number: row.contractNumber }),
+    positiveText: t('common.delete'),
+    negativeText: t('common.cancel'),
     onPositiveClick: async () => {
       try {
         const res = await contractService.remove(row.id)
         if (isApiSuccess(res)) {
-          message.success('تم حذف العقد بنجاح')
+          message.success(t('contracts.deleteSuccess'))
           loadContracts()
         } else {
-          message.error(res.message || 'فشل الحذف')
+          message.error(res.message || 'Error')
         }
       } catch {
-        message.error('حدث خطأ أثناء الحذف')
+        message.error('Error')
       }
     },
   })
@@ -448,22 +449,22 @@ function handleDelete(row: ContractDto) {
 function getTypeBadge(typeId: number, nameAr: string) {
   switch (typeId) {
     case 1:
-      return { type: 'info', color: '#8b5cf6', label: nameAr || 'عقد خدمة', icon: '🛠️' }
+      return { type: 'info', color: '#8b5cf6', label: nameAr || t('contracts.types.service'), icon: '🛠️' }
     case 2:
-      return { type: 'warning', color: '#f59e0b', label: nameAr || 'إيجار قصير الأجل', icon: '⏱️' }
+      return { type: 'warning', color: '#f59e0b', label: nameAr || t('contracts.types.shortTerm'), icon: '⏱️' }
     case 3:
-      return { type: 'primary', color: '#3b82f6', label: nameAr || 'إيجار طويل الأجل', icon: '📅' }
+      return { type: 'primary', color: '#3b82f6', label: nameAr || t('contracts.types.longTerm'), icon: '📅' }
     case 4:
-      return { type: 'success', color: '#10b981', label: nameAr || 'إيجار منتهي بالتمليك', icon: '🔑' }
+      return { type: 'success', color: '#10b981', label: nameAr || t('contracts.types.leaseToOwn'), icon: '🔑' }
     default:
       return { type: 'default', color: '#64748b', label: nameAr, icon: '📋' }
   }
 }
 
 // Data Table Columns
-const columns: DataTableColumns<ContractDto> = [
+const columns = computed<DataTableColumns<ContractDto>>(() => [
   {
-    title: 'رقم العقد',
+    title: t('contracts.contractNumber'),
     key: 'contractNumber',
     width: 150,
     render(row) {
@@ -473,7 +474,7 @@ const columns: DataTableColumns<ContractDto> = [
     },
   },
   {
-    title: 'نوع العقد',
+    title: t('contracts.contractType'),
     key: 'contractTypeId',
     width: 190,
     render(row) {
@@ -494,7 +495,7 @@ const columns: DataTableColumns<ContractDto> = [
     },
   },
   {
-    title: 'السيارة',
+    title: t('contracts.car'),
     key: 'carPlateNumber',
     width: 220,
     render(row) {
@@ -508,7 +509,7 @@ const columns: DataTableColumns<ContractDto> = [
     },
   },
   {
-    title: 'المستفيد',
+    title: t('contracts.beneficiary'),
     key: 'customerId',
     width: 190,
     render(row) {
@@ -516,9 +517,9 @@ const columns: DataTableColumns<ContractDto> = [
         return h('div', { class: 'flex flex-col text-xs' }, [
           h('span', { class: 'font-bold text-purple-700 dark:text-purple-300 flex items-center gap-1' }, [
             h('span', '👤'),
-            row.userFullName || 'موظف النظام',
+            row.userFullName || t('contracts.systemEmployee'),
           ]),
-          h('span', { class: 'text-slate-400' }, row.userEmail || 'عقد خدمة للمعرض'),
+          h('span', { class: 'text-slate-400' }, row.userEmail || t('contracts.serviceContractForShowroom')),
         ])
       }
       return h('div', { class: 'flex flex-col text-xs' }, [
@@ -528,23 +529,24 @@ const columns: DataTableColumns<ContractDto> = [
     },
   },
   {
-    title: 'المدة والتواريخ',
+    title: t('contracts.periodAndDates'),
     key: 'periodMonths',
-    width: 160,
+    width: 170,
     render(row) {
-      const start = new Date(row.startDate).toLocaleDateString('ar-SA')
-      const end = new Date(row.endDate).toLocaleDateString('ar-SA')
+      const isEn = locale.value?.startsWith('en')
+      const start = new Date(row.startDate).toLocaleDateString(isEn ? 'en-US' : 'ar-SA')
+      const end = new Date(row.endDate).toLocaleDateString(isEn ? 'en-US' : 'ar-SA')
       return h('div', { class: 'flex flex-col text-xs gap-0.5' }, [
         h('div', { class: 'flex items-center gap-1 font-semibold text-blue-600 dark:text-blue-400' }, [
           h('span', '⏱️'),
-          `${row.periodMonths} شهر (${row.periodDays} يوم)`,
+          `${row.periodMonths} ${t('contracts.months')} (${row.periodDays} ${t('contracts.days')})`,
         ]),
         h('span', { class: 'text-slate-400 text-[11px]' }, `${start} ← ${end}`),
       ])
     },
   },
   {
-    title: 'الإيجار والماليات',
+    title: t('contracts.rentAndFinancials'),
     key: 'totalPrice',
     width: 200,
     render(row) {
@@ -555,7 +557,7 @@ const columns: DataTableColumns<ContractDto> = [
       return h('div', { class: 'flex flex-col text-xs gap-1' }, [
         rentWithTax
           ? h('div', { class: 'flex items-center gap-1.5' }, [
-              h('span', { class: 'font-black text-slate-900 dark:text-white' }, `${rentWithTax.toLocaleString()} ر.س`),
+              h('span', { class: 'font-black text-slate-900 dark:text-white' }, `${rentWithTax.toLocaleString()} ${t('contracts.sar')}`),
               h(
                 NTag,
                 {
@@ -565,48 +567,48 @@ const columns: DataTableColumns<ContractDto> = [
                   round: true,
                   class: 'text-[10px] font-bold px-1.5',
                 },
-                { default: () => (isTax ? 'شامل 15% ضريبة' : 'معفى') },
+                { default: () => (isTax ? t('contracts.taxIncluded') : t('contracts.taxExempt')) },
               ),
             ])
           : null,
         isTax && rentBeforeTax && rentBeforeTax !== rentWithTax
-          ? h('div', { class: 'text-slate-400 text-[11px]' }, `قبل الضريبة: ${rentBeforeTax.toLocaleString()} ر.س`)
+          ? h('div', { class: 'text-slate-400 text-[11px]' }, `${t('contracts.beforeTax')}: ${rentBeforeTax.toLocaleString()} ${t('contracts.sar')}`)
           : null,
         row.downPayment && row.downPayment > 0
-          ? h('div', { class: 'text-amber-600 dark:text-amber-400 text-[11px]' }, `دفعة: ${row.downPayment.toLocaleString()} ر.س`)
+          ? h('div', { class: 'text-amber-600 dark:text-amber-400 text-[11px]' }, `${t('contracts.downPaymentShort')}: ${row.downPayment.toLocaleString()} ${t('contracts.sar')}`)
           : null,
         h(
           'div',
           { class: 'font-bold text-emerald-600 dark:text-emerald-400 text-[11px]' },
-          `الإجمالي: ${(row.totalPriceWithTax || row.totalPrice).toLocaleString()} ر.س`,
+          `${t('contracts.totalShort')}: ${(row.totalPriceWithTax || row.totalPrice).toLocaleString()} ${t('contracts.sar')}`,
         ),
       ])
     },
   },
   {
-    title: 'الأرباح المتوقعة',
+    title: t('contracts.expectedProfit'),
     key: 'expectedProfit',
     width: 160,
     render(row) {
       if (row.expectedProfit <= 0) return h('span', { class: 'text-slate-400' }, '—')
       return h('div', { class: 'flex flex-col text-xs' }, [
-        h('span', { class: 'font-bold text-emerald-700 dark:text-emerald-300' }, `${row.expectedProfit.toLocaleString()} ر.س`),
-        h('span', { class: 'text-[11px] text-slate-500' }, `فائدة: ${row.monthlyCompanyProfit.toLocaleString()} ر.س/شهر`),
+        h('span', { class: 'font-bold text-emerald-700 dark:text-emerald-300' }, `${row.expectedProfit.toLocaleString()} ${t('contracts.sar')}`),
+        h('span', { class: 'text-[11px] text-slate-500' }, `${t('contracts.profitShort')}: ${row.monthlyCompanyProfit.toLocaleString()} ${t('contracts.sar')}${t('contracts.perMonth')}`),
       ])
     },
   },
   {
-    title: 'الحالة',
+    title: t('contracts.status'),
     key: 'status',
     width: 100,
     render(row) {
       const type = row.status === 'Active' ? 'success' : row.status === 'Completed' ? 'info' : 'error'
-      const label = row.status === 'Active' ? 'ساري' : row.status === 'Completed' ? 'مكتمل' : 'ملغي'
+      const label = row.status === 'Active' ? t('contracts.active') : row.status === 'Completed' ? t('contracts.completed') : t('contracts.cancelled')
       return h(NTag, { type: type as any, bordered: false, round: true, size: 'small' }, { default: () => label })
     },
   },
   {
-    title: 'الإجراءات',
+    title: t('common.actions'),
     key: 'actions',
     width: 140,
     render(row) {
@@ -628,7 +630,7 @@ const columns: DataTableColumns<ContractDto> = [
                   },
                   { icon: () => h(NIcon, null, { default: () => h(ViewIcon) }) },
                 ),
-              default: () => 'عرض التقرير المالي الشامل',
+              default: () => t('contracts.report'),
             },
           ),
           // Delete
@@ -648,7 +650,7 @@ const columns: DataTableColumns<ContractDto> = [
                       },
                       { icon: () => h(NIcon, null, { default: () => h(DeleteIcon) }) },
                     ),
-                  default: () => 'حذف العقد',
+                  default: () => t('common.delete'),
                 },
               )
             : null,
@@ -656,7 +658,7 @@ const columns: DataTableColumns<ContractDto> = [
       })
     },
   },
-]
+])
 
 onMounted(() => {
   loadLookups()
@@ -674,13 +676,10 @@ onMounted(() => {
         </div>
         <div>
           <h1 class="text-xl md:text-2xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-2">
-            إدارة العقود والحسابات
-            <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">
-              4 أنواع معتمدة
-            </span>
+            {{ t('contracts.title') }}
           </h1>
           <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            إدارة عقود التأجير والخدمة، حساب الإهلاك اللحظي، وإصدار التقارير المالية الدقيقة
+            {{ t('contracts.subtitle') }}
           </p>
         </div>
       </div>
@@ -695,7 +694,7 @@ onMounted(() => {
           <template #icon>
             <NIcon><SettingsIcon /></NIcon>
           </template>
-          إعدادات نسب البنود الأربعة
+          {{ t('contracts.termsConfig') }}
         </NButton>
 
         <NButton
@@ -706,7 +705,7 @@ onMounted(() => {
           <template #icon>
             <NIcon><ExcelIcon class="text-emerald-600 dark:text-emerald-400" /></NIcon>
           </template>
-          تصدير إكسيل
+          {{ t('common.exportExcel') }}
         </NButton>
 
         <NButton
@@ -718,7 +717,7 @@ onMounted(() => {
           <template #icon>
             <NIcon><AddIcon /></NIcon>
           </template>
-          إنشاء عقد جديد
+          {{ t('contracts.createNew') }}
         </NButton>
 
         <NButton
@@ -738,7 +737,7 @@ onMounted(() => {
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       <div class="bg-gradient-to-br from-blue-500/10 to-indigo-500/5 p-5 rounded-2xl border border-blue-200/50 dark:border-blue-900/30 flex items-center justify-between">
         <div>
-          <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">إجمالي العقود</p>
+          <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{{ t('contracts.statsTotal') }}</p>
           <p class="text-2xl font-black text-slate-800 dark:text-white mt-1">{{ totalCount }}</p>
         </div>
         <div class="w-11 h-11 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md">
@@ -748,7 +747,7 @@ onMounted(() => {
 
       <div class="bg-gradient-to-br from-emerald-500/10 to-teal-500/5 p-5 rounded-2xl border border-emerald-200/50 dark:border-emerald-900/30 flex items-center justify-between">
         <div>
-          <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">العقود السارية</p>
+          <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{{ t('contracts.statsActive') }}</p>
           <p class="text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1">{{ stats.active }}</p>
         </div>
         <div class="w-11 h-11 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-md">
@@ -758,8 +757,8 @@ onMounted(() => {
 
       <div class="bg-gradient-to-br from-purple-500/10 to-violet-500/5 p-5 rounded-2xl border border-purple-200/50 dark:border-purple-900/30 flex items-center justify-between">
         <div>
-          <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">إجمالي الإيرادات المقدرة</p>
-          <p class="text-2xl font-black text-purple-700 dark:text-purple-300 mt-1">{{ stats.totalRev.toLocaleString() }} <span class="text-xs font-normal">ر.س</span></p>
+          <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{{ t('contracts.statsRevenue') }}</p>
+          <p class="text-2xl font-black text-purple-700 dark:text-purple-300 mt-1">{{ stats.totalRev.toLocaleString() }} <span class="text-xs font-normal">{{ t('contracts.sar') }}</span></p>
         </div>
         <div class="w-11 h-11 rounded-xl bg-purple-600 text-white flex items-center justify-center shadow-md">
           <NIcon size="20"><MoneyIcon /></NIcon>
@@ -768,8 +767,8 @@ onMounted(() => {
 
       <div class="bg-gradient-to-br from-amber-500/10 to-yellow-500/5 p-5 rounded-2xl border border-amber-200/50 dark:border-amber-900/30 flex items-center justify-between">
         <div>
-          <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">إجمالي الأرباح المتوقعة</p>
-          <p class="text-2xl font-black text-amber-600 dark:text-amber-400 mt-1">{{ stats.totalProf.toLocaleString() }} <span class="text-xs font-normal">ر.س</span></p>
+          <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{{ t('contracts.statsProfit') }}</p>
+          <p class="text-2xl font-black text-amber-600 dark:text-amber-400 mt-1">{{ stats.totalProf.toLocaleString() }} <span class="text-xs font-normal">{{ t('contracts.sar') }}</span></p>
         </div>
         <div class="w-11 h-11 rounded-xl bg-amber-600 text-white flex items-center justify-center shadow-md">
           <span class="text-lg">📈</span>
@@ -783,7 +782,7 @@ onMounted(() => {
         <div>
           <NInput
             v-model:value="queryParams.search"
-            placeholder="بحث برقم العقد، اللوحة، العميل..."
+            :placeholder="t('contracts.searchPlaceholder')"
             clearable
             class="rounded-xl"
             @input="onSearchInput"
@@ -798,10 +797,10 @@ onMounted(() => {
           <NSelect
             v-model:value="queryParams.contractTypeId"
             :options="[
-              { label: 'جميع أنواع العقود', value: null },
-              ...contractTypesList.map((c: LookupItemDto) => ({ label: c.name, value: c.id })),
+              { label: t('contracts.filterTypePlaceholder'), value: null },
+              ...contractTypesList.map((c: any) => ({ label: locale?.startsWith('en') ? (c.nameEn || c.name) : (c.nameAr || c.name), value: c.id })),
             ]"
-            placeholder="نوع العقد"
+            :placeholder="t('contracts.contractType')"
             clearable
             class="rounded-xl"
             @update:value="onFilterChange"
@@ -812,10 +811,10 @@ onMounted(() => {
           <NSelect
             v-model:value="queryParams.branchId"
             :options="[
-              { label: 'جميع الفروع', value: null },
+              { label: t('contracts.filterBranchPlaceholder'), value: null },
               ...branchesList.map((b: LookupItemDto) => ({ label: b.name, value: b.id })),
             ]"
-            placeholder="الفرع"
+            :placeholder="t('contracts.branch')"
             clearable
             class="rounded-xl"
             @update:value="onFilterChange"
@@ -826,12 +825,12 @@ onMounted(() => {
           <NSelect
             v-model:value="queryParams.status"
             :options="[
-              { label: 'جميع الحالات', value: null },
-              { label: 'ساري', value: 'Active' },
-              { label: 'مكتمل', value: 'Completed' },
-              { label: 'ملغي', value: 'Cancelled' },
+              { label: t('contracts.filterStatusPlaceholder'), value: null },
+              { label: t('contracts.active'), value: 'Active' },
+              { label: t('contracts.completed'), value: 'Completed' },
+              { label: t('contracts.cancelled'), value: 'Cancelled' },
             ]"
-            placeholder="الحالة"
+            :placeholder="t('contracts.status')"
             clearable
             class="rounded-xl"
             @update:value="onFilterChange"
@@ -964,14 +963,14 @@ onMounted(() => {
         </div>
 
         <div class="flex items-center justify-end gap-3 pt-2">
-          <NButton @click="showTermsModal = false">إلغاء</NButton>
+          <NButton @click="showTermsModal = false">{{ t('common.cancel') }}</NButton>
           <NButton
             type="primary"
             class="font-bold px-6 rounded-xl"
             :loading="savingTerms"
             @click="saveTermsConfig"
           >
-            حفظ الإعدادات
+            {{ t('common.save') }}
           </NButton>
         </div>
       </div>
@@ -980,7 +979,7 @@ onMounted(() => {
     <!-- Excel Export Modal -->
     <ExportExcelModal
       v-model:show="showExportModal"
-      title="تصدير قائمة العقود إلى إكسيل (Excel)"
+      :title="t('contracts.exportTitle')"
       :total-count="totalCount"
       :current-page-count="contracts.length"
       :loading="exporting"

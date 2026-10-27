@@ -32,16 +32,23 @@ common:
   cancel: Cancel
   confirm: Confirm
   create: Create
-  currency: USD
+  save: Save
+  edit: Edit
+  update: Update
+  currency: SAR
   date: Date
   day: Day
   delete: Delete
-  deleteConfirm: Are you sure to delete this item?
-  deleteMultipleConfirm: Are you sure to delete selected items?
+  exportExcel: Export Excel
+  deleteConfirm: Are you sure you want to delete this item?
+  deleteMultipleConfirm: Are you sure you want to delete selected items?
   deletedMessage: Deleted Successfully
+  savedMessage: Saved Successfully
+  createdMessage: Created Successfully
+  updatedMessage: Updated Successfully
   goHome: Back To Home
   locale: en-US
-  maintenance: Website in under maintenance
+  maintenance: Website is under maintenance
   maintenanceDetail: >-
     We are currently performing scheduled maintenance. We will be back online
     shortly!
@@ -51,14 +58,25 @@ common:
   notFound: Not Found
   oops: Oops Page
   price: Price
-  search: Search
+  search: Search...
   status: Status
+  active: Active
+  inactive: Inactive
   week: Week
   refresh: Refresh
   settings: Settings
   perPage: per page
   filter: Filter
   clearFilter: Clear Filters
+  total: Total
+  all: All
+  loading: Loading...
+  select: Select...
+  back: Back
+  details: Details
+  close: Close
+  required: This field is required
+  notes: Notes
 
 brands:
   brand: Brand
@@ -127,15 +145,6 @@ colors:
     nameRequired: Name is required
   deleteMessage: Color deleted successfully!
   createMessage: New color was added successfully!
-customers:
-  customerName: Customer Name
-  email: Email
-  joinDate: Join Date
-  ordersCount: Orders Count
-  phone: Phone
-  title: Customers
-  points: Points
-  userGroup: UserGroup
 customize:
   color: Color
   flatDesign: Flat Design
@@ -397,6 +406,41 @@ userMenu:
   signOut: sign out
   theme: Theme
 
+customers:
+  customerName: Customer Name
+  email: Email
+  joinDate: Join Date
+  ordersCount: Orders Count
+  phone: Phone
+  points: Points
+  userGroup: UserGroup
+  title: Customers Management
+  subtitle: Manage customer records, national IDs, and contact information
+  list: Customers List
+  create: Add New Customer
+  edit: Edit Customer
+  name: Customer Name
+  nationalId: National ID / Iqama
+  mobile: Mobile Phone
+  address: Address
+  totalCountPrefix: "Total: {count} customers"
+  searchPlaceholder: Search by name, national ID or mobile...
+  exportTitle: Export Customers List to Excel
+  deleteConfirm: Are you sure you want to delete this customer?
+  deleteSuccess: Customer deleted successfully
+  createSuccess: Customer created successfully
+  updateSuccess: Customer updated successfully
+  placeholders:
+    name: Full customer name
+    nationalId: National ID or Iqama number
+    mobile: "Mobile number (e.g. +966500000000)"
+    address: Detailed address
+  validations:
+    nameRequired: Customer name is required
+    nationalIdRequired: National ID is required
+    mobileRequired: Mobile phone is required
+    addressRequired: Address is required
+
 cars:
   title: Cars Management
   list: Cars List
@@ -448,35 +492,54 @@ branches:
 
 contractTypes:
   title: Contract Types
+  subtitle: Approved system contract types (Daily, Weekly, Monthly, and Showroom Sale) - Read Only
   list: Contract Types List
   readOnlyNotice: Contract Types are read-only lookup data and cannot be modified or deleted
+  readOnlyAlert: This table is reference data for read-only access without edit or delete actions to safeguard existing showroom contracts.
   code: Code
-  nameAr: Name (Arabic)
-  nameEn: Name (English)
+  nameAr: Contract Type (Arabic)
+  nameEn: Contract Type (English)
   descriptionAr: Description (Arabic)
   descriptionEn: Description (English)
+  type: Type
+  fixedLookup: Fixed Lookup
   status: Status
   active: Active
   inactive: Inactive
 
 roles:
   title: Roles & Permissions
+  subtitle: Manage system roles and assign granular permissions flexibly
   list: Roles List
   create: Create New Role
   edit: Edit Role & Permissions
   name: Role Name
   description: Description
   isSystemRole: System Role (Protected)
+  systemTag: System
   permissions: Permissions
   permissionsCount: Permissions Count
+  permissionsUnit: "{count} permissions"
+  usersCount: Users Count
+  usersUnit: "{count} users"
   modules: Modules
   selectAll: Select All
   deselectAll: Deselect All
+  selectedCount: "{count} selected"
+  permissionsHelp: Carefully specify required permissions for this role
+  toggleModule: Toggle Module
+  nameAr: Name (Arabic)
+  nameEn: Name (English)
+  nameArPlaceholder: "e.g. Sales Manager"
+  nameEnPlaceholder: "e.g. Sales Manager"
   deleteConfirm: Are you sure you want to delete this role?
   deleteSuccess: Role deleted successfully
   createSuccess: Role created successfully
   updateSuccess: Role updated successfully
   cannotDeleteSystemRole: System roles cannot be deleted
+  validations:
+    nameArRequired: Name in Arabic is required
+    nameEnRequired: Name in English is required
 
 users:
   title: Users Management
@@ -655,6 +718,28 @@ contracts:
   active: Active
   completed: Completed
   cancelled: Cancelled
+  periodAndDates: Duration & Dates
+  rentAndFinancials: Rent & Financials
+  statsTotal: Total Contracts
+  statsActive: Active Contracts
+  statsRevenue: Estimated Revenue
+  statsProfit: Expected Profit
+  filterTypePlaceholder: All Contract Types
+  filterBranchPlaceholder: All Branches
+  filterStatusPlaceholder: All Statuses
+  searchPlaceholder: "Search by contract #, customer, plate..."
+  deleteConfirmTitle: Confirm Contract Deletion
+  deleteConfirmMessage: 'Are you sure you want to delete contract "{number}"? This action cannot be undone.'
+  systemEmployee: System Employee
+  serviceContractForShowroom: Showroom Service Contract
+  taxIncluded: Incl. 15% VAT
+  taxExempt: Tax Exempt
+  beforeTax: Before VAT
+  downPaymentShort: Down Pay
+  totalShort: Total
+  profitShort: Profit
+  perMonth: /month
+  exportTitle: Export Contracts List to Excel
   printReport: Print Report
   downloadPdf: Download PDF
   reportHeading: Car Rental Contract Report
@@ -664,4 +749,95 @@ contracts:
   createSuccess: Contract created successfully
   updateSuccess: Contract updated successfully
   termsUpdateSuccess: Default percentages updated successfully
+  reportBackToList: Back to Contracts List
+  reportTitlePrefix: "Contract Report No: {number}"
+  reportPreparing: Preparing contract report and financial calculations...
+  reportBranch: Issuing Branch
+  reportCertifiedBadge: Certified Contract Report
+  reportParty1Title: First Party (Lessor / Showroom)
+  reportName: "Name:"
+  reportBranchLabel: "Branch:"
+  reportStatusLabel: "Contract Status:"
+  reportStatusActive: Currently Active
+  reportIssueDate: "Issue Date:"
+  reportParty2Title: Second Party (Beneficiary)
+  reportEmployee: "Responsible Employee:"
+  reportEmail: "Email Address:"
+  reportEmployeeRole: "Capacity:"
+  reportEmployeeRoleDesc: System User / Showroom Employee (Service Contract)
+  reportCustomerName: "Customer Name:"
+  reportNationalId: "National ID / Iqama:"
+  reportMobile: "Mobile Phone:"
+  reportVehicleTitle: Vehicle Specifications, Book Value & Accumulated Depreciation
+  reportColor: "Color:"
+  reportChassis: "Chassis Number (VIN):"
+  reportPlateCountry: KSA • Kingdom of Saudi Arabia
+  reportPurchaseDate: Original Purchase Date
+  reportPurchasePrice: Initial Purchase Price (New)
+  reportBookValueStart: Book Value at Contract Start
+  reportAccumulatedDepreciation: Accumulated Vehicle Depreciation
+  reportProductiveAge: Operational / Productive Age
+  reportPeriodTitle: Contract Validity & Duration
+  reportTotalPeriod: "Total Duration:"
+  reportPercentagesTitle: Approved Contract Annual Depreciation Rates
+  reportFinancialTitle: Financial Summary & Showroom Estimated Profit Matrix
+  reportSignaturesTitle: Official Signatures & Legal Declaration
+  reportParty1Sign: First Party Signature & Stamp (Lessor / Showroom)
+  reportParty2Sign: Second Party Signature (Lessee / Beneficiary)
+  reportOfficialStamp: Official Stamp
+  reportSignatureAndName: Signature & Full Name
+  reportFooterNote: Kingdom of Saudi Arabia • Generated electronically by Car Showroom & Rental Management System • Officially certified and valid
+  reportDepreciationBasis: "• Depreciation Basis: 25% annually over 4 years"
+  reportExceededAge: "• Exceeded 4 years (Book value = 1 SAR only)"
+  reportShortTermNotice: "Short-term / On-demand Rental Contract (Daily basis):"
+  reportDailyRent: "Daily Rent:"
+  reportActualRentDays: "Actual Rental Days:"
+  reportTotalRentDue: "Total Rent Due:"
+  reportYearlyScheduleLeaseToOwn: Comprehensive Insurance & Vehicle Depreciation Schedule for Lease-to-Own Contract
+  reportYearlyScheduleGeneral: Detailed Annual 4-Terms Deductions and Vehicle Depreciation Schedule
+  reportScheduleSubtitleLease: "(Insurance: {ins}% • Full vehicle book value depreciation)"
+  reportScheduleSubtitleGeneral: "(Insurance: {ins}% • Maintenance: {maint}% • Replacement: {rep}% • Admin: {admin}%)"
+  reportYearCol: Year
+  reportNetCarValueCol: Net Vehicle Value During Term
+  reportDepreciationCol: Vehicle Depreciation
+  reportInsuranceCol: Comprehensive Insurance
+  reportTotalCostCol: Total Estimated Cost
+  reportMonthlyCostCol: Monthly Vehicle Cost
+  reportYearPrefix: "Year {year}"
+  reportTransfersToCustomer: "(Transfers to Customer)"
+  reportEstInsurance: "Estimated Comprehensive Insurance:"
+  reportEstDepreciationLease: "Vehicle Depreciation (Full Book Value):"
+  reportEstMaintenance: "Estimated Maintenance Cost:"
+  reportEstReplacement: "Estimated Replacement Car Cost:"
+  reportEstAdminFees: "Estimated Admin Fees:"
+  reportRentBeforeDown: "Monthly Rent Installment Before Down Payment:"
+  reportVatStatement: Official Value Added Tax (VAT) Calculation Statement
+  reportVatAppliedBadge: VAT 15% (Applied to Customer)
+  reportVatExemptBadge: VAT Exempt (Not Applied)
+  reportRentBeforeTax: Rent Installment Before VAT
+  reportVatAmountLabel: "VAT Amount ({percent})"
+  reportMonthlyDueFromCustomer: Monthly Rent Due from Customer
+  reportTotalContractWithTax: Total Contract Value (Incl. VAT)
+  reportNotesTerms: "Special Notes & Terms:"
+  reportGeneratedNote: "This report was generated automatically via {app} on: {date}"
+
+settings:
+  title: General System Settings
+  subtitle: Manage operational parameters, thresholds, and financial benchmark rates
+  tag: System Settings
+  tableTitle: Approved Settings & System Variables
+  searchPlaceholder: Search by key or setting name...
+  key: Setting Key
+  name: Setting Name
+  category: Category
+  value: Approved Value
+  editPermission: Edit Access
+  readOnly: Read-Only
+  editable: Editable
+  description: Description & Scope
+  lastModified: Last Updated
+  copiedKey: "Copied key: {key}"
+  bannerTitle: Dynamic Architecture Ready for New System Settings Anytime
+  bannerDesc: This table is connected to a dynamic configuration engine in the database and backend. Any new parameters or variables (such as grace periods, contract clauses, or additional fees) can be added anytime without changing software code.
+
 

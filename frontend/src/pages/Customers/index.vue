@@ -116,7 +116,7 @@ const formData = reactive<CreateCustomerDto>({
 })
 
 // Form Validation Rules
-const rules: FormRules = {
+const rules = computed<FormRules>(() => ({
   name: [
     { required: true, message: t('customers.validations.nameRequired'), trigger: ['blur', 'change'] },
   ],
@@ -129,7 +129,7 @@ const rules: FormRules = {
   address: [
     { required: true, message: t('customers.validations.addressRequired'), trigger: ['blur', 'change'] },
   ],
-}
+}))
 
 // Fetch Customers Table Data
 async function loadCustomers() {
@@ -234,7 +234,7 @@ function handleDelete(customer: CustomerDto) {
 }
 
 // Table Columns
-const columns: DataTableColumns<CustomerDto> = [
+const columns = computed<DataTableColumns<CustomerDto>>(() => [
   {
     title: t('customers.name'),
     key: 'name',
@@ -310,7 +310,7 @@ const columns: DataTableColumns<CustomerDto> = [
       return h(NSpace, { size: 'small' }, { default: () => actions })
     },
   },
-]
+])
 
 function onPageChange(page: number) {
   queryParams.pageIndex = page
@@ -343,7 +343,7 @@ meta:
           <span>👥</span> {{ t('customers.title') }}
         </h1>
         <p class="text-sm text-slate-500 mt-1">
-          إدارة بيانات العملاء، أرقام الهوية الوطنية وبيانات التواصل
+          {{ t('customers.subtitle') }}
         </p>
       </div>
 
@@ -360,7 +360,7 @@ meta:
           <template #icon>
             <n-icon><ExcelIcon class="w-4 h-4 text-emerald-600 dark:text-emerald-400" /></n-icon>
           </template>
-          تصدير إكسيل
+          {{ t('common.exportExcel') }}
         </n-button>
         <n-button v-can="'Customers.Create'" type="primary" @click="openAddModal">
           <template #icon><AddIcon class="w-5 h-5" /></template>
@@ -398,7 +398,7 @@ meta:
           itemCount: totalCount,
           showSizePicker: true,
           pageSizes: [10, 20, 50],
-          prefix: (info) => `إجمالي: ${info.itemCount} عميل`,
+          prefix: (info) => t('customers.totalCountPrefix', { count: info.itemCount }),
           onUpdatePage: onPageChange,
           onUpdatePageSize: onPageSizeChange,
         }"
@@ -424,22 +424,22 @@ meta:
       >
         <!-- 1. Name -->
         <n-form-item path="name" :label="t('customers.name')">
-          <n-input v-model:value="formData.name" placeholder="الاسم الكامل للعميل" autofocus />
+          <n-input v-model:value="formData.name" :placeholder="t('customers.placeholders.name')" autofocus />
         </n-form-item>
 
         <!-- 2. National ID -->
         <n-form-item path="nationalId" :label="t('customers.nationalId')">
-          <n-input v-model:value="formData.nationalId" placeholder="رقم الهوية الوطنية أو الإقامة" />
+          <n-input v-model:value="formData.nationalId" :placeholder="t('customers.placeholders.nationalId')" />
         </n-form-item>
 
         <!-- 3. Mobile -->
         <n-form-item path="mobile" :label="t('customers.mobile')">
-          <n-input v-model:value="formData.mobile" placeholder="رقم الجوال (مثال: +966500000000)" />
+          <n-input v-model:value="formData.mobile" :placeholder="t('customers.placeholders.mobile')" />
         </n-form-item>
 
         <!-- 4. Address -->
         <n-form-item path="address" :label="t('customers.address')">
-          <n-input v-model:value="formData.address" type="textarea" placeholder="العنوان التفصيلي" :rows="2" />
+          <n-input v-model:value="formData.address" type="textarea" :placeholder="t('customers.placeholders.address')" :rows="2" />
         </n-form-item>
       </n-form>
 
@@ -458,7 +458,7 @@ meta:
     <!-- Excel Export Modal -->
     <ExportExcelModal
       v-model:show="showExportModal"
-      title="تصدير قائمة العملاء إلى إكسيل (Excel)"
+      :title="t('customers.exportTitle')"
       :total-count="totalCount"
       :current-page-count="customers.length"
       :loading="exporting"

@@ -31,12 +31,14 @@ import {
 import { storeToRefs } from 'pinia'
 import type { SidebarMenuOption } from './SidebarMenu.vue'
 import { appConfig } from '~/config/app.config'
+import { useAppConfig } from '~/composables/useAppConfig'
 
 const layoutStore = useLayoutStore()
 const accountStore = useAccountStore()
 const { collapsed, forceCollapsed, mobileMode, mobileMenuClosed } =
   storeToRefs(layoutStore)
 const { t } = useI18n()
+const { appName, logoAlt } = useAppConfig()
 
 const effectiveCollapsed = computed(() => {
   if (mobileMode.value) return mobileMenuClosed.value
@@ -203,10 +205,10 @@ router.beforeEach(() => {
       <div class="flex w-full justify-between items-center overflow-hidden">
         <div class="flex w-full justify-start items-center gap-2 overflow-hidden">
           <div class="logo-bg shrink-0">
-            <img :src="appConfig.logoPath" :alt="appConfig.logoAlt" class="logo">
+            <img :src="appConfig.logoPath" :alt="logoAlt" class="logo">
           </div>
-          <h1 class="main-title" :title="appConfig.appName">
-            {{ appConfig.appName }}
+          <h1 class="main-title" :title="appName">
+            {{ appName }}
           </h1>
         </div>
 
