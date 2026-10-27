@@ -295,8 +295,26 @@ public class ContractCalculationService : IContractCalculationService
         }
 
         // 5. الملخص المالي والإيرادات والأرباح
-        var monthlyRent = request.MonthlyRent ?? 0m;
+        var rawMonthlyRent = request.MonthlyRent ?? 0m;
         var downPayment = request.ContractTypeId == 2 ? 0m : (request.DownPayment ?? 0m);
+
+        // 6. حساب ضريبة القيمة المضافة (VAT)
+        // في عقود الخدمة (ContractTypeId == 1)، لا توجد ضريبة لأن السيارة مخصصة لموظف المعرض
+        var isTaxApplied = request.ContractTypeId != 1 && request.ApplyTax;
+        var taxPercentage = isTaxApplied ? (request.TaxPercentage ?? defaultVat) : 0m;
+        if (taxPercentage < 0m) taxPercentage = 0m;
+
+        // الضريبة تطبق على قيمة الإيجار الأساسي مباشرة (وليس على الصافي بعد الدفعة المقدمة):
+        // مثال: إذا كان قسط الإيجار الشهري 1000 والضريبة 15%، تصبح قيمة الضريبة 150
+        // ويتم التعامل مع الإيجار الشهري على أساس 1150، ثم تتبع باقي الحسابات كما هي.
+        decimal monthlyTaxAmount = 0m;
+        decimal monthlyRent = rawMonthlyRent;
+
+        if (isTaxApplied && taxPercentage > 0m)
+        {
+            monthlyTaxAmount = Math.Round(rawMonthlyRent * (taxPercentage / 100m), 2);
+            monthlyRent = Math.Round(rawMonthlyRent + monthlyTaxAmount, 2);
+        }
 
         // الإيجار اليومي التقديري: قيمة الإيجار الشهري مقسومة على 30 يوماً
         var dailyRent = monthlyRent > 0 ? Math.Round(monthlyRent / 30m, 2) : 0m;
@@ -357,27 +375,17 @@ public class ContractCalculationService : IContractCalculationService
             downPaymentMonthlyDiscount = Math.Round(Math.Abs(monthlyRent - adjustedMonthlyRent), 2);
         }
 
-        // 6. حساب ضريبة القيمة المضافة (VAT)
-        // في عقود الخدمة (ContractTypeId == 1)، لا توجد ضريبة لأن السيارة مخصصة لموظف المعرض
-        var isTaxApplied = request.ContractTypeId != 1 && request.ApplyTax;
-        var taxPercentage = isTaxApplied ? (request.TaxPercentage ?? defaultVat) : 0m;
-        if (taxPercentage < 0m) taxPercentage = 0m;
-
-        decimal monthlyTaxAmount = 0m;
-        decimal monthlyRentWithTax = adjustedMonthlyRent;
+        // إجمالي قيمة الضريبة على كامل مدة العقد
         decimal totalTaxAmount = 0m;
-        decimal totalPriceWithTax = totalEstimatedRevenue;
-
-        if (isTaxApplied && taxPercentage > 0m)
+        if (isTaxApplied && monthlyTaxAmount > 0m)
         {
-            // الضريبة الشهرية تُحمل على العميل فوق قيمة الإيجار الشهري المقترح
-            monthlyTaxAmount = Math.Round(adjustedMonthlyRent * (taxPercentage / 100m), 2);
-            monthlyRentWithTax = Math.Round(adjustedMonthlyRent + monthlyTaxAmount, 2);
-
-            // إجمالي قيمة الضريبة على كامل مدة العقد
-            totalTaxAmount = Math.Round(totalEstimatedRevenue * (taxPercentage / 100m), 2);
-            totalPriceWithTax = Math.Round(totalEstimatedRevenue + totalTaxAmount, 2);
+            totalTaxAmount = request.ContractTypeId == 2
+                ? Math.Round((monthlyTaxAmount / 30m) * rentDays, 2)
+                : Math.Round(monthlyTaxAmount * periodMonths, 2);
         }
+
+        decimal monthlyRentWithTax = adjustedMonthlyRent;
+        decimal totalPriceWithTax = totalEstimatedRevenue;
 
         return new ContractCalculationResultDto(
             CarPurchasePrice: purchasePrice,

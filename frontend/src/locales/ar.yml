@@ -501,10 +501,18 @@ contracts:
   termsConfigTitle: إعدادات نسب بنود الإهلاك السنوية
   termsConfigSubtitle: ضبط النسب المئوية الافتراضية للبنود الأربعة (التأمين، الصيانة، السيارة البديلة، المصاريف الإدارية، ونسبة الإهلاك) لتطبيقها تلقائياً على العقود الجديدة مع إمكانية التعديل اليدوي لكل عقد.
   types:
-    service: عقد خدمة
-    shortTerm: عقد إيجار قصير الأجل (أو حسب الطلب)
-    longTerm: عقد إيجار طويل الأجل
-    leaseToOwn: عقد إيجار منتهي بالتمليك
+    service: عقد خدمة (معرض)
+    serviceTag: عقد خدمة
+    serviceDesc: السيارة مخصصة لموظف المعرض، لا توجد دفعة مقدمة ولا أقساط شهرية.
+    shortTerm: إيجار قصير الأجل / حسب الطلب
+    shortTermTag: سنة أو أقل
+    shortTermDesc: مدة ≤ 12 شهراً، بدون دفعة مقدمة، يحدد حد الكيلومتر وتطبق البنود الـ 4.
+    longTerm: إيجار طويل الأجل
+    longTermTag: سنة فأكثر
+    longTermDesc: مدة ≥ 12 شهراً، يدعم الدفعة المقدمة والإيجار، وتطبق البنود الـ 4.
+    leaseToOwn: إيجار منتهي بالتمليك
+    leaseToOwnTag: منتهي بالتمليك
+    leaseToOwnDesc: يدعم الدفعة المقدمة والإيجار الشهري، ولا تخصم منه البنود الأربعة.
   stepType: 1. تحديد نوع العقد
   stepCar: 2. اختيار السيارة والقيمة الدفترية
   stepBeneficiary: 3. المستفيد والفرع
@@ -666,6 +674,117 @@ contracts:
   reportNotesTerms: "ملاحظات وشروط خاصة:"
   reportGeneratedNote: "تم إصدار هذا التقرير آلياً عبر نظام {app} بتاريخ: {date}"
 
+  # Depreciation Modal
+  termsConfigModalTitle: الإعدادات العامة لنسب البنود الأربعة للإهلاك
+  termsConfigModalAlert: هذه النسب المئوية السنوية تطبق تلقائياً كقيم افتراضية عند إنشاء عقود الإيجار التي تخضع لبنود الخصم (قصير الأجل وطويل الأجل)، ويمكنك تعديلها يدوياً لكل عقد على حدة.
+  termInsurance: "1. التأمين الشامل (%)"
+  termInsuranceHint: "الافتراضي: 4% سنوياً من قيمة السيارة"
+  termMaintenance: "2. الصيانة (%)"
+  termMaintenanceHint: "الافتراضي: 5% سنوياً من قيمة السيارة"
+  termReplacementCar: "3. سيارة بديلة (%)"
+  termReplacementCarHint: "الافتراضي: 1% سنوياً من قيمة السيارة"
+  termAdminFees: "4. مصاريف إدارية (%)"
+  termAdminFeesHint: "الافتراضي: 1% سنوياً من قيمة السيارة"
+  termAnnualDepreciation: "معدل إهلاك السيارة السنوي (%)"
+  termAnnualDepreciationHint: يتم إهلاك السيارة خلال أربع سنوات بمعدل 25% سنوياً حتى تصبح القيمة الدفترية 1 ريال فقط.
+
+  # Contract Create Page
+  createTitle: إنشاء عقد سيارة جديد
+  createSubtitle: تحديد نوع العقد، السيارة، المستفيد، والمدد مع حسابات إهلاك لحظية دقيقة
+  saveAndIssue: حفظ وإصدار العقد
+  stepTypeSelect: تحديد نوع العقد المطلوب
+  searchCarHint: بحث باللوحة أو الموديل
+  productiveAgeNote: "* العمر الإنتاجي المقدر للسيارة:"
+  exceededFourYearsNote: "(تجاوزت 4 سنوات فأصبحت قيمتها الدفترية 1 ريال)"
+  employeeBeneficiaryLabel: "الموظف / مستخدم النظام المستفيد *"
+  customerBeneficiaryLabel: "العميل المستفيد *"
+  branchLabel: "فرع المعرض *"
+  dur1Year: سنة
+  dur1Point5: سنة ونصف
+  dur2Years: سنتان
+  dur3Years: 3 سنوات
+  shortTermMaxYear: "عقد قصير الأجل: الحد الأقصى سنة واحدة (12 شهراً)"
+  calculatedDuration: "المدة المحسوبة: {months} شهر ({days} يوم)"
+  calculatedYears: "سنوات العقد للإهلاك: {years} سنة"
+  dailyRentLabel: "الإيجار اليومي:"
+  excludingStartEndDays: "(بدون بداية ونهاية اليوم)"
+  rentDueLabel: "الإيجار المستحق:"
+  noDownPaymentShortTerm: لا توجد دفعة مقدمة في قصير الأجل
+  applyVatLabel: تطبيق ضريبة القيمة المضافة (15%) على عقد الإيجار
+  vatAppliedTag: مطبقة 15%
+  vatExemptTag: غير مطبقة (معفى)
+  vatDesc: تُحمل الضريبة المضافة (15%) على العميل المستفيد وتُضاف فوق قيمة قسط الإيجار.
+  vatApplied: مطبقة
+  vatExempt: معفى
+  baseMonthlyRentBeforeTax: "قسط الإيجار الأساسي (قبل الضريبة):"
+  vatOnRentLabel: "ضريبة القيمة المضافة ({percent}% على الإيجار):"
+  monthlyRentWithVat: "قسط الإيجار الشهري (شامل الضريبة):"
+  dueAfterDownPayment: "(المستحق بعد خصم الدفعة: {amount} {currency}/شهر)"
+  vatNotAppliedNotice: "ℹ️ الضريبة غير مطبقة على هذا العقد — يدفع العميل القسط الأساسي فقط ({amount} {currency}) دون إضافة أي ضريبة."
+  customizablePerContract: قيم قابلة للتعديل لكل عقد
+  leaseToOwnCostsTitle: تكاليف عقد الإيجار المنتهي بالتمليك
+  leaseToOwnCostsSubtitle: تأمين شامل + إهلاك كامل القيمة الدفترية فقط
+  depreciationAtContractEnd: "إهلاك السيارة في نهاية العقد:"
+  leaseToOwnDepreciationExplanation: "يساوي كامل القيمة الدفترية للسيارة (100%) وتصبح قيمتها المتبقية للشركة (0 ر.س) لانتقال ملكيتها للعميل، ولا توجد بنود صيانة أو سيارة بديلة أو مصاريف إدارية دورية."
+  notesAndTerms: شروط وملاحظات إضافية
+  notesPlaceholder: أدخل أي شروط خاصة أو ملاحظات إضافية للعقد...
+  liveEngineTitle: محرك الحسابات اللحظية
+  liveEngineSubtitle: يُحسب فورياً مع كل إدخال وتعديل وفق الشروط المعتمدة
+  shortTermDailyNotice: ⏱️ عقد قصير الأجل / حسب الطلب (حساب يومي)
+  maxOneYear: الحد الأقصى سنة واحدة
+  dailyValue: "قيمة اليوم (الإيجار الشهري ÷ 30):"
+  estimatedRentDue: "الإيجار المستحق التقديري:"
+  carValueAndDepreciationTitle: قيمة وإهلاك السيارة خلال مدة العقد
+  yearsAndMonths: "{years} سنة ({months} شهر)"
+  carValue: "قيمة السيارة:"
+  netCarValueDuringContract: "صافي قيمة السيارة خلال مدة العقد:"
+  carDepreciationAtEnd: "قيمة إهلاك السيارة نهاية مدة العقد:"
+  equalsBookValue: "(= القيمة الدفترية)"
+  estOperationalTermsTitle: تقدير بنود التشغيل الـ 4 خلال فترة العقد
+  cumulativeForYears: تراكمي لسنوات العقد
+  estInsuranceWithPercent: "تقدير تأمين شامل للسيارة ({percent}% سنوياً):"
+  estMaintenanceWithPercent: "تقدير تكلفة الصيانة خلال فترة العقد ({percent}% سنوياً):"
+  estReplacementWithPercent: "تقدير تكلفة سيارة بديلة خلال فترة العقد ({percent}% سنوياً):"
+  estAdminFeesWithPercent: "تقدير تكلفة المصاريف الإدارية خلال فترة العقد ({percent}% سنوياً):"
+  insuranceOnly: تأمين شامل فقط
+  estOtherCosts: "تقدير تكلفة الصيانة والبديلة والإدارية:"
+  borneByCustomer: 0.00 ر.س (يتحملها المستأجر)
+  financialCalculationsTitle: الحسابات المالية وقسط الإيجار وفائدة الشركة
+  totalEstimatedCostLabel: "إجـمالي التكلفة التقديرية:"
+  monthlyCarCostLabel: "قيمة تكلفة للسيارة (شهرياً):"
+  monthlyCompanyProfitLabel: "قيمة الفائدة للشركة من تشغيل السيارة:"
+  monthlyRentBeforeDownPaymentLabel: "قيمة قسط الإيجار ({status}):"
+  downPaymentAmountLabel: "قيمة الدفعة المقدمة:"
+  downPaymentDiscountLabel: "خصم الدفعة المقدمة من قسط الإيجار الشهري:"
+  rentAfterDownPaymentDiscountLabel: "قسط الإيجار الشهري بعد خصم الدفعة:"
+  vatLabel: "ضريبة القيمة المضافة {status}:"
+  vatNotAppliedLabel: "0.00 ر.س (غير مطبقة)"
+  totalContractWithTaxDuration: "إجمالي العقد شامل الضريبة ({months} شهر):"
+  yearlyScheduleTitle: "حسابات سنوات العقد (الأولى، الثانية، ...)"
+  yearlyCardsTab: تفصيل بالسنوات
+  yearlyTableTab: جدول مقارن
+  duringYear: "خلال السنة {year}:"
+  monthlyCostFormatted: "التكلفة الشهرية: {cost} {currency}"
+  year: السنة
+  netCar: صافي السيارة
+  totalCost: إجمالي التكلفة
+  costPerMonth: التكلفة/شهر
+  confirmAndIssueNow: تأكيد وإصدار العقد الآن
+  emptyCalculationPrompt: قم بتحديد بيانات السيارة وتواريخ العقد لحساب الأرقام والجدول اللحظي...
+  colorLabel: "اللون:"
+  chassisLabel: "الشاسيه:"
+  validation:
+    selectCarFirst: يرجى اختيار السيارة أولاً
+    selectBranch: يرجى اختيار الفرع
+    serviceRequiresEmployee: عقد الخدمة يتطلب اختيار الموظف المستفيد
+    leaseRequiresCustomer: عقد الإيجار يتطلب اختيار العميل المستفيد
+    shortTermMaxOneYear: عقد الإيجار قصير الأجل يجب ألا يتجاوز سنة واحدة (12 شهراً)
+    longTermMinOneYear: عقد الإيجار طويل الأجل يجب أن يكون سنة واحدة على الأقل (12 شهراً)
+    loadError: فشل تحميل البيانات الأساسية
+    createNumberSuccess: 'تم إنشاء العقد رقم "{number}" بنجاح!'
+    createFail: فشل إنشاء العقد
+    saveError: حدث خطأ أثناء حفظ العقد
+
 settings:
   title: إعدادات النظام العامة
   subtitle: إدارة وضبط المتغيرات والمعايير التشغيلية والنسب المالية المعتمدة في النظام
@@ -684,4 +803,30 @@ settings:
   copiedKey: "تم نسخ الرمز: {key}"
   bannerTitle: بنية ديناميكية جاهزة لإضافة إعدادات جديدة للنظام في أي وقت
   bannerDesc: تم ربط هذا الجدول بمحرك إعدادات ديناميكي في قاعدة البيانات والباك إند، بحيث يمكن في أي وقت إضافة أي متغيرات أو قيم جديدة للنظام (مثل فترات السماح، شروط العقود، أرقام السجلات أو الرسوم الإضافية) لتظهر تلقائياً في هذا الجدول دون أي تعديل في بنية البرمجيات.
+
+export:
+  title: تصدير البيانات إلى ملف إكسيل (Excel)
+  certifiedReport: "تصدير تقرير إكسيل معتمد (.{format})"
+  certifiedReportDesc: يدعم اللغة العربية (RTL) مع التنسيق التلقائي للأعمدة والمبالغ
+  totalAvailable: "إجمالي متاح {count}"
+  fileFormat: "صيغة ملف الإكسيل:"
+  xlsxTitle: ".xlsx (قياسي)"
+  xlsxDesc: مصنف Excel قياسي متوافق مع كافة البرامج والهواتف
+  xlsmTitle: ".xlsm (ماكرو)"
+  xlsmDesc: مصنف Excel مدعوم بماكرو وقوالب الـ VBA
+  scopeLabel: "حدد نطاق وسجلات التصدير:"
+  allFilteredTitle: جميع النتائج المطابقة للفلتر
+  filteredBadge: شامل الفلتر
+  allFilteredDesc: تصدير جميع السجلات التي تطابق معايير البحث والفلترة دون التقيد بحد الصفحة
+  currentPageTitle: الصفحة الحالية فقط
+  currentPageDesc: تصدير العناصر المعروضة حالياً في جدول الصفحة الحالية فقط
+  customCountTitle: تحديد عدد مخصص من السجلات
+  customCountDesc: التحكم في العدد المراد تصديره مستقلاً عن حد الـ Pagination (مثلاً 50، 100، إلخ)
+  recordUnit: سجل
+  requiredCount: "العدد المطلوب:"
+  all: الكل
+  willExport: "سيتم تصدير:"
+  exportSummary: "{count} سجل بصيغة .{format}"
+  exportButton: "تصدير إلى ملف .{format} ({count})"
+
 

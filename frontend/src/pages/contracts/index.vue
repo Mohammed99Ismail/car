@@ -410,13 +410,13 @@ async function saveTermsConfig() {
       annualDepreciationPercentage: termsConfig.annualDepreciationPercentage,
     })
     if (isApiSuccess(res)) {
-      message.success('تم تحديث نسب البنود الأربعة للإهلاك بنجاح!')
+      message.success(t('contracts.termsUpdateSuccess'))
       showTermsModal.value = false
     } else {
-      message.error(res.message || 'فشل تحديث الإعدادات')
+      message.error(res.message || t('common.updatedMessage'))
     }
   } catch {
-    message.error('حدث خطأ أثناء حفظ الإعدادات')
+    message.error(t('contracts.validation.saveError'))
   } finally {
     savingTerms.value = false
   }
@@ -870,18 +870,18 @@ onMounted(() => {
     <NModal
       v-model:show="showTermsModal"
       preset="card"
-      title="الإعدادات العامة لنسب البنود الأربعة للإهلاك"
+      :title="t('contracts.termsConfigModalTitle')"
       class="max-w-xl rounded-2xl shadow-2xl"
     >
       <div class="space-y-5">
         <NAlert type="info" :bordered="false" class="rounded-xl">
-          هذه النسب المئوية السنوية تطبق تلقائياً كقيم افتراضية عند إنشاء عقود الإيجار التي تخضع لبنود الخصم (قصير الأجل وطويل الأجل)، ويمكنك تعديلها يدوياً لكل عقد على حدة.
+          {{ t('contracts.termsConfigModalAlert') }}
         </NAlert>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
             <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
-              1. التأمين الشامل (%)
+              {{ t('contracts.termInsurance') }}
             </label>
             <NInputNumber
               v-model:value="termsConfig.insurancePercentage"
@@ -892,12 +892,12 @@ onMounted(() => {
             >
               <template #suffix>%</template>
             </NInputNumber>
-            <p class="text-[11px] text-slate-400 mt-1">الافتراضي: 4% سنوياً من قيمة السيارة</p>
+            <p class="text-[11px] text-slate-400 mt-1">{{ t('contracts.termInsuranceHint') }}</p>
           </div>
 
           <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
             <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
-              2. الصيانة (%)
+              {{ t('contracts.termMaintenance') }}
             </label>
             <NInputNumber
               v-model:value="termsConfig.maintenancePercentage"
@@ -908,12 +908,12 @@ onMounted(() => {
             >
               <template #suffix>%</template>
             </NInputNumber>
-            <p class="text-[11px] text-slate-400 mt-1">الافتراضي: 5% سنوياً من قيمة السيارة</p>
+            <p class="text-[11px] text-slate-400 mt-1">{{ t('contracts.termMaintenanceHint') }}</p>
           </div>
 
           <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
             <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
-              3. سيارة بديلة (%)
+              {{ t('contracts.termReplacementCar') }}
             </label>
             <NInputNumber
               v-model:value="termsConfig.replacementCarPercentage"
@@ -924,12 +924,12 @@ onMounted(() => {
             >
               <template #suffix>%</template>
             </NInputNumber>
-            <p class="text-[11px] text-slate-400 mt-1">الافتراضي: 1% سنوياً من قيمة السيارة</p>
+            <p class="text-[11px] text-slate-400 mt-1">{{ t('contracts.termReplacementCarHint') }}</p>
           </div>
 
           <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
             <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
-              4. مصاريف إدارية (%)
+              {{ t('contracts.termAdminFees') }}
             </label>
             <NInputNumber
               v-model:value="termsConfig.adminFeesPercentage"
@@ -940,13 +940,13 @@ onMounted(() => {
             >
               <template #suffix>%</template>
             </NInputNumber>
-            <p class="text-[11px] text-slate-400 mt-1">الافتراضي: 1% سنوياً من قيمة السيارة</p>
+            <p class="text-[11px] text-slate-400 mt-1">{{ t('contracts.termAdminFeesHint') }}</p>
           </div>
         </div>
 
         <div class="bg-blue-50/50 dark:bg-blue-950/20 p-4 rounded-xl border border-blue-200/50 dark:border-blue-900/40">
           <label class="text-xs font-bold text-blue-900 dark:text-blue-300 block mb-1.5">
-            معدل إهلاك السيارة السنوي (%)
+            {{ t('contracts.termAnnualDepreciation') }}
           </label>
           <NInputNumber
             v-model:value="termsConfig.annualDepreciationPercentage"
@@ -958,7 +958,7 @@ onMounted(() => {
             <template #suffix>%</template>
           </NInputNumber>
           <p class="text-[11px] text-slate-500 mt-1">
-            يتم إهلاك السيارة خلال أربع سنوات بمعدل 25% سنوياً حتى تصبح القيمة الدفترية 1 ريال فقط.
+            {{ t('contracts.termAnnualDepreciationHint') }}
           </p>
         </div>
 

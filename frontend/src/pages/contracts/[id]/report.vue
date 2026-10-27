@@ -625,7 +625,7 @@ onMounted(() => {
             <div class="p-2.5 bg-white rounded-xl border border-slate-200">
               <span class="text-slate-500 block text-[11px] mb-0.5">{{ t('contracts.reportRentBeforeTax') }}</span>
               <strong class="text-slate-900 font-mono text-sm">
-                {{ formatMoney(reportData.calculation.adjustedMonthlyRent) }} {{ t('contracts.sar') }}
+                {{ formatMoney(reportData.contract.monthlyRent || (reportData.contract.isTaxApplied ? reportData.calculation.monthlyRentBeforeDownPayment - reportData.calculation.monthlyTaxAmount : reportData.calculation.monthlyRentBeforeDownPayment)) }} {{ t('contracts.sar') }}
               </strong>
             </div>
 

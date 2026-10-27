@@ -62,6 +62,7 @@ import { useUserService } from '~/services/user.service'
 
 const router = useRouter()
 const message = useMessage()
+const { t, locale } = useI18n()
 
 const contractService = useContractService()
 const customerService = useCustomerService()
@@ -313,7 +314,7 @@ watch(
       maxEnd.setFullYear(start.getFullYear() + 1)
       if (newEnd > maxEnd.getTime()) {
         form.endDate = maxEnd.getTime()
-        message.warning('عقد الإيجار قصير الأجل أو حسب الطلب لا يمكن أن يتجاوز سنة واحدة (12 شهراً).')
+        message.warning(t('contracts.validation.shortTermMaxOneYear'))
       }
     }
   },
@@ -408,37 +409,37 @@ async function loadInit() {
 
     triggerCalculation()
   } catch (err) {
-    message.error('فشل تحميل البيانات الأساسية')
+    message.error(t('contracts.validation.loadError'))
   }
 }
 
 // Submit Create
 async function handleCreate() {
   if (!form.carId) {
-    message.warning('يرجى اختيار السيارة أولاً')
+    message.warning(t('contracts.validation.selectCarFirst'))
     return
   }
   if (!form.branchId) {
-    message.warning('يرجى اختيار الفرع')
+    message.warning(t('contracts.validation.selectBranch'))
     return
   }
   if (form.contractTypeId === 1 && !form.userId) {
-    message.warning('عقد الخدمة يتطلب اختيار الموظف المستفيد')
+    message.warning(t('contracts.validation.serviceRequiresEmployee'))
     return
   }
   if (form.contractTypeId > 1 && !form.customerId) {
-    message.warning('عقد الإيجار يتطلب اختيار العميل المستفيد')
+    message.warning(t('contracts.validation.leaseRequiresCustomer'))
     return
   }
 
   // Duration validations
   const diffDays = (form.endDate - form.startDate) / (1000 * 3600 * 24)
   if (form.contractTypeId === 2 && diffDays > 366) {
-    message.error('عقد الإيجار قصير الأجل يجب ألا يتجاوز سنة واحدة (12 شهراً)')
+    message.error(t('contracts.validation.shortTermMaxOneYear'))
     return
   }
   if (form.contractTypeId === 3 && diffDays < 360) {
-    message.error('عقد الإيجار طويل الأجل يجب أن يكون سنة واحدة على الأقل (12 شهراً)')
+    message.error(t('contracts.validation.longTermMinOneYear'))
     return
   }
 
@@ -468,13 +469,13 @@ async function handleCreate() {
 
     const res = await contractService.create(payload)
     if (isApiSuccess(res) && res.data) {
-      message.success(`تم إنشاء العقد رقم "${res.data.contractNumber}" بنجاح!`)
+      message.success(t('contracts.validation.createNumberSuccess', { number: res.data.contractNumber }))
       router.push(`/contracts/${res.data.id}/report`)
     } else {
-      message.error(res.message || 'فشل إنشاء العقد')
+      message.error(res.message || t('contracts.validation.createFail'))
     }
   } catch (err: any) {
-    message.error('حدث خطأ أثناء حفظ العقد')
+    message.error(t('contracts.validation.saveError'))
   } finally {
     submitting.value = false
   }
@@ -501,10 +502,10 @@ onMounted(() => {
         </NButton>
         <div>
           <h1 class="text-xl md:text-2xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-2">
-            إنشاء عقد سيارة جديد
+            {{ t('contracts.createTitle') }}
           </h1>
           <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-            تحديد نوع العقد، السيارة، المستفيد، والمدد مع حسابات إهلاك لحظية دقيقة
+            {{ t('contracts.createSubtitle') }}
           </p>
         </div>
       </div>
@@ -515,7 +516,7 @@ onMounted(() => {
           class="rounded-xl"
           @click="router.push('/contracts')"
         >
-          إلغاء
+          {{ t('common.cancel') }}
         </NButton>
 
         <NButton
@@ -527,7 +528,7 @@ onMounted(() => {
           <template #icon>
             <NIcon><SaveIcon /></NIcon>
           </template>
-          حفظ وإصدار العقد
+          {{ t('contracts.saveAndIssue') }}
         </NButton>
       </div>
     </div>
@@ -540,7 +541,7 @@ onMounted(() => {
         <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700/60 space-y-4">
           <h2 class="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
             <span class="w-6 h-6 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300 flex items-center justify-center text-xs font-black">1</span>
-            تحديد نوع العقد المطلوب
+            {{ t('contracts.stepTypeSelect') }}
           </h2>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -553,11 +554,11 @@ onMounted(() => {
               <div>
                 <div class="flex items-center justify-between mb-2">
                   <span class="text-base">🛠️</span>
-                  <NTag size="small" type="info" :bordered="false" round>عقد خدمة</NTag>
+                  <NTag size="small" type="info" :bordered="false" round>{{ t('contracts.types.serviceTag') }}</NTag>
                 </div>
-                <h3 class="font-bold text-sm text-slate-800 dark:text-slate-100">عقد خدمة (معرض)</h3>
+                <h3 class="font-bold text-sm text-slate-800 dark:text-slate-100">{{ t('contracts.types.service') }}</h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  السيارة مخصصة لموظف المعرض، لا توجد دفعة مقدمة ولا أقساط شهرية.
+                  {{ t('contracts.types.serviceDesc') }}
                 </p>
               </div>
             </div>
@@ -571,11 +572,11 @@ onMounted(() => {
               <div>
                 <div class="flex items-center justify-between mb-2">
                   <span class="text-base">⏱️</span>
-                  <NTag size="small" type="warning" :bordered="false" round>سنة أو أقل</NTag>
+                  <NTag size="small" type="warning" :bordered="false" round>{{ t('contracts.types.shortTermTag') }}</NTag>
                 </div>
-                <h3 class="font-bold text-sm text-slate-800 dark:text-slate-100">إيجار قصير الأجل / حسب الطلب</h3>
+                <h3 class="font-bold text-sm text-slate-800 dark:text-slate-100">{{ t('contracts.types.shortTerm') }}</h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  مدة &le; 12 شهراً، بدون دفعة مقدمة، يحدد حد الكيلومتر وتطبق البنود الـ 4.
+                  {{ t('contracts.types.shortTermDesc') }}
                 </p>
               </div>
             </div>
@@ -589,11 +590,11 @@ onMounted(() => {
               <div>
                 <div class="flex items-center justify-between mb-2">
                   <span class="text-base">📅</span>
-                  <NTag size="small" type="primary" :bordered="false" round>سنة فأكثر</NTag>
+                  <NTag size="small" type="primary" :bordered="false" round>{{ t('contracts.types.longTermTag') }}</NTag>
                 </div>
-                <h3 class="font-bold text-sm text-slate-800 dark:text-slate-100">إيجار طويل الأجل</h3>
+                <h3 class="font-bold text-sm text-slate-800 dark:text-slate-100">{{ t('contracts.types.longTerm') }}</h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  مدة &ge; 12 شهراً، يدعم الدفعة المقدمة والإيجار، وتطبق البنود الـ 4.
+                  {{ t('contracts.types.longTermDesc') }}
                 </p>
               </div>
             </div>
@@ -607,11 +608,11 @@ onMounted(() => {
               <div>
                 <div class="flex items-center justify-between mb-2">
                   <span class="text-base">🔑</span>
-                  <NTag size="small" type="success" :bordered="false" round>منتهي بالتمليك</NTag>
+                  <NTag size="small" type="success" :bordered="false" round>{{ t('contracts.types.leaseToOwnTag') }}</NTag>
                 </div>
-                <h3 class="font-bold text-sm text-slate-800 dark:text-slate-100">إيجار منتهي بالتمليك</h3>
+                <h3 class="font-bold text-sm text-slate-800 dark:text-slate-100">{{ t('contracts.types.leaseToOwn') }}</h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  يدعم الدفعة المقدمة والإيجار الشهري، ولا تخصم منه البنود الأربعة.
+                  {{ t('contracts.types.leaseToOwnDesc') }}
                 </p>
               </div>
             </div>
@@ -623,18 +624,18 @@ onMounted(() => {
           <h2 class="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center justify-between">
             <span class="flex items-center gap-2">
               <span class="w-6 h-6 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300 flex items-center justify-center text-xs font-black">2</span>
-              اختيار السيارة والقيمة الدفترية
+              {{ t('contracts.stepCar') }}
             </span>
-            <span class="text-xs text-slate-400">بحث باللوحة أو الموديل</span>
+            <span class="text-xs text-slate-400">{{ t('contracts.searchCarHint') }}</span>
           </h2>
 
           <NSelect
             v-model:value="form.carId"
             :options="cars.map(c => ({
-              label: `${c.plateNumber} — ${c.makeName} ${c.modelName} (${c.manufactureYear}) [دفترية: ${c.bookValue.toLocaleString()} ر.س]`,
+              label: `${c.plateNumber} — ${c.makeName} ${c.modelName} (${c.manufactureYear}) [${t('contracts.bookValue')}: ${c.bookValue.toLocaleString()} ${t('common.currency')}]`,
               value: c.id
             }))"
-            placeholder="ابحث برقم لوحة السيارة (حروف وأرقام) أو الموديل..."
+            :placeholder="t('contracts.carSelectionPlaceholder')"
             filterable
             class="rounded-xl"
             @update:value="triggerCalculation"
@@ -650,7 +651,7 @@ onMounted(() => {
                     {{ selectedCar.makeName }} {{ selectedCar.modelName }} ({{ selectedCar.manufactureYear }})
                   </h4>
                   <p class="text-xs text-slate-500">
-                    اللون: {{ selectedCar.color }} • الشاسيه: {{ selectedCar.chassisNumber }}
+                    {{ t('contracts.colorLabel') }} {{ selectedCar.color }} • {{ t('contracts.chassisLabel') }} {{ selectedCar.chassisNumber }}
                   </p>
                 </div>
               </div>
@@ -667,38 +668,38 @@ onMounted(() => {
             <!-- Book Value & Depreciation Stats -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
               <div class="bg-white/80 dark:bg-slate-800/80 p-2.5 rounded-lg border border-slate-200/50 dark:border-slate-700/50">
-                <span class="text-[11px] text-slate-500 block">تاريخ الشراء</span>
+                <span class="text-[11px] text-slate-500 block">{{ t('contracts.purchaseDate') }}</span>
                 <span class="font-bold text-xs text-slate-700 dark:text-slate-200">
-                  {{ new Date(selectedCar.purchaseDate).toLocaleDateString('ar-SA') }}
+                  {{ new Date(selectedCar.purchaseDate).toLocaleDateString(locale === 'ar' ? 'ar-SA' : 'en-US') }}
                 </span>
               </div>
 
               <div class="bg-white/80 dark:bg-slate-800/80 p-2.5 rounded-lg border border-slate-200/50 dark:border-slate-700/50">
-                <span class="text-[11px] text-slate-500 block">القيمة الشرائية</span>
+                <span class="text-[11px] text-slate-500 block">{{ t('contracts.purchasePrice') }}</span>
                 <span class="font-bold text-xs text-slate-800 dark:text-white">
-                  {{ selectedCar.purchasePrice.toLocaleString() }} ر.س
+                  {{ selectedCar.purchasePrice.toLocaleString() }} {{ t('common.currency') }}
                 </span>
               </div>
 
               <div class="bg-white/80 dark:bg-slate-800/80 p-2.5 rounded-lg border border-slate-200/50 dark:border-slate-700/50">
-                <span class="text-[11px] text-slate-500 block">مجمع الإهلاك</span>
+                <span class="text-[11px] text-slate-500 block">{{ t('contracts.accumulatedDepreciation') }}</span>
                 <span class="font-bold text-xs text-amber-600 dark:text-amber-400">
-                  {{ selectedCar.accumulatedDepreciation.toLocaleString() }} ر.س
+                  {{ selectedCar.accumulatedDepreciation.toLocaleString() }} {{ t('common.currency') }}
                 </span>
               </div>
 
               <div class="bg-white/80 dark:bg-slate-800/80 p-2.5 rounded-lg border-2 border-blue-500/40 dark:border-blue-500/50">
-                <span class="text-[11px] font-bold text-blue-700 dark:text-blue-300 block">القيمة الدفترية</span>
+                <span class="text-[11px] font-bold text-blue-700 dark:text-blue-300 block">{{ t('contracts.bookValue') }}</span>
                 <span class="font-black text-sm text-blue-600 dark:text-blue-400">
-                  {{ selectedCar.bookValue.toLocaleString() }} ر.س
+                  {{ selectedCar.bookValue.toLocaleString() }} {{ t('common.currency') }}
                 </span>
               </div>
             </div>
 
             <p class="text-[11px] text-slate-500 dark:text-slate-400">
-              * العمر الإنتاجي المقدر للسيارة: <strong class="text-slate-700 dark:text-slate-200">{{ selectedCar.productiveAge }} سنة</strong>
-              <span v-if="selectedCar.productiveAge >= 4" class="text-amber-600 dark:text-amber-400 font-semibold mr-1">
-                (تجاوزت 4 سنوات فأصبحت قيمتها الدفترية 1 ريال)
+              {{ t('contracts.productiveAgeNote') }} <strong class="text-slate-700 dark:text-slate-200">{{ selectedCar.productiveAge }} {{ t('contracts.years') }}</strong>
+              <span v-if="selectedCar.productiveAge >= 4" class="text-amber-600 dark:text-amber-400 font-semibold mx-1">
+                {{ t('contracts.exceededFourYearsNote') }}
               </span>
             </p>
           </div>
@@ -708,19 +709,19 @@ onMounted(() => {
         <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700/60 space-y-4">
           <h2 class="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
             <span class="w-6 h-6 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300 flex items-center justify-center text-xs font-black">3</span>
-            المستفيد والفرع المسؤول
+            {{ t('contracts.stepBeneficiary') }}
           </h2>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <!-- If Service: User selection -->
             <div v-if="form.contractTypeId === 1">
               <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
-                الموظف / مستخدم النظام المستفيد *
+                {{ t('contracts.employeeBeneficiaryLabel') }}
               </label>
               <NSelect
                 v-model:value="form.userId"
                 :options="users.map(u => ({ label: u.name, value: u.id }))"
-                placeholder="اختر الموظف المستفيد من المعرض..."
+                :placeholder="t('contracts.userSelectionPlaceholder')"
                 filterable
               />
             </div>
@@ -728,12 +729,12 @@ onMounted(() => {
             <!-- If Rental / Lease-to-own: Customer selection -->
             <div v-else>
               <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
-                العميل المستفيد *
+                {{ t('contracts.customerBeneficiaryLabel') }}
               </label>
               <NSelect
                 v-model:value="form.customerId"
                 :options="customers.map(c => ({ label: c.name, value: c.id }))"
-                placeholder="اختر العميل المستفيد..."
+                :placeholder="t('contracts.customerSelectionPlaceholder')"
                 filterable
               />
             </div>
@@ -741,12 +742,12 @@ onMounted(() => {
             <!-- Branch -->
             <div>
               <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
-                فرع المعرض *
+                {{ t('contracts.branchLabel') }}
               </label>
               <NSelect
                 v-model:value="form.branchId"
                 :options="branches.map(b => ({ label: b.name, value: b.id }))"
-                placeholder="اختر الفرع..."
+                :placeholder="t('contracts.branchSelectionPlaceholder')"
               />
             </div>
           </div>
@@ -757,24 +758,24 @@ onMounted(() => {
           <h2 class="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center justify-between">
             <span class="flex items-center gap-2">
               <span class="w-6 h-6 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300 flex items-center justify-center text-xs font-black">4</span>
-              فترة العقد والتواريخ
+              {{ t('contracts.stepPeriod') }}
             </span>
 
             <!-- Quick Duration Buttons: Only show for Long-term (type 3) and Lease-to-own (type 4) -->
             <div v-if="form.contractTypeId !== 2 && form.contractTypeId !== 1" class="flex items-center gap-1.5">
-              <NButton size="tiny" secondary round @click="setDurationMonths(12)">سنة</NButton>
-              <NButton size="tiny" secondary round @click="setDurationMonths(18)">سنة ونصف</NButton>
-              <NButton size="tiny" secondary round @click="setDurationMonths(24)">سنتان</NButton>
-              <NButton size="tiny" secondary round @click="setDurationMonths(36)">3 سنوات</NButton>
+              <NButton size="tiny" secondary round @click="setDurationMonths(12)">{{ t('contracts.dur1Year') }}</NButton>
+              <NButton size="tiny" secondary round @click="setDurationMonths(18)">{{ t('contracts.dur1Point5') }}</NButton>
+              <NButton size="tiny" secondary round @click="setDurationMonths(24)">{{ t('contracts.dur2Years') }}</NButton>
+              <NButton size="tiny" secondary round @click="setDurationMonths(36)">{{ t('contracts.dur3Years') }}</NButton>
             </div>
             <div v-else-if="form.contractTypeId === 2" class="text-xs font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2.5 py-1 rounded-lg border border-amber-200/60 dark:border-amber-800/40">
-              عقد قصير الأجل: الحد الأقصى سنة واحدة (12 شهراً)
+              {{ t('contracts.shortTermMaxYear') }}
             </div>
           </h2>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">تاريخ البداية</label>
+              <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ t('contracts.startDate') }}</label>
               <NDatePicker
                 v-model:value="form.startDate"
                 type="date"
@@ -784,7 +785,7 @@ onMounted(() => {
             </div>
 
             <div>
-              <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">تاريخ النهاية</label>
+              <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">{{ t('contracts.endDate') }}</label>
               <NDatePicker
                 v-model:value="form.endDate"
                 type="date"
@@ -799,27 +800,27 @@ onMounted(() => {
           <div v-if="calculation" class="p-3 bg-slate-50 dark:bg-slate-900/40 rounded-xl text-xs space-y-2">
             <div class="flex flex-wrap items-center justify-between gap-2">
               <span class="font-semibold text-slate-600 dark:text-slate-300">
-                المدة المحسوبة: <strong class="text-blue-600">{{ calculation.periodMonths }} شهر</strong> ({{ calculation.periodDays }} يوم)
+                {{ t('contracts.calculatedDuration', { months: calculation.periodMonths, days: calculation.periodDays }) }}
               </span>
               <span class="font-semibold text-slate-600 dark:text-slate-300">
-                سنوات العقد للإهلاك: <strong class="text-purple-600">{{ calculation.contractYears }} سنة</strong>
+                {{ t('contracts.calculatedYears', { years: calculation.contractYears }) }}
               </span>
             </div>
 
             <div v-if="form.contractTypeId === 2 && calculation.dailyRent" class="pt-2 border-t border-slate-200/60 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 text-slate-700 dark:text-slate-200">
               <span class="flex items-center gap-1">
-                <span>الإيجار اليومي:</span>
-                <strong class="text-emerald-600 font-mono font-bold">{{ formatMoney(calculation.dailyRent) }} ر.س/يوم</strong>
+                <span>{{ t('contracts.dailyRentLabel') }}</span>
+                <strong class="text-emerald-600 font-mono font-bold">{{ formatMoney(calculation.dailyRent) }} {{ t('common.currency') }}/{{ t('common.day') }}</strong>
                 <span class="text-[10px] text-slate-400">({{ calculation.monthlyRentBeforeDownPayment }} ÷ 30)</span>
               </span>
               <span class="flex items-center gap-1">
-                <span>أيام الإيجار الفعلي:</span>
-                <strong class="text-blue-600 font-mono font-bold">{{ calculation.rentDays }} يوم</strong>
-                <span class="text-[10px] text-slate-400">(بدون بداية ونهاية اليوم)</span>
+                <span>{{ t('contracts.actualRentDays') }}</span>
+                <strong class="text-blue-600 font-mono font-bold">{{ calculation.rentDays }} {{ t('common.day') }}</strong>
+                <span class="text-[10px] text-slate-400">{{ t('contracts.excludingStartEndDays') }}</span>
               </span>
               <span class="flex items-center gap-1">
-                <span>الإيجار المستحق:</span>
-                <strong class="text-emerald-700 dark:text-emerald-400 font-mono font-black text-sm">{{ formatMoney(calculation.totalEstimatedRevenue) }} ر.س</strong>
+                <span>{{ t('contracts.rentDueLabel') }}</span>
+                <strong class="text-emerald-700 dark:text-emerald-400 font-mono font-black text-sm">{{ formatMoney(calculation.totalEstimatedRevenue) }} {{ t('common.currency') }}</strong>
               </span>
             </div>
           </div>
@@ -840,14 +841,14 @@ onMounted(() => {
         <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700/60 space-y-4">
           <h2 class="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
             <span class="w-6 h-6 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300 flex items-center justify-center text-xs font-black">5</span>
-            البيانات المالية وشروط المسافة
+            {{ t('contracts.stepFinancials') }}
           </h2>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <!-- Monthly Rent -->
             <div>
               <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
-                قسط الإيجار الشهري
+                {{ t('contracts.monthlyRent') }}
               </label>
               <NInputNumber
                 v-model:value="form.monthlyRent"
@@ -857,14 +858,14 @@ onMounted(() => {
                 :disabled="form.contractTypeId === 1"
                 @update:value="triggerCalculation"
               >
-                <template #suffix>ر.س</template>
+                <template #suffix>{{ t('common.currency') }}</template>
               </NInputNumber>
             </div>
 
             <!-- Down Payment -->
             <div>
               <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
-                الدفعة المقدمة
+                {{ t('contracts.downPayment') }}
               </label>
               <NInputNumber
                 v-model:value="form.downPayment"
@@ -874,17 +875,17 @@ onMounted(() => {
                 :disabled="form.contractTypeId === 1 || form.contractTypeId === 2"
                 @update:value="triggerCalculation"
               >
-                <template #suffix>ر.س</template>
+                <template #suffix>{{ t('common.currency') }}</template>
               </NInputNumber>
               <span v-if="form.contractTypeId === 2" class="text-[10px] text-amber-600 block mt-0.5">
-                لا توجد دفعة مقدمة في قصير الأجل
+                {{ t('contracts.noDownPaymentShortTerm') }}
               </span>
             </div>
 
             <!-- Mileage Limit -->
             <div>
               <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
-                الحد الأقصى للمسافة
+                {{ t('contracts.mileageLimit') }}
               </label>
               <NInputNumber
                 v-model:value="form.mileageLimit"
@@ -894,14 +895,14 @@ onMounted(() => {
                 :disabled="form.contractTypeId === 1"
                 @update:value="triggerCalculation"
               >
-                <template #suffix>كم</template>
+                <template #suffix>{{ t('contracts.km') }}</template>
               </NInputNumber>
             </div>
 
             <!-- Excess Mileage Fee -->
             <div>
               <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
-                رسوم الكيلومتر الزائد
+                {{ t('contracts.excessMileageFee') }}
               </label>
               <NInputNumber
                 v-model:value="form.excessMileageFee"
@@ -911,7 +912,7 @@ onMounted(() => {
                 :disabled="form.contractTypeId === 1"
                 @update:value="triggerCalculation"
               >
-                <template #suffix>ر.س/كم</template>
+                <template #suffix>{{ t('common.currency') }}/{{ t('contracts.km') }}</template>
               </NInputNumber>
             </div>
           </div>
@@ -928,14 +929,14 @@ onMounted(() => {
                   <div>
                     <div class="flex items-center gap-2">
                       <h4 class="font-bold text-sm text-slate-800 dark:text-slate-100">
-                        تطبيق ضريبة القيمة المضافة (15%) على عقد الإيجار
+                        {{ t('contracts.applyVatLabel') }}
                       </h4>
                       <NTag :type="form.applyTax ? 'info' : 'default'" size="small" round :bordered="false" class="font-bold text-xs">
-                        {{ form.applyTax ? 'مطبقة 15%' : 'غير مطبقة (معفى)' }}
+                        {{ form.applyTax ? t('contracts.vatAppliedTag') : t('contracts.vatExemptTag') }}
                       </NTag>
                     </div>
                     <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                      تُحمل الضريبة المضافة (15%) على العميل المستفيد وتُضاف فوق قيمة قسط الإيجار.
+                      {{ t('contracts.vatDesc') }}
                     </p>
                   </div>
                 </div>
@@ -946,8 +947,8 @@ onMounted(() => {
                     size="large"
                     @update:value="triggerCalculation"
                   >
-                    <template #checked>مطبقة</template>
-                    <template #unchecked>معفى</template>
+                    <template #checked>{{ t('contracts.vatApplied') }}</template>
+                    <template #unchecked>{{ t('contracts.vatExempt') }}</template>
                   </NSwitch>
                 </div>
               </div>
@@ -955,29 +956,32 @@ onMounted(() => {
               <!-- Tax Breakdown Live Strip -->
               <div v-if="form.applyTax && calculation" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 border-t border-blue-200/50 dark:border-indigo-900/50 text-xs">
                 <div class="bg-white/80 dark:bg-slate-900/70 p-2.5 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
-                  <span class="text-slate-500 block text-[11px]">الإيجار الشهري قبل الضريبة:</span>
+                  <span class="text-slate-500 block text-[11px]">{{ t('contracts.baseMonthlyRentBeforeTax') }}</span>
                   <strong class="text-slate-800 dark:text-slate-200 font-mono text-sm">
-                    {{ formatMoney(calculation.adjustedMonthlyRent) }} ر.س
+                    {{ formatMoney(form.monthlyRent) }} {{ t('common.currency') }}
                   </strong>
                 </div>
 
                 <div class="bg-white/80 dark:bg-slate-900/70 p-2.5 rounded-xl border border-blue-200 dark:border-blue-800/60">
-                  <span class="text-blue-600 dark:text-blue-400 block text-[11px] font-semibold">ضريبة القيمة المضافة (15%):</span>
+                  <span class="text-blue-600 dark:text-blue-400 block text-[11px] font-semibold">{{ t('contracts.vatOnRentLabel', { percent: calculation.taxPercentage }) }}</span>
                   <strong class="text-blue-700 dark:text-blue-300 font-mono text-sm">
-                    +{{ formatMoney(calculation.monthlyTaxAmount) }} ر.س
+                    +{{ formatMoney(calculation.monthlyTaxAmount) }} {{ t('common.currency') }}
                   </strong>
                 </div>
 
                 <div class="bg-blue-600 text-white p-2.5 rounded-xl shadow-xs">
-                  <span class="text-blue-100 block text-[11px] font-semibold">المستحق على العميل شهرياً (شامل الضريبة):</span>
+                  <span class="text-blue-100 block text-[11px] font-semibold">{{ t('contracts.monthlyRentWithVat') }}</span>
                   <strong class="text-white font-mono text-base font-black">
-                    {{ formatMoney(calculation.monthlyRentWithTax) }} ر.س
+                    {{ formatMoney(calculation.monthlyRentBeforeDownPayment) }} {{ t('common.currency') }}
                   </strong>
+                  <span v-if="calculation.downPayment > 0" class="text-[10px] text-blue-100 block mt-0.5">
+                    {{ t('contracts.dueAfterDownPayment', { amount: formatMoney(calculation.adjustedMonthlyRent), currency: t('common.currency') }) }}
+                  </span>
                 </div>
               </div>
 
               <div v-else-if="!form.applyTax" class="p-2.5 rounded-xl bg-slate-100/80 dark:bg-slate-900/40 text-xs text-slate-600 dark:text-slate-400">
-                ℹ️ الضريبة غير مطبقة على هذا العقد — يدفع العميل القسط الأساسي فقط (<strong>{{ formatMoney(calculation?.adjustedMonthlyRent || form.monthlyRent) }} ر.س</strong>) دون إضافة أي ضريبة.
+                {{ t('contracts.vatNotAppliedNotice', { amount: formatMoney(calculation?.adjustedMonthlyRent || form.monthlyRent), currency: t('common.currency') }) }}
               </div>
             </div>
           </div>
@@ -991,14 +995,14 @@ onMounted(() => {
           <div class="flex items-center justify-between">
             <h2 class="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
               <span class="w-6 h-6 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300 flex items-center justify-center text-xs font-black">6</span>
-              نسب البنود الأربعة للإهلاك (تطبق سنوياً)
+              {{ t('contracts.stepTerms') }}
             </h2>
-            <span class="text-xs text-blue-600 font-semibold">قيم قابلة للتعديل لكل عقد</span>
+            <span class="text-xs text-blue-600 font-semibold">{{ t('contracts.customizablePerContract') }}</span>
           </div>
 
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div>
-              <label class="text-xs text-slate-600 dark:text-slate-400 block mb-1 font-semibold">التأمين الشامل (%)</label>
+              <label class="text-xs text-slate-600 dark:text-slate-400 block mb-1 font-semibold">{{ t('contracts.insurance') }} (%)</label>
               <NInputNumber
                 v-model:value="form.insurancePercentage"
                 :min="0"
@@ -1012,7 +1016,7 @@ onMounted(() => {
             </div>
 
             <div>
-              <label class="text-xs text-slate-600 dark:text-slate-400 block mb-1 font-semibold">الصيانة (%)</label>
+              <label class="text-xs text-slate-600 dark:text-slate-400 block mb-1 font-semibold">{{ t('contracts.maintenance') }} (%)</label>
               <NInputNumber
                 v-model:value="form.maintenancePercentage"
                 :min="0"
@@ -1026,7 +1030,7 @@ onMounted(() => {
             </div>
 
             <div>
-              <label class="text-xs text-slate-600 dark:text-slate-400 block mb-1 font-semibold">سيارة بديلة (%)</label>
+              <label class="text-xs text-slate-600 dark:text-slate-400 block mb-1 font-semibold">{{ t('contracts.replacementCar') }} (%)</label>
               <NInputNumber
                 v-model:value="form.replacementCarPercentage"
                 :min="0"
@@ -1040,7 +1044,7 @@ onMounted(() => {
             </div>
 
             <div>
-              <label class="text-xs text-slate-600 dark:text-slate-400 block mb-1 font-semibold">مصاريف إدارية (%)</label>
+              <label class="text-xs text-slate-600 dark:text-slate-400 block mb-1 font-semibold">{{ t('contracts.adminFees') }} (%)</label>
               <NInputNumber
                 v-model:value="form.adminFeesPercentage"
                 :min="0"
@@ -1063,14 +1067,14 @@ onMounted(() => {
           <div class="flex items-center justify-between">
             <h2 class="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
               <span class="w-6 h-6 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-300 flex items-center justify-center text-xs font-black">6</span>
-              تكاليف عقد الإيجار المنتهي بالتمليك
+              {{ t('contracts.leaseToOwnCostsTitle') }}
             </h2>
-            <span class="text-xs text-emerald-600 font-semibold">تأمين شامل + إهلاك كامل القيمة الدفترية فقط</span>
+            <span class="text-xs text-emerald-600 font-semibold">{{ t('contracts.leaseToOwnCostsSubtitle') }}</span>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label class="text-xs text-slate-600 dark:text-slate-400 block mb-1 font-semibold">نسبة التأمين الشامل (%)</label>
+              <label class="text-xs text-slate-600 dark:text-slate-400 block mb-1 font-semibold">{{ t('contracts.insurance') }} (%)</label>
               <NInputNumber
                 v-model:value="form.insurancePercentage"
                 :min="0"
@@ -1086,10 +1090,10 @@ onMounted(() => {
             <div class="p-3 bg-emerald-50 dark:bg-emerald-950/30 rounded-xl border border-emerald-200/60 dark:border-emerald-800/40 text-xs text-emerald-900 dark:text-emerald-200 flex flex-col justify-center">
               <div class="font-bold flex items-center gap-1.5 mb-1">
                 <span>🔑</span>
-                <span>إهلاك السيارة في نهاية العقد:</span>
+                <span>{{ t('contracts.depreciationAtContractEnd') }}</span>
               </div>
               <p class="leading-relaxed">
-                يساوي <strong>كامل القيمة الدفترية للسيارة (100%)</strong> وتصبح قيمتها المتبقية للشركة (0 ر.س) لانتقال ملكيتها للعميل، ولا توجد بنود صيانة أو سيارة بديلة أو مصاريف إدارية دورية.
+                {{ t('contracts.leaseToOwnDepreciationExplanation') }}
               </p>
             </div>
           </div>
@@ -1097,12 +1101,12 @@ onMounted(() => {
 
         <!-- 7. Notes -->
         <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700/60 space-y-2">
-          <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block">شروط وملاحظات إضافية</label>
+          <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block">{{ t('contracts.notesAndTerms') }}</label>
           <NInput
             v-model:value="form.notes"
             type="textarea"
             :rows="2"
-            placeholder="أدخل أي شروط خاصة أو ملاحظات إضافية للعقد..."
+            :placeholder="t('contracts.notesPlaceholder')"
             class="rounded-xl"
           />
         </div>
@@ -1116,8 +1120,8 @@ onMounted(() => {
             <div class="flex items-center gap-2.5">
               <span class="text-2xl animate-pulse">⚡</span>
               <div>
-                <h3 class="font-black text-base text-white tracking-tight">محرك الحسابات اللحظية</h3>
-                <p class="text-[11px] text-indigo-300">يُحسب فورياً مع كل إدخال وتعديل وفق الشروط المعتمدة</p>
+                <h3 class="font-black text-base text-white tracking-tight">{{ t('contracts.liveEngineTitle') }}</h3>
+                <p class="text-[11px] text-indigo-300">{{ t('contracts.liveEngineSubtitle') }}</p>
               </div>
             </div>
             <NSpin v-if="calculating" size="small" />
@@ -1128,27 +1132,27 @@ onMounted(() => {
             <div class="grid grid-cols-3 gap-2">
               <div class="bg-white/10 p-2.5 rounded-2xl backdrop-blur-sm border border-white/5 flex flex-col justify-between">
                 <span class="text-[10px] text-indigo-200 font-semibold block leading-tight">
-                  {{ form.contractTypeId === 2 ? 'إجمالي الإيجار المستحق' : 'إجمالي الإيرادات التقديرية' }}
+                  {{ form.contractTypeId === 2 ? t('contracts.rentDueLabel') : t('contracts.totalRevenue') }}
                 </span>
                 <div class="mt-1">
                   <span class="text-base font-black text-white tracking-tight">{{ formatMoney(calculation.totalEstimatedRevenue) }}</span>
-                  <span class="text-[9px] text-indigo-300 mr-0.5">ر.س</span>
+                  <span class="text-[9px] text-indigo-300 mx-0.5">{{ t('common.currency') }}</span>
                 </div>
               </div>
 
               <div class="bg-rose-950/40 p-2.5 rounded-2xl backdrop-blur-sm border border-rose-500/20 flex flex-col justify-between">
-                <span class="text-[10px] text-rose-200 font-semibold block leading-tight">إجمالي التكاليف التقديرية</span>
+                <span class="text-[10px] text-rose-200 font-semibold block leading-tight">{{ t('contracts.totalCosts') }}</span>
                 <div class="mt-1">
                   <span class="text-base font-black text-rose-300 tracking-tight">{{ formatMoney(calculation.totalEstimatedCost) }}</span>
-                  <span class="text-[9px] text-rose-300 mr-0.5">ر.س</span>
+                  <span class="text-[9px] text-rose-300 mx-0.5">{{ t('common.currency') }}</span>
                 </div>
               </div>
 
               <div class="bg-emerald-950/40 p-2.5 rounded-2xl backdrop-blur-sm border border-emerald-500/20 flex flex-col justify-between">
-                <span class="text-[10px] text-emerald-200 font-semibold block leading-tight">إجمالي الأرباح التقديرية</span>
+                <span class="text-[10px] text-emerald-200 font-semibold block leading-tight">{{ t('contracts.expectedProfit') }}</span>
                 <div class="mt-1">
                   <span class="text-base font-black text-emerald-400 tracking-tight">{{ formatMoney(calculation.expectedProfit) }}</span>
-                  <span class="text-[9px] text-emerald-300 mr-0.5">ر.س</span>
+                  <span class="text-[9px] text-emerald-300 mx-0.5">{{ t('common.currency') }}</span>
                 </div>
               </div>
             </div>
@@ -1156,20 +1160,20 @@ onMounted(() => {
             <!-- Short-term daily breakdown card -->
             <div v-if="form.contractTypeId === 2 && calculation.dailyRent" class="bg-amber-950/40 border border-amber-500/30 rounded-2xl p-3 text-xs space-y-1.5">
               <div class="flex items-center justify-between text-amber-300 font-bold text-[11px] pb-1 border-b border-amber-500/20">
-                <span>⏱️ عقد قصير الأجل / حسب الطلب (حساب يومي)</span>
-                <span>الحد الأقصى سنة واحدة</span>
+                <span>{{ t('contracts.shortTermDailyNotice') }}</span>
+                <span>{{ t('contracts.maxOneYear') }}</span>
               </div>
               <div class="flex items-center justify-between text-amber-100">
-                <span>قيمة اليوم (الإيجار الشهري ÷ 30):</span>
-                <strong class="font-mono text-amber-300">{{ formatMoney(calculation.dailyRent) }} ر.س/يوم</strong>
+                <span>{{ t('contracts.dailyValue') }}</span>
+                <strong class="font-mono text-amber-300">{{ formatMoney(calculation.dailyRent) }} {{ t('common.currency') }}/{{ t('common.day') }}</strong>
               </div>
               <div class="flex items-center justify-between text-amber-100">
-                <span>أيام الإيجار الفعلي (بدون بداية ونهاية اليوم):</span>
-                <strong class="font-mono text-amber-300">{{ calculation.rentDays }} يوم</strong>
+                <span>{{ t('contracts.actualRentDays') }}</span>
+                <strong class="font-mono text-amber-300">{{ calculation.rentDays }} {{ t('common.day') }}</strong>
               </div>
               <div class="flex items-center justify-between text-amber-100 font-semibold pt-1 border-t border-amber-500/20">
-                <span>الإيجار المستحق التقديري:</span>
-                <strong class="font-mono text-emerald-400 font-black text-sm">{{ formatMoney(calculation.totalEstimatedRevenue) }} ر.س</strong>
+                <span>{{ t('contracts.estimatedRentDue') }}</span>
+                <strong class="font-mono text-emerald-400 font-black text-sm">{{ formatMoney(calculation.totalEstimatedRevenue) }} {{ t('common.currency') }}</strong>
               </div>
             </div>
 
@@ -1178,31 +1182,31 @@ onMounted(() => {
               <div class="text-[11px] font-bold text-amber-300 flex items-center justify-between pb-1 border-b border-indigo-800/40">
                 <span class="flex items-center gap-1.5">
                   <span>🚗</span>
-                  <span>قيمة وإهلاك السيارة خلال مدة العقد</span>
+                  <span>{{ t('contracts.carValueAndDepreciationTitle') }}</span>
                 </span>
                 <span class="text-[10px] text-indigo-300 font-normal">
-                  {{ calculation.contractYears }} سنة ({{ calculation.periodMonths }} شهر)
+                  {{ t('contracts.yearsAndMonths', { years: calculation.contractYears, months: calculation.periodMonths }) }}
                 </span>
               </div>
 
               <div class="flex items-center justify-between text-xs pt-1">
-                <span class="text-indigo-200">قيمة السيارة:</span>
-                <span class="font-bold text-white font-mono">{{ formatMoney(calculation.carValueUsed) }} ر.س</span>
+                <span class="text-indigo-200">{{ t('contracts.carValue') }}</span>
+                <span class="font-bold text-white font-mono">{{ formatMoney(calculation.carValueUsed) }} {{ t('common.currency') }}</span>
               </div>
 
               <div class="flex items-center justify-between text-xs">
-                <span class="text-indigo-200">صافي قيمة السيارة خلال مدة العقد:</span>
+                <span class="text-indigo-200">{{ t('contracts.netCarValueDuringContract') }}</span>
                 <span class="font-bold text-sky-300 font-mono">
-                  {{ formatMoney(netCarValueAtEnd) }} ر.س
-                  <span v-if="form.contractTypeId === 4" class="text-[10px] text-amber-300 mr-1 font-sans">(تؤول للمستأجر)</span>
+                  {{ formatMoney(netCarValueAtEnd) }} {{ t('common.currency') }}
+                  <span v-if="form.contractTypeId === 4" class="text-[10px] text-amber-300 mx-1 font-sans">{{ t('contracts.transfersToCustomer') }}</span>
                 </span>
               </div>
 
               <div class="flex items-center justify-between text-xs">
-                <span class="text-indigo-200">قيمة إهلاك السيارة نهاية مدة العقد:</span>
+                <span class="text-indigo-200">{{ t('contracts.carDepreciationAtEnd') }}</span>
                 <span class="font-bold text-amber-400 font-mono">
-                  {{ formatMoney(totalDepreciationCost) }} ر.س
-                  <span v-if="form.contractTypeId === 4" class="text-[10px] text-emerald-300 mr-1 font-sans">(= القيمة الدفترية)</span>
+                  {{ formatMoney(totalDepreciationCost) }} {{ t('common.currency') }}
+                  <span v-if="form.contractTypeId === 4" class="text-[10px] text-emerald-300 mx-1 font-sans">{{ t('contracts.equalsBookValue') }}</span>
                 </span>
               </div>
             </div>
@@ -1212,29 +1216,29 @@ onMounted(() => {
               <div class="text-[11px] font-bold text-indigo-300 flex items-center justify-between pb-1 border-b border-indigo-800/40">
                 <span class="flex items-center gap-1.5">
                   <span>📋</span>
-                  <span>تقدير بنود التشغيل الـ 4 خلال فترة العقد</span>
+                  <span>{{ t('contracts.estOperationalTermsTitle') }}</span>
                 </span>
-                <span class="text-[10px] text-indigo-400">تراكمي لسنوات العقد</span>
+                <span class="text-[10px] text-indigo-400">{{ t('contracts.cumulativeForYears') }}</span>
               </div>
 
               <div class="flex items-center justify-between text-xs pt-1">
-                <span class="text-indigo-200">تقدير تأمين شامل للسيارة ({{ form.insurancePercentage }}% سنوياً):</span>
-                <span class="font-bold text-white font-mono">{{ formatMoney(totalInsuranceCost) }} ر.س</span>
+                <span class="text-indigo-200">{{ t('contracts.estInsuranceWithPercent', { percent: form.insurancePercentage }) }}</span>
+                <span class="font-bold text-white font-mono">{{ formatMoney(totalInsuranceCost) }} {{ t('common.currency') }}</span>
               </div>
 
               <div class="flex items-center justify-between text-xs">
-                <span class="text-indigo-200">تقدير تكلفة الصيانة خلال فترة العقد ({{ form.maintenancePercentage }}% سنوياً):</span>
-                <span class="font-bold text-white font-mono">{{ formatMoney(totalMaintenanceCost) }} ر.س</span>
+                <span class="text-indigo-200">{{ t('contracts.estMaintenanceWithPercent', { percent: form.maintenancePercentage }) }}</span>
+                <span class="font-bold text-white font-mono">{{ formatMoney(totalMaintenanceCost) }} {{ t('common.currency') }}</span>
               </div>
 
               <div class="flex items-center justify-between text-xs">
-                <span class="text-indigo-200">تقدير تكلفة سيارة بديلة خلال فترة العقد ({{ form.replacementCarPercentage }}% سنوياً):</span>
-                <span class="font-bold text-white font-mono">{{ formatMoney(totalReplacementCarCost) }} ر.س</span>
+                <span class="text-indigo-200">{{ t('contracts.estReplacementWithPercent', { percent: form.replacementCarPercentage }) }}</span>
+                <span class="font-bold text-white font-mono">{{ formatMoney(totalReplacementCarCost) }} {{ t('common.currency') }}</span>
               </div>
 
               <div class="flex items-center justify-between text-xs">
-                <span class="text-indigo-200">تقدير تكلفة المصاريف الإدارية خلال فترة العقد ({{ form.adminFeesPercentage }}% سنوياً):</span>
-                <span class="font-bold text-white font-mono">{{ formatMoney(totalAdminFeesCost) }} ر.س</span>
+                <span class="text-indigo-200">{{ t('contracts.estAdminFeesWithPercent', { percent: form.adminFeesPercentage }) }}</span>
+                <span class="font-bold text-white font-mono">{{ formatMoney(totalAdminFeesCost) }} {{ t('common.currency') }}</span>
               </div>
             </div>
 
@@ -1243,19 +1247,19 @@ onMounted(() => {
               <div class="text-[11px] font-bold text-emerald-300 flex items-center justify-between pb-1 border-b border-indigo-800/40">
                 <span class="flex items-center gap-1.5">
                   <span>🛡️</span>
-                  <span>تكاليف عقد الإيجار المنتهي بالتمليك</span>
+                  <span>{{ t('contracts.leaseToOwnCostsTitle') }}</span>
                 </span>
-                <span class="text-[10px] text-emerald-400">تأمين شامل فقط</span>
+                <span class="text-[10px] text-emerald-400">{{ t('contracts.insuranceOnly') }}</span>
               </div>
 
               <div class="flex items-center justify-between text-xs pt-1">
-                <span class="text-indigo-200">تقدير تأمين شامل للسيارة ({{ form.insurancePercentage }}% سنوياً):</span>
-                <span class="font-bold text-white font-mono">{{ formatMoney(totalInsuranceCost) }} ر.س</span>
+                <span class="text-indigo-200">{{ t('contracts.estInsuranceWithPercent', { percent: form.insurancePercentage }) }}</span>
+                <span class="font-bold text-white font-mono">{{ formatMoney(totalInsuranceCost) }} {{ t('common.currency') }}</span>
               </div>
 
               <div class="flex items-center justify-between text-xs">
-                <span class="text-indigo-200">تقدير تكلفة الصيانة والبديلة والإدارية:</span>
-                <span class="font-bold text-slate-400 font-mono">0.00 ر.س (يتحملها المستأجر)</span>
+                <span class="text-indigo-200">{{ t('contracts.estOtherCosts') }}</span>
+                <span class="font-bold text-slate-400 font-mono">{{ t('contracts.borneByCustomer') }}</span>
               </div>
             </div>
 
@@ -1263,42 +1267,42 @@ onMounted(() => {
             <div class="bg-white/5 rounded-2xl p-3.5 space-y-2 text-xs text-indigo-100 border border-white/5">
               <div class="text-[11px] font-bold text-emerald-300 flex items-center gap-1.5 pb-1 border-b border-indigo-800/40">
                 <span>💰</span>
-                <span>الحسابات المالية وقسط الإيجار وفائدة الشركة</span>
+                <span>{{ t('contracts.financialCalculationsTitle') }}</span>
               </div>
 
               <div class="flex items-center justify-between pt-1">
-                <span class="text-indigo-200">إجـمالي التكلفة التقديرية:</span>
-                <span class="font-bold text-rose-300 font-mono">{{ formatMoney(calculation.totalEstimatedCost) }} ر.س</span>
+                <span class="text-indigo-200">{{ t('contracts.totalEstimatedCostLabel') }}</span>
+                <span class="font-bold text-rose-300 font-mono">{{ formatMoney(calculation.totalEstimatedCost) }} {{ t('common.currency') }}</span>
               </div>
 
               <div class="flex items-center justify-between">
-                <span class="text-indigo-200">قيمة تكلفة للسيارة (شهرياً):</span>
-                <span class="font-bold text-rose-200 font-mono">{{ formatMoney(monthlyCarCost) }} ر.س/شهر</span>
+                <span class="text-indigo-200">{{ t('contracts.monthlyCarCostLabel') }}</span>
+                <span class="font-bold text-rose-200 font-mono">{{ formatMoney(monthlyCarCost) }} {{ t('common.currency') }}/{{ t('common.month') }}</span>
               </div>
 
               <div class="flex items-center justify-between">
-                <span class="text-indigo-200">قيمة الفائدة للشركة من تشغيل السيارة:</span>
-                <span class="font-black text-emerald-300 font-mono">{{ formatMoney(calculation.monthlyCompanyProfit) }} ر.س/شهر</span>
+                <span class="text-indigo-200">{{ t('contracts.monthlyCompanyProfitLabel') }}</span>
+                <span class="font-black text-emerald-300 font-mono">{{ formatMoney(calculation.monthlyCompanyProfit) }} {{ t('common.currency') }}/{{ t('common.month') }}</span>
               </div>
 
               <div class="flex items-center justify-between border-t border-indigo-800/40 pt-1.5">
-                <span class="text-indigo-200">قيمة قسط الإيجار التقديري المقترح قبل الدفعة المقدمة:</span>
-                <span class="font-bold text-white font-mono">{{ formatMoney(calculation.monthlyRentBeforeDownPayment) }} ر.س</span>
+                <span class="text-indigo-200">{{ t('contracts.monthlyRentBeforeDownPaymentLabel', { status: calculation.isTaxApplied ? t('contracts.taxIncluded') : t('contracts.beforeTax') }) }}</span>
+                <span class="font-bold text-white font-mono">{{ formatMoney(calculation.monthlyRentBeforeDownPayment) }} {{ t('common.currency') }}</span>
               </div>
 
               <div v-if="calculation.downPayment > 0" class="flex items-center justify-between">
-                <span class="text-indigo-200">قيمة الدفعة المقدمة:</span>
-                <span class="font-bold text-amber-300 font-mono">{{ formatMoney(calculation.downPayment) }} ر.س</span>
+                <span class="text-indigo-200">{{ t('contracts.downPaymentAmountLabel') }}</span>
+                <span class="font-bold text-amber-300 font-mono">{{ formatMoney(calculation.downPayment) }} {{ t('common.currency') }}</span>
               </div>
 
               <div v-if="calculation.downPaymentMonthlyDiscount > 0" class="flex items-center justify-between">
-                <span class="text-indigo-200">خصم قيمة الدفعة المقدمة من قيمة قسط الإيجار الشهري المقترح:</span>
-                <span class="font-bold text-amber-300 font-mono">{{ formatMoney(calculation.downPaymentMonthlyDiscount) }} ر.س/شهر</span>
+                <span class="text-indigo-200">{{ t('contracts.downPaymentDiscountLabel') }}</span>
+                <span class="font-bold text-amber-300 font-mono">-{{ formatMoney(calculation.downPaymentMonthlyDiscount) }} {{ t('common.currency') }}/{{ t('common.month') }}</span>
               </div>
 
               <div class="flex items-center justify-between border-t border-indigo-800/60 pt-2 bg-slate-800/60 -mx-2 px-2 py-1.5 rounded-xl border border-white/5">
-                <span class="font-semibold text-slate-300">الإيجار الشهري المقترح (قبل الضريبة):</span>
-                <span class="font-bold text-white text-sm font-mono">{{ formatMoney(calculation.adjustedMonthlyRent) }} ر.س</span>
+                <span class="font-semibold text-slate-300">{{ t('contracts.rentAfterDownPaymentDiscountLabel') }}</span>
+                <span class="font-bold text-white text-sm font-mono">{{ formatMoney(calculation.adjustedMonthlyRent) }} {{ t('common.currency') }}</span>
               </div>
 
               <!-- VAT Breakdown Card in Live Calculation Engine -->
@@ -1306,27 +1310,27 @@ onMounted(() => {
                 <div class="flex items-center justify-between text-xs">
                   <span class="text-blue-300 flex items-center gap-1">
                     <span>🧾</span>
-                    <span>ضريبة القيمة المضافة {{ calculation.isTaxApplied ? `(${calculation.taxPercentage}%)` : '(معفى)' }}:</span>
+                    <span>{{ t('contracts.vatLabel', { status: calculation.isTaxApplied ? `(${calculation.taxPercentage}%)` : `(${t('contracts.vatExempt')})` }) }}</span>
                   </span>
                   <span class="font-bold font-mono" :class="calculation.isTaxApplied ? 'text-blue-300' : 'text-slate-400'">
-                    {{ calculation.isTaxApplied ? `+${formatMoney(calculation.monthlyTaxAmount)} ر.س/شهر` : '0.00 ر.س (غير مطبقة)' }}
+                    {{ calculation.isTaxApplied ? `+${formatMoney(calculation.monthlyTaxAmount)} ${t('common.currency')}/${t('common.month')}` : `${t('contracts.vatNotAppliedLabel')}` }}
                   </span>
                 </div>
 
                 <!-- Customer Final Monthly Payment (Inclusive of VAT) -->
                 <div class="flex items-center justify-between p-2.5 rounded-xl bg-gradient-to-r from-emerald-600/30 via-teal-600/30 to-emerald-600/30 border border-emerald-400/40 shadow-inner">
                   <div class="flex flex-col">
-                    <span class="font-black text-emerald-300 text-xs">قسط الإيجار الشهري المستحق على العميل:</span>
-                    <span class="text-[10px] text-emerald-200/80">{{ calculation.isTaxApplied ? 'شامل ضريبة القيمة المضافة 15%' : 'بدون ضريبة' }}</span>
+                    <span class="font-black text-emerald-300 text-xs">{{ t('contracts.monthlyDueFromCustomer') }}:</span>
+                    <span class="text-[10px] text-emerald-200/80">{{ calculation.isTaxApplied ? t('contracts.taxIncluded') : t('contracts.taxExempt') }}</span>
                   </div>
                   <div class="text-left font-mono font-black text-emerald-300 text-base">
-                    {{ formatMoney(calculation.monthlyRentWithTax) }} <span class="text-xs">ر.س</span>
+                    {{ formatMoney(calculation.adjustedMonthlyRent) }} <span class="text-xs">{{ t('common.currency') }}</span>
                   </div>
                 </div>
 
                 <div v-if="calculation.isTaxApplied" class="flex items-center justify-between text-[11px] text-indigo-300 pt-0.5">
-                  <span>إجمالي العقد شامل الضريبة ({{ calculation.periodMonths }} شهر):</span>
-                  <span class="font-mono font-bold text-white">{{ formatMoney(calculation.totalPriceWithTax) }} ر.س</span>
+                  <span>{{ t('contracts.totalContractWithTaxDuration', { months: calculation.periodMonths }) }}</span>
+                  <span class="font-mono font-bold text-white">{{ formatMoney(calculation.totalPriceWithTax) }} {{ t('common.currency') }}</span>
                 </div>
               </div>
             </div>
@@ -1336,7 +1340,7 @@ onMounted(() => {
               <div class="flex items-center justify-between text-xs font-bold text-indigo-200">
                 <div class="flex items-center gap-1.5">
                   <span>📅</span>
-                  <span>حسابات سنوات العقد (الأولى، الثانية، ...)</span>
+                  <span>{{ t('contracts.yearlyScheduleTitle') }}</span>
                 </div>
                 <div class="flex items-center gap-1 bg-white/10 p-0.5 rounded-lg text-[10px]">
                   <button
@@ -1345,7 +1349,7 @@ onMounted(() => {
                     :class="scheduleTab === 'cards' ? 'bg-indigo-600 text-white font-bold' : 'text-indigo-300 hover:text-white'"
                     @click="scheduleTab = 'cards'"
                   >
-                    تفصيل بالسنوات
+                    {{ t('contracts.yearlyCardsTab') }}
                   </button>
                   <button
                     type="button"
@@ -1353,7 +1357,7 @@ onMounted(() => {
                     :class="scheduleTab === 'table' ? 'bg-indigo-600 text-white font-bold' : 'text-indigo-300 hover:text-white'"
                     @click="scheduleTab = 'table'"
                   >
-                    جدول مقارن
+                    {{ t('contracts.yearlyTableTab') }}
                   </button>
                 </div>
               </div>
@@ -1368,48 +1372,48 @@ onMounted(() => {
                   <div class="flex items-center justify-between border-b border-indigo-800/40 pb-1 font-bold">
                     <span class="text-amber-300 text-xs flex items-center gap-1">
                       <span>📌</span>
-                      <span>{{ item.year === 1 ? 'خلال السنة الأولى:' : item.year === 2 ? 'خلال السنة الثانية:' : item.year === 3 ? 'خلال السنة الثالثة:' : `خلال السنة ${item.year}:` }}</span>
+                      <span>{{ t('contracts.duringYear', { year: item.year }) }}</span>
                     </span>
                     <span class="text-[11px] font-mono text-emerald-300">
-                      التكلفة الشهرية: {{ formatMoney(item.monthlyCost) }} ر.س
+                      {{ t('contracts.monthlyCostFormatted', { cost: formatMoney(item.monthlyCost), currency: t('common.currency') }) }}
                     </span>
                   </div>
 
                   <div class="grid grid-cols-2 gap-x-2 gap-y-1 text-[11px] pt-0.5">
                     <div class="flex justify-between">
-                      <span class="text-indigo-200">صافي قيمة السيارة:</span>
+                      <span class="text-indigo-200">{{ t('contracts.netCar') }}:</span>
                       <strong class="text-white font-mono">{{ formatMoney(item.netCarValue) }}</strong>
                     </div>
 
                     <div class="flex justify-between">
-                      <span class="text-indigo-200">قيمة الإهلاك:</span>
+                      <span class="text-indigo-200">{{ t('contracts.depreciation') }}:</span>
                       <strong class="text-amber-300 font-mono">{{ formatMoney(item.depreciationCost) }}</strong>
                     </div>
 
                     <div class="flex justify-between">
-                      <span class="text-indigo-200">التأمين الشامل:</span>
+                      <span class="text-indigo-200">{{ t('contracts.insurance') }}:</span>
                       <strong class="text-white font-mono">{{ formatMoney(item.insuranceCost) }}</strong>
                     </div>
 
                     <div class="flex justify-between">
-                      <span class="text-indigo-200">الصيانة:</span>
+                      <span class="text-indigo-200">{{ t('contracts.maintenance') }}:</span>
                       <strong class="text-white font-mono">{{ formatMoney(item.maintenanceCost) }}</strong>
                     </div>
 
                     <div class="flex justify-between">
-                      <span class="text-indigo-200">سيارة بديلة:</span>
+                      <span class="text-indigo-200">{{ t('contracts.replacementCar') }}:</span>
                       <strong class="text-white font-mono">{{ formatMoney(item.replacementCarCost) }}</strong>
                     </div>
 
                     <div class="flex justify-between">
-                      <span class="text-indigo-200">مصاريف إدارية:</span>
+                      <span class="text-indigo-200">{{ t('contracts.adminFees') }}:</span>
                       <strong class="text-white font-mono">{{ formatMoney(item.adminFeesCost) }}</strong>
                     </div>
                   </div>
 
                   <div class="flex items-center justify-between pt-1 border-t border-indigo-800/30 text-xs">
-                    <span class="font-bold text-rose-300">إجمالي التكلفة التقديرية:</span>
-                    <strong class="font-black text-rose-400 font-mono">{{ formatMoney(item.totalEstimatedCost) }} ر.س</strong>
+                    <span class="font-bold text-rose-300">{{ t('contracts.totalEstimatedCostLabel') }}</span>
+                    <strong class="font-black text-rose-400 font-mono">{{ formatMoney(item.totalEstimatedCost) }} {{ t('common.currency') }}</strong>
                   </div>
                 </div>
               </div>
@@ -1419,20 +1423,20 @@ onMounted(() => {
                 <table class="w-full text-center text-[10px] text-indigo-100">
                   <thead class="bg-indigo-900/60 font-semibold text-indigo-300">
                     <tr>
-                      <th class="p-1.5 whitespace-nowrap">السنة</th>
-                      <th class="p-1.5 whitespace-nowrap">صافي السيارة</th>
-                      <th class="p-1.5 whitespace-nowrap">الإهلاك</th>
-                      <th class="p-1.5 whitespace-nowrap">التأمين</th>
-                      <th class="p-1.5 whitespace-nowrap">الصيانة</th>
-                      <th class="p-1.5 whitespace-nowrap">بديلة</th>
-                      <th class="p-1.5 whitespace-nowrap">إدارية</th>
-                      <th class="p-1.5 whitespace-nowrap">إجمالي التكلفة</th>
-                      <th class="p-1.5 whitespace-nowrap">التكلفة/شهر</th>
+                      <th class="p-1.5 whitespace-nowrap">{{ t('contracts.year') }}</th>
+                      <th class="p-1.5 whitespace-nowrap">{{ t('contracts.netCar') }}</th>
+                      <th class="p-1.5 whitespace-nowrap">{{ t('contracts.depreciation') }}</th>
+                      <th class="p-1.5 whitespace-nowrap">{{ t('contracts.insurance') }}</th>
+                      <th class="p-1.5 whitespace-nowrap">{{ t('contracts.maintenance') }}</th>
+                      <th class="p-1.5 whitespace-nowrap">{{ t('contracts.replacementCar') }}</th>
+                      <th class="p-1.5 whitespace-nowrap">{{ t('contracts.adminFees') }}</th>
+                      <th class="p-1.5 whitespace-nowrap">{{ t('contracts.totalCost') }}</th>
+                      <th class="p-1.5 whitespace-nowrap">{{ t('contracts.costPerMonth') }}</th>
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-indigo-800/40 font-mono">
                     <tr v-for="item in calculation.yearlySchedule" :key="item.year" class="hover:bg-white/5">
-                      <td class="p-1.5 font-bold text-white font-sans">السنة {{ item.year }}</td>
+                      <td class="p-1.5 font-bold text-white font-sans">{{ t('contracts.duringYear', { year: item.year }) }}</td>
                       <td class="p-1.5">{{ formatMoney(item.netCarValue) }}</td>
                       <td class="p-1.5 text-amber-300 font-bold">{{ formatMoney(item.depreciationCost) }}</td>
                       <td class="p-1.5">{{ formatMoney(item.insuranceCost) }}</td>
@@ -1459,12 +1463,12 @@ onMounted(() => {
               <template #icon>
                 <NIcon><SaveIcon /></NIcon>
               </template>
-              تأكيد وإصدار العقد الآن
+              {{ t('contracts.confirmAndIssueNow') }}
             </NButton>
           </div>
 
           <div v-else class="text-center py-10 text-indigo-300 text-xs">
-            قم بتحديد بيانات السيارة وتواريخ العقد لحساب الأرقام والجدول اللحظي...
+            {{ t('contracts.emptyCalculationPrompt') }}
           </div>
         </div>
       </div>

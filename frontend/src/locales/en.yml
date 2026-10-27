@@ -656,10 +656,18 @@ contracts:
   termsConfigTitle: Annual Terms Depreciation Configuration
   termsConfigSubtitle: Configure default annual percentages for the 4 terms (Insurance, Maintenance, Replacement Car, Admin Fees, and Depreciation Rate).
   types:
-    service: Service Contract
+    service: Service Contract (Showroom)
+    serviceTag: Service
+    serviceDesc: Vehicle dedicated to showroom employee; no down payment or monthly rent.
     shortTerm: Short-term / On-demand Rental
+    shortTermTag: <= 1 Year
+    shortTermDesc: Duration <= 12 mos, no down payment, mileage limit set, 4 terms apply.
     longTerm: Long-term Rental
+    longTermTag: ">= 1 Year"
+    longTermDesc: Duration >= 12 mos, supports down payment and rent, 4 terms apply.
     leaseToOwn: Lease-to-Own / Rent-to-Own
+    leaseToOwnTag: Lease-to-Own
+    leaseToOwnDesc: Supports down payment and monthly rent; operational terms are not deducted.
   stepType: 1. Contract Type
   stepCar: 2. Vehicle & Book Value
   stepBeneficiary: 3. Beneficiary & Branch
@@ -821,6 +829,118 @@ contracts:
   reportNotesTerms: "Special Notes & Terms:"
   reportGeneratedNote: "This report was generated automatically via {app} on: {date}"
 
+  # Depreciation Modal
+  termsConfigModalTitle: General Settings for 4 Depreciation Items
+  termsConfigModalAlert: These annual percentages are applied automatically as default values when creating rental contracts subject to deductions (short-term & long-term). You can also edit them manually per contract.
+  termInsurance: "1. Comprehensive Insurance (%)"
+  termInsuranceHint: "Default: 4% annually of vehicle value"
+  termMaintenance: "2. Maintenance (%)"
+  termMaintenanceHint: "Default: 5% annually of vehicle value"
+  termReplacementCar: "3. Replacement Car (%)"
+  termReplacementCarHint: "Default: 1% annually of vehicle value"
+  termAdminFees: "4. Admin Fees (%)"
+  termAdminFeesHint: "Default: 1% annually of vehicle value"
+  termAnnualDepreciation: "Annual Vehicle Depreciation Rate (%)"
+  termAnnualDepreciationHint: Vehicle is depreciated over 4 years at 25% annually until the book value reaches 1 SAR.
+
+  # Contract Create Page
+  createTitle: Create New Vehicle Contract
+  createSubtitle: Select contract type, vehicle, beneficiary, and terms with accurate real-time depreciation
+  saveAndIssue: Save & Issue Contract
+  stepTypeSelect: 1. Select Contract Type
+  searchCarHint: Search by plate or model
+  productiveAgeNote: "* Estimated productive lifespan of vehicle:"
+  exceededFourYearsNote: "(Exceeded 4 years, book value reached 1 SAR)"
+  employeeBeneficiaryLabel: "Beneficiary Showroom Employee / User *"
+  customerBeneficiaryLabel: "Beneficiary Customer *"
+  branchLabel: "Showroom Branch *"
+  dur1Year: 1 Year
+  dur1Point5: 1.5 Years
+  dur2Years: 2 Years
+  dur3Years: 3 Years
+  shortTermMaxYear: "Short-term Contract: Maximum 1 Year (12 months)"
+  calculatedDuration: "Calculated Duration: {months} months ({days} days)"
+  calculatedYears: "Contract Years for Depreciation: {years} yrs"
+  dailyRentLabel: "Daily Rent:"
+  actualRentDays: "Actual Rental Days:"
+  excludingStartEndDays: "(excluding start & end day)"
+  rentDueLabel: "Rent Due:"
+  noDownPaymentShortTerm: No down payment for short-term contracts
+  applyVatLabel: Apply Value Added Tax (15% VAT) on Rental Contract
+  vatAppliedTag: Applied 15%
+  vatExemptTag: Exempt (Not Applied)
+  vatDesc: 15% VAT is charged to beneficiary customer and added on top of monthly rent.
+  vatApplied: Applied
+  vatExempt: Exempt
+  baseMonthlyRentBeforeTax: "Base Monthly Rent (Before VAT):"
+  vatOnRentLabel: "VAT ({percent}% on rent):"
+  monthlyRentWithVat: "Monthly Rent (Incl. VAT):"
+  dueAfterDownPayment: "(Due after down payment: {amount} {currency}/mo)"
+  vatNotAppliedNotice: "ℹ️ VAT is not applied to this contract — customer pays only base rent ({amount} {currency}) without additional tax."
+  customizablePerContract: Values customizable per contract
+  leaseToOwnCostsTitle: Lease-to-Own Contract Costs
+  leaseToOwnCostsSubtitle: Comprehensive insurance + full book value depreciation only
+  depreciationAtContractEnd: "Vehicle Depreciation at Contract End:"
+  leaseToOwnDepreciationExplanation: "Equals 100% full book value of the car, remaining company value becomes (0 SAR) upon ownership transfer to customer. No periodic maintenance, replacement car, or admin fees are deducted."
+  notesAndTerms: Special Terms & Notes
+  notesPlaceholder: Enter any special terms, conditions, or contract notes...
+  liveEngineTitle: Real-Time Calculation Engine
+  liveEngineSubtitle: Computed instantly with every input and edit according to approved terms
+  shortTermDailyNotice: ⏱️ Short-term / On-demand Contract (Daily Calculation)
+  maxOneYear: Max 1 Year
+  dailyValue: "Daily Value (Monthly Rent ÷ 30):"
+  estimatedRentDue: "Estimated Rent Due:"
+  carValueAndDepreciationTitle: Vehicle Value & Depreciation During Term
+  yearsAndMonths: "{years} yrs ({months} mos)"
+  carValue: "Vehicle Value:"
+  netCarValueDuringContract: "Net Vehicle Value During Term:"
+  carDepreciationAtEnd: "Vehicle Depreciation at Term End:"
+  equalsBookValue: "(= Book Value)"
+  estOperationalTermsTitle: Estimated 4 Operational Terms During Term
+  cumulativeForYears: Cumulative for contract term
+  estInsuranceWithPercent: "Estimated Comprehensive Insurance ({percent}% annually):"
+  estMaintenanceWithPercent: "Estimated Maintenance Cost ({percent}% annually):"
+  estReplacementWithPercent: "Estimated Replacement Car Cost ({percent}% annually):"
+  estAdminFeesWithPercent: "Estimated Admin Fees ({percent}% annually):"
+  insuranceOnly: Comprehensive Insurance Only
+  estOtherCosts: "Estimated Maintenance, Replacement & Admin Fees:"
+  borneByCustomer: 0.00 SAR (Borne by Customer)
+  financialCalculationsTitle: Financial Calculations, Rent & Company Profit
+  totalEstimatedCostLabel: "Total Estimated Cost:"
+  monthlyCarCostLabel: "Monthly Vehicle Cost:"
+  monthlyCompanyProfitLabel: "Monthly Company Operating Profit:"
+  monthlyRentBeforeDownPaymentLabel: "Monthly Rent ({status}):"
+  downPaymentAmountLabel: "Down Payment Amount:"
+  downPaymentDiscountLabel: "Down Payment Monthly Discount:"
+  rentAfterDownPaymentDiscountLabel: "Monthly Rent After Down Payment Discount:"
+  vatLabel: "VAT {status}:"
+  vatNotAppliedLabel: "0.00 SAR (Not Applied)"
+  totalContractWithTaxDuration: "Total Contract Value Incl. VAT ({months} mos):"
+  yearlyScheduleTitle: "Contract Years Calculations (1st, 2nd, ...)"
+  yearlyCardsTab: Breakdown by Years
+  yearlyTableTab: Comparative Table
+  duringYear: "During Year {year}:"
+  monthlyCostFormatted: "Monthly Cost: {cost} {currency}"
+  year: Year
+  netCar: Net Car
+  totalCost: Total Cost
+  costPerMonth: Cost/Mo
+  confirmAndIssueNow: Confirm & Issue Contract Now
+  emptyCalculationPrompt: Select vehicle and contract dates to compute figures and schedule...
+  colorLabel: "Color:"
+  chassisLabel: "Chassis:"
+  validation:
+    selectCarFirst: Please select a vehicle first
+    selectBranch: Please select a branch
+    serviceRequiresEmployee: Service contract requires selecting a showroom employee
+    leaseRequiresCustomer: Rental contract requires selecting a beneficiary customer
+    shortTermMaxOneYear: Short-term rental cannot exceed 1 year (12 months)
+    longTermMinOneYear: Long-term rental must be at least 1 year (12 months)
+    loadError: Failed to load basic lookup data
+    createNumberSuccess: 'Contract #{number} created successfully!'
+    createFail: Failed to create contract
+    saveError: An error occurred while saving the contract
+
 settings:
   title: General System Settings
   subtitle: Manage operational parameters, thresholds, and financial benchmark rates
@@ -839,5 +959,31 @@ settings:
   copiedKey: "Copied key: {key}"
   bannerTitle: Dynamic Architecture Ready for New System Settings Anytime
   bannerDesc: This table is connected to a dynamic configuration engine in the database and backend. Any new parameters or variables (such as grace periods, contract clauses, or additional fees) can be added anytime without changing software code.
+
+export:
+  title: Export Data to Excel
+  certifiedReport: "Export Certified Excel Report (.{format})"
+  certifiedReportDesc: Supports RTL layout with auto-formatted columns and amounts
+  totalAvailable: "{count} Total Available"
+  fileFormat: "Excel File Format:"
+  xlsxTitle: ".xlsx (Standard)"
+  xlsxDesc: Standard Excel workbook compatible with all spreadsheet apps and devices
+  xlsmTitle: ".xlsm (Macro)"
+  xlsmDesc: Excel workbook enabled with macros and VBA templates
+  scopeLabel: "Select Export Scope & Records:"
+  allFilteredTitle: All Filtered Results
+  filteredBadge: Filtered
+  allFilteredDesc: Export all records matching search and filter criteria without page limit
+  currentPageTitle: Current Page Only
+  currentPageDesc: Export only items currently displayed in active page table
+  customCountTitle: Custom Number of Records
+  customCountDesc: Export a specific number of records independent of table pagination limit
+  recordUnit: records
+  requiredCount: "Required Count:"
+  all: All
+  willExport: "Will export:"
+  exportSummary: "{count} records in .{format} format"
+  exportButton: "Export to .{format} ({count})"
+
 
 

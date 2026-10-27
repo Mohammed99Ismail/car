@@ -27,12 +27,16 @@ interface Props {
   defaultFormat?: 'xlsx' | 'xlsm'
 }
 
+const { t } = useI18n()
+
 const props = withDefaults(defineProps<Props>(), {
-  title: 'تصدير البيانات إلى ملف إكسيل (Excel)',
+  title: undefined,
   loading: false,
   defaultScope: 'all',
   defaultFormat: 'xlsx',
 })
+
+const modalTitle = computed(() => props.title || t('export.title'))
 
 const emit = defineEmits<{
   (e: 'update:show', value: boolean): void
@@ -91,7 +95,7 @@ function setQuickCount(qty: number) {
   <n-modal
     :show="show"
     preset="card"
-    :title="title"
+    :title="modalTitle"
     class="max-w-lg w-full shadow-2xl rounded-2xl"
     :segmented="{ content: true, action: true }"
     :mask-closable="!loading"
@@ -106,21 +110,21 @@ function setQuickCount(qty: number) {
         </div>
         <div class="flex-1 min-w-0">
           <h4 class="text-sm font-semibold text-emerald-900 dark:text-emerald-200">
-            تصدير تقرير إكسيل معتمد (.{{ selectedFormat }})
+            {{ t('export.certifiedReport', { format: selectedFormat }) }}
           </h4>
           <p class="text-xs text-emerald-700/80 dark:text-emerald-300/80 mt-0.5">
-            يدعم اللغة العربية (RTL) مع التنسيق التلقائي للأعمدة والمبالغ
+            {{ t('export.certifiedReportDesc') }}
           </p>
         </div>
         <n-tag type="success" size="small" round class="font-mono font-medium">
-          {{ totalCount }} إجمالي متاح
+          {{ t('export.totalAvailable', { count: totalCount }) }}
         </n-tag>
       </div>
 
       <!-- Format Selection -->
       <div class="space-y-2">
         <label class="block text-sm font-semibold text-slate-700 dark:text-slate-200">
-          صيغة ملف الإكسيل:
+          {{ t('export.fileFormat') }}
         </label>
         <div class="grid grid-cols-2 gap-3">
           <!-- XLSX Option -->
@@ -136,10 +140,10 @@ function setQuickCount(qty: number) {
             <n-radio :checked="selectedFormat === 'xlsx'" value="xlsx" @change="selectedFormat = 'xlsx'" />
             <div>
               <div class="text-sm font-bold text-slate-800 dark:text-slate-100 font-mono">
-                .xlsx (قياسي)
+                {{ t('export.xlsxTitle') }}
               </div>
               <div class="text-xs text-slate-500 dark:text-slate-400">
-                مصنف Excel قياسي متوافق مع كافة البرامج والهواتف
+                {{ t('export.xlsxDesc') }}
               </div>
             </div>
           </div>
@@ -157,10 +161,10 @@ function setQuickCount(qty: number) {
             <n-radio :checked="selectedFormat === 'xlsm'" value="xlsm" @change="selectedFormat = 'xlsm'" />
             <div>
               <div class="text-sm font-bold text-emerald-700 dark:text-emerald-300 font-mono">
-                .xlsm (ماكرو)
+                {{ t('export.xlsmTitle') }}
               </div>
               <div class="text-xs text-slate-500 dark:text-slate-400">
-                مصنف Excel مدعوم بماكرو وقوالب الـ VBA
+                {{ t('export.xlsmDesc') }}
               </div>
             </div>
           </div>
@@ -170,7 +174,7 @@ function setQuickCount(qty: number) {
       <!-- Scope Selection -->
       <div class="space-y-3">
         <label class="block text-sm font-semibold text-slate-700 dark:text-slate-200">
-          حدد نطاق وسجلات التصدير:
+          {{ t('export.scopeLabel') }}
         </label>
 
         <n-radio-group v-model:value="selectedScope" name="exportScope" class="w-full flex flex-col gap-2.5">
@@ -188,13 +192,13 @@ function setQuickCount(qty: number) {
               <n-radio value="all" />
               <div>
                 <div class="text-sm font-medium text-slate-800 dark:text-slate-100 flex items-center gap-2">
-                  <span>جميع النتائج المطابقة للفلتر</span>
+                  <span>{{ t('export.allFilteredTitle') }}</span>
                   <span class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold bg-emerald-100 dark:bg-emerald-900/40 px-2 py-0.5 rounded-full">
-                    شامل الفلتر
+                    {{ t('export.filteredBadge') }}
                   </span>
                 </div>
                 <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                  تصدير جميع السجلات التي تطابق معايير البحث والفلترة دون التقيد بحد الصفحة
+                  {{ t('export.allFilteredDesc') }}
                 </div>
               </div>
             </div>
@@ -202,7 +206,7 @@ function setQuickCount(qty: number) {
               <span class="text-base font-bold font-mono text-emerald-600 dark:text-emerald-400">
                 {{ totalCount }}
               </span>
-              <span class="text-xs text-slate-400 block">سجل</span>
+              <span class="text-xs text-slate-400 block">{{ t('export.recordUnit') }}</span>
             </div>
           </div>
 
@@ -220,10 +224,10 @@ function setQuickCount(qty: number) {
               <n-radio value="page" />
               <div>
                 <div class="text-sm font-medium text-slate-800 dark:text-slate-100">
-                  الصفحة الحالية فقط
+                  {{ t('export.currentPageTitle') }}
                 </div>
                 <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                  تصدير العناصر المعروضة حالياً في جدول الصفحة الحالية فقط
+                  {{ t('export.currentPageDesc') }}
                 </div>
               </div>
             </div>
@@ -231,7 +235,7 @@ function setQuickCount(qty: number) {
               <span class="text-base font-bold font-mono text-slate-700 dark:text-slate-300">
                 {{ currentPageCount }}
               </span>
-              <span class="text-xs text-slate-400 block">سجل</span>
+              <span class="text-xs text-slate-400 block">{{ t('export.recordUnit') }}</span>
             </div>
           </div>
 
@@ -250,10 +254,10 @@ function setQuickCount(qty: number) {
                 <n-radio value="custom" />
                 <div>
                   <div class="text-sm font-medium text-slate-800 dark:text-slate-100">
-                    تحديد عدد مخصص من السجلات
+                    {{ t('export.customCountTitle') }}
                   </div>
                   <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                    التحكم في العدد المراد تصديره مستقلاً عن حد الـ Pagination (مثلاً 50، 100، إلخ)
+                    {{ t('export.customCountDesc') }}
                   </div>
                 </div>
               </div>
@@ -261,14 +265,14 @@ function setQuickCount(qty: number) {
                 <span class="text-base font-bold font-mono text-emerald-600 dark:text-emerald-400">
                   {{ exportCount }}
                 </span>
-                <span class="text-xs text-slate-400 block">سجل</span>
+                <span class="text-xs text-slate-400 block">{{ t('export.recordUnit') }}</span>
               </div>
             </div>
 
             <!-- Custom Count Input & Quick Chips -->
             <div v-if="selectedScope === 'custom'" class="pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3" @click.stop>
               <div class="flex items-center gap-2">
-                <span class="text-xs text-slate-600 dark:text-slate-400 font-medium">العدد المطلوب:</span>
+                <span class="text-xs text-slate-600 dark:text-slate-400 font-medium">{{ t('export.requiredCount') }}</span>
                 <n-input-number
                   v-model:value="customCount"
                   :min="1"
@@ -317,7 +321,7 @@ function setQuickCount(qty: number) {
                   class="text-xs px-2 py-1 rounded bg-slate-100 dark:bg-slate-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-slate-700 dark:text-slate-300 transition-colors"
                   @click="setQuickCount(totalCount)"
                 >
-                  الكل
+                  {{ t('export.all') }}
                 </button>
               </div>
             </div>
@@ -329,10 +333,10 @@ function setQuickCount(qty: number) {
       <div class="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl flex items-center justify-between text-xs text-slate-600 dark:text-slate-300">
         <span class="flex items-center gap-1.5">
           <n-icon size="16" class="text-emerald-500"><CheckIcon /></n-icon>
-          <span>سيتم تصدير:</span>
+          <span>{{ t('export.willExport') }}</span>
         </span>
         <span class="font-bold text-slate-900 dark:text-white font-mono text-sm">
-          {{ exportCount }} سجل بصيغة .{{ selectedFormat }}
+          {{ t('export.exportSummary', { count: exportCount, format: selectedFormat }) }}
         </span>
       </div>
     </div>
@@ -341,7 +345,7 @@ function setQuickCount(qty: number) {
     <template #action>
       <div class="flex items-center justify-end gap-3">
         <n-button :disabled="loading" @click="closeModal">
-          إلغاء
+          {{ t('common.cancel') }}
         </n-button>
         <n-button
           type="primary"
@@ -353,7 +357,7 @@ function setQuickCount(qty: number) {
           <template #icon>
             <n-icon><DownloadIcon /></n-icon>
           </template>
-          تصدير إلى ملف .{{ selectedFormat }} ({{ exportCount }})
+          {{ t('export.exportButton', { format: selectedFormat, count: exportCount }) }}
         </n-button>
       </div>
     </template>
