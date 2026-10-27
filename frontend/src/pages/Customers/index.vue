@@ -83,7 +83,7 @@ async function handleExport({ scope, count, format = 'xlsx' }: { scope: 'all' | 
     }
 
     const today = new Date().toISOString().slice(0, 10)
-    exportToExcel({
+    await exportToExcel({
       filename: `قائمة_العملاء_${today}`,
       sheetName: 'العملاء',
       format,

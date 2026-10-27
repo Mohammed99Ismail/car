@@ -36,6 +36,11 @@ builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 // 3. JWT Authentication
 var jwtOptions = builder.Configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>() ?? new JwtOptions();
+if (string.IsNullOrWhiteSpace(jwtOptions.SecretKey) || jwtOptions.SecretKey.Length < 32)
+{
+    throw new InvalidOperationException(
+        "Jwt:SecretKey is missing or too short (min 32 chars). Configure it via appsettings or the JWT__SecretKey environment variable.");
+}
 var keyBytes = Encoding.UTF8.GetBytes(jwtOptions.SecretKey);
 
 builder.Services.AddAuthentication(options =>
@@ -109,15 +114,26 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.SupportedUICultures = supportedCultures;
 });
 
-// 8. CORS
+// 8. CORS — permissive only in Development; production must whitelist origins.
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .WithExposedHeaders("X-Correlation-Id");
+        if (builder.Environment.IsDevelopment())
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .WithExposedHeaders("X-Correlation-Id");
+        }
+        else
+        {
+            var origins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+            policy.WithOrigins(origins)
+                  .AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .WithExposedHeaders("X-Correlation-Id");
+        }
     });
 });
 

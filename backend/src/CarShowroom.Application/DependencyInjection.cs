@@ -5,6 +5,7 @@ using CarShowroom.Application.Features.CarMakes;
 using CarShowroom.Application.Features.CarModels;
 using CarShowroom.Application.Features.Cars;
 using CarShowroom.Application.Features.Customers;
+using CarShowroom.Application.Features.Dashboard;
 using CarShowroom.Application.Features.Lookups;
 using CarShowroom.Application.Features.Roles;
 using CarShowroom.Application.Features.Users;
@@ -34,6 +35,7 @@ public static class DependencyInjection
         services.AddScoped<ICarModelService, CarModelService>();
         services.AddScoped<IBranchService, BranchService>();
         services.AddScoped<ICustomerService, CustomerService>();
+        services.AddScoped<IDashboardService, DashboardService>();
         services.AddScoped<ICarService, CarService>();
         services.AddScoped<CarShowroom.Application.Features.Profile.IProfileService, CarShowroom.Application.Features.Profile.ProfileService>();
         services.AddScoped<CarShowroom.Application.Features.Contracts.Services.IContractCalculationService, CarShowroom.Application.Features.Contracts.Services.ContractCalculationService>();

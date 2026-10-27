@@ -1,5 +1,3 @@
-import * as XLSX from 'xlsx'
-
 export type ExcelFileFormat = 'xlsx' | 'xlsm' | 'xls'
 
 export interface ExcelColumn<T> {
@@ -48,8 +46,12 @@ function getSafeDownloadFilename(rawName: string, ext: string): string {
 /**
  * Universal browser utility to export data to real Microsoft Excel files (.xlsx / .xlsm)
  * with full RTL Arabic support, proper MIME types, and clean file downloads.
+ *
+ * `xlsx` is ~1MB and only needed when the user actually exports, so it is
+ * dynamically imported here instead of being bundled into the main chunk.
  */
-export function exportToExcel<T>(options: ExportToExcelOptions<T>): boolean {
+export async function exportToExcel<T>(options: ExportToExcelOptions<T>): Promise<boolean> {
+  const XLSX = await import('xlsx')
   try {
     const {
       filename,

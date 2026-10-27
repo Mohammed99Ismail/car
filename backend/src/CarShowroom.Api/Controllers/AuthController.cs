@@ -4,12 +4,14 @@ using CarShowroom.Application.Features.Auth;
 using CarShowroom.Application.Features.Auth.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace CarShowroom.Api.Controllers;
 
 public class AuthController(IAuthService authService) : BaseApiController
 {
     [HttpPost("register")]
+    [EnableRateLimiting("auth-limit")]
     public async Task<ActionResult<CustomApiResponse<AuthResponse>>> Register(
         [FromBody] RegisterRequest request, CancellationToken cancellationToken)
     {
@@ -18,6 +20,7 @@ public class AuthController(IAuthService authService) : BaseApiController
     }
 
     [HttpPost("login")]
+    [EnableRateLimiting("auth-limit")]
     public async Task<ActionResult<CustomApiResponse<AuthResponse>>> Login(
         [FromBody] LoginRequest request, CancellationToken cancellationToken)
     {
@@ -26,6 +29,7 @@ public class AuthController(IAuthService authService) : BaseApiController
     }
 
     [HttpPost("refresh-token")]
+    [EnableRateLimiting("auth-limit")]
     public async Task<ActionResult<CustomApiResponse<AuthResponse>>> RefreshToken(
         [FromBody] RefreshTokenRequest request, CancellationToken cancellationToken)
     {
@@ -43,6 +47,7 @@ public class AuthController(IAuthService authService) : BaseApiController
     }
 
     [HttpPost("forgot-password")]
+    [EnableRateLimiting("auth-limit")]
     public async Task<ActionResult<CustomApiResponse<Nothing>>> ForgotPassword(
         [FromBody] ForgotPasswordRequest request, CancellationToken cancellationToken)
     {
@@ -55,6 +60,7 @@ public class AuthController(IAuthService authService) : BaseApiController
     }
 
     [HttpPost("reset-password")]
+    [EnableRateLimiting("auth-limit")]
     public async Task<ActionResult<CustomApiResponse<Nothing>>> ResetPassword(
         [FromBody] ResetPasswordRequest request, CancellationToken cancellationToken)
     {

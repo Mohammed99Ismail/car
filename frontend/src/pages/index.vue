@@ -9,18 +9,12 @@ import {
   ArrowRight24Regular as ArrowRightIcon,
   CheckmarkCircle24Regular as CheckCircleIcon,
 } from '@vicons/fluent'
-import { ResultStatusEnum, isApiSuccess } from '~/models/ApiResponse'
-import { useBranchService } from '~/services/branch.service'
-import { useCarService } from '~/services/car.service'
-import { useContractTypeService } from '~/services/contract-type.service'
-import { useCustomerService } from '~/services/customer.service'
+import { isApiSuccess } from '~/models/ApiResponse'
+import { useDashboardService } from '~/services/dashboard.service'
 
 const { t } = useI18n()
 const accountStore = useAccountStore()
-const carService = useCarService()
-const customerService = useCustomerService()
-const branchService = useBranchService()
-const contractTypeService = useContractTypeService()
+const dashboardService = useDashboardService()
 
 const stats = reactive({
   carsCount: 0,
@@ -33,24 +27,13 @@ const stats = reactive({
 async function loadStats() {
   stats.loading = true
   try {
-    const [carsRes, custRes, branchRes, ctRes] = await Promise.all([
-      carService.getPaged({ pageIndex: 1, pageSize: 1 }),
-      customerService.getPaged({ pageIndex: 1, pageSize: 1 }),
-      branchService.getPaged({ pageIndex: 1, pageSize: 1 }),
-      contractTypeService.getAll(),
-    ])
+    const res = await dashboardService.getStats()
 
-    if (isApiSuccess(carsRes) && carsRes.data) {
-      stats.carsCount = carsRes.data.totalCount
-    }
-    if (isApiSuccess(custRes) && custRes.data) {
-      stats.customersCount = custRes.data.totalCount
-    }
-    if (isApiSuccess(branchRes) && branchRes.data) {
-      stats.branchesCount = branchRes.data.totalCount
-    }
-    if (isApiSuccess(ctRes) && ctRes.data) {
-      stats.contractTypesCount = ctRes.data.length
+    if (isApiSuccess(res) && res.data) {
+      stats.carsCount = res.data.carsCount
+      stats.customersCount = res.data.customersCount
+      stats.branchesCount = res.data.branchesCount
+      stats.contractTypesCount = res.data.contractTypesCount
     }
   } catch (err) {
     console.error('Error loading dashboard stats', err)

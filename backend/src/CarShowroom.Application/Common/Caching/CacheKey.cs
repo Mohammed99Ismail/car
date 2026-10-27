@@ -9,6 +9,7 @@ public static class CacheKey
     public const string Branches = "lookups:branches";
     public const string Roles = "lookups:roles";
     public const string Permissions = "lookups:permissions";
+    public const string DashboardStats = "dashboard:stats";
 
     public static string CarModels(int makeId) => $"{CarModelsPrefix}{makeId}";
 }

@@ -6,7 +6,11 @@ public class JwtOptions
 
     public string Issuer { get; set; } = "CarShowroomApi";
     public string Audience { get; set; } = "CarShowroomClient";
-    public string SecretKey { get; set; } = "CarShowroomSuperSecretKeyLongEnoughForHmacSha256Security123456789!";
+    /// <summary>
+    /// JWT signing key. Must be provided via configuration or the JWT__SecretKey
+    /// environment variable — never hardcoded. Validated at startup in Program.cs.
+    /// </summary>
+    public string SecretKey { get; set; } = string.Empty;
     public int AccessTokenLifetimeMinutes { get; set; } = 60;
     public int RefreshTokenLifetimeDays { get; set; } = 14;
 }
