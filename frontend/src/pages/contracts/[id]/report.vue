@@ -23,6 +23,7 @@ import {
 import { isApiSuccess } from '~/models/ApiResponse'
 import type { ContractReportDto } from '~/models/Contract'
 import { useContractService } from '~/services/contract.service'
+import { appConfig } from '~/config/app.config'
 
 const route = useRoute()
 const router = useRouter()
@@ -220,16 +221,33 @@ onMounted(() => {
     >
       <!-- 1. Showroom Official Header -->
       <div class="break-inside-avoid flex flex-col sm:flex-row items-center justify-between gap-6 border-b-2 border-slate-900 pb-6">
-        <div class="text-right space-y-1">
-          <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-slate-950 flex items-center gap-2">
-            <span>🚗</span> شركة معرض وتأجير السيارات
-          </h1>
-          <p class="text-xs text-slate-600 font-semibold">
-            المملكة العربية السعودية • سجل تجاري معتمد • شبكة الفروع وخدمات الأسطول
-          </p>
-          <p class="text-xs text-slate-500">
-            الفرع المصدر: <strong class="text-slate-800">{{ reportData.contract.branchName }}</strong>
-          </p>
+        <div class="flex items-center gap-4 text-right min-w-0 max-w-full sm:max-w-[70%]">
+          <!-- Constrained Official Logo -->
+          <div class="report-logo-box flex items-center justify-center shrink-0 w-14 h-14 max-w-[56px] max-h-[56px] rounded-2xl overflow-hidden bg-slate-50 border border-slate-300 p-1.5 shadow-2xs">
+            <img
+              :src="appConfig.logoPath"
+              :alt="appConfig.logoAlt"
+              class="w-full h-full max-w-full max-h-full object-contain shrink-0 block"
+            />
+          </div>
+
+          <div class="space-y-1 min-w-0">
+            <h1
+              class="text-xl sm:text-2xl font-black tracking-tight text-slate-950 line-clamp-2 break-words"
+              :title="appConfig.companyName"
+            >
+              {{ appConfig.companyName }}
+            </h1>
+            <p
+              class="text-xs text-slate-600 font-semibold line-clamp-1 break-words"
+              :title="appConfig.subTitle"
+            >
+              {{ appConfig.subTitle }}
+            </p>
+            <p class="text-xs text-slate-500">
+              الفرع المصدر: <strong class="text-slate-800">{{ reportData.contract.branchName }}</strong>
+            </p>
+          </div>
         </div>
 
         <!-- Contract Badge Box -->
@@ -250,7 +268,7 @@ onMounted(() => {
             <NIcon><BranchIcon /></NIcon> الطرف الأول (المؤجر / المعرض)
           </h3>
           <div class="text-xs space-y-1 text-slate-700">
-            <p><strong class="text-slate-900">الاسم:</strong> شركة معرض وتأجير السيارات</p>
+            <p class="truncate" :title="appConfig.companyName"><strong class="text-slate-900">الاسم:</strong> {{ appConfig.companyName }}</p>
             <p><strong class="text-slate-900">الفرع:</strong> {{ reportData.contract.branchName }}</p>
             <p><strong class="text-slate-900">حالة العقد:</strong>
               <span class="font-bold text-emerald-700">{{ reportData.contract.status === 'Active' ? 'ساري العمل به' : reportData.contract.status }}</span>
@@ -651,7 +669,7 @@ onMounted(() => {
         </div>
 
         <div class="text-center text-[10px] text-slate-400 pt-6">
-          تم إصدار هذا التقرير آلياً عبر نظام إدارة معرض وتأجير السيارات بتاريخ: {{ reportData.generatedAt }}
+          تم إصدار هذا التقرير آلياً عبر نظام {{ appConfig.appName }} بتاريخ: {{ reportData.generatedAt }}
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import i18n from '~/modules/i18n'
 import App from './App.vue'
 import type { AppModule } from './types'
+import { appConfig } from '~/config/app.config'
 
 import '@unocss/reset/tailwind-compat.css'
 import 'uno.css'
@@ -113,8 +114,9 @@ router.beforeEach((to, _, next) => {
   }
 
   const { t } = i18n.global
-  let title = t('title')
-  if (to.meta?.title) title = `${t(`menu.${to.meta.title}`)} - ${title}`
+  const baseTitle = appConfig.appName || t('title')
+  let title = baseTitle
+  if (to.meta?.title) title = `${t(`menu.${to.meta.title}`)} - ${baseTitle}`
 
   document.title = title
   next()

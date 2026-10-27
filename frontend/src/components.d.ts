@@ -10,7 +10,6 @@ declare module 'vue' {
     BreadCrumb: typeof import('./components/Navbar/BreadCrumb.vue')['default']
     CustomizeDialog: typeof import('./components/CustomizeDialog/CustomizeDialog.vue')['default']
     DarkModeContainer: typeof import('./components/shared/DarkModeContainer.vue')['default']
-    'Dashboard.service': typeof import('./services/dashboard.service.ts')['default']
     EnglandIcon: typeof import('./components/CustomIcons/EnglandIcon.vue')['default']
     ExportExcelModal: typeof import('./components/common/ExportExcelModal.vue')['default']
     FullScreenButton: typeof import('./components/Navbar/FullScreenButton.vue')['default']

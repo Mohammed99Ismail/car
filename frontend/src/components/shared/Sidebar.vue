@@ -14,6 +14,8 @@ import {
   Tag24Filled as MakesIconActive,
   Shapes24Regular as ModelsIcon,
   Shapes24Filled as ModelsIconActive,
+  Color24Regular as ColorsIcon,
+  Color24Filled as ColorsIconActive,
   DocumentBulletList24Regular as ContractTypesIcon,
   DocumentBulletList24Filled as ContractTypesIconActive,
   DocumentText24Regular as ContractsIcon,
@@ -28,6 +30,7 @@ import {
 
 import { storeToRefs } from 'pinia'
 import type { SidebarMenuOption } from './SidebarMenu.vue'
+import { appConfig } from '~/config/app.config'
 
 const layoutStore = useLayoutStore()
 const accountStore = useAccountStore()
@@ -122,6 +125,16 @@ const menuOptions = computed<SidebarMenuOption[]>(() => {
     })
   }
 
+  if (accountStore.hasPermission('CarColors.View')) {
+    lookupChildren.push({
+      label: t('menu.carColors'),
+      route: '/car-colors',
+      key: 'car-colors',
+      icon: ColorsIcon,
+      activeIcon: ColorsIconActive,
+    })
+  }
+
   if (accountStore.hasPermission('ContractTypes.View')) {
     lookupChildren.push({
       label: t('menu.contractTypes'),
@@ -187,11 +200,13 @@ router.beforeEach(() => {
     :collapsed="effectiveCollapsed"
     :class="{ 'collapsed': effectiveCollapsed, 'mobile-mode': mobileMode }">
     <div class="logo-container mb-4">
-      <div flex w-full justify-between items-center>
-        <div flex w-full justify-start items-center>
-          <div class="logo-bg"><img src="@/assets/images/logo.png" alt="logo" class="logo"></div>
-          <h1 class="main-title">
-            {{ t('title') }}
+      <div class="flex w-full justify-between items-center overflow-hidden">
+        <div class="flex w-full justify-start items-center gap-2 overflow-hidden">
+          <div class="logo-bg shrink-0">
+            <img :src="appConfig.logoPath" :alt="appConfig.logoAlt" class="logo">
+          </div>
+          <h1 class="main-title" :title="appConfig.appName">
+            {{ appConfig.appName }}
           </h1>
         </div>
 
@@ -217,28 +232,49 @@ router.beforeEach(() => {
 .logo-container {
   display: flex;
   align-items: center;
-  padding: 1.5rem 0.8rem 0.5rem 1.1rem;
+  padding: 1.25rem 0.8rem 0.5rem 0.8rem;
   transition: all 100ms;
-  line-height: 1;
+  line-height: 1.2;
 
   .main-title {
-    font-family: Quicksand, 'Cairo', sans-serif;
-    font-size: 1.3rem;
-    font-weight: 500;
+    font-family: 'Cairo', Quicksand, sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.35;
     user-select: none;
+    max-width: 175px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
   }
 
   .logo-bg {
     width: 38px;
     height: 38px;
+    min-width: 38px;
+    min-height: 38px;
+    max-width: 38px;
+    max-height: 38px;
     display: flex;
-    margin: 0 .34rem;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: rgba(241, 245, 249, 0.7);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    padding: 2px;
 
     .logo {
-      width: 34px;
-      object-fit: cover;
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
     }
   }
 
