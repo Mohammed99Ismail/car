@@ -39,6 +39,14 @@ public class LookupsController(ILookupService lookupService) : BaseApiController
         return CustomResult(result);
     }
 
+    [HttpGet("colors")]
+    public async Task<ActionResult<CustomApiResponse<IReadOnlyList<LookupColorDto>>>> GetColors(
+        [FromQuery] string? search, CancellationToken cancellationToken)
+    {
+        var result = await lookupService.GetColorsAsync(search, cancellationToken);
+        return CustomResult(result);
+    }
+
     [HttpGet("roles")]
     public async Task<ActionResult<CustomApiResponse<IReadOnlyList<LookupDto>>>> GetRoles(
         CancellationToken cancellationToken)

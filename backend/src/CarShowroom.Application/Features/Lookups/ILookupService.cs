@@ -9,5 +9,6 @@ public interface ILookupService
     CustomApiResponse<IReadOnlyList<int>> GetManufactureYears();
     Task<CustomApiResponse<IReadOnlyList<LookupItemDto>>> GetBranchesLookupAsync(string? search, CancellationToken cancellationToken = default);
     Task<CustomApiResponse<IReadOnlyList<LookupDto>>> GetContractTypesAsync(CancellationToken cancellationToken = default);
+    Task<CustomApiResponse<IReadOnlyList<LookupColorDto>>> GetColorsAsync(string? search, CancellationToken cancellationToken = default);
     Task<CustomApiResponse<IReadOnlyList<LookupDto>>> GetRolesLookupAsync(CancellationToken cancellationToken = default);
 }

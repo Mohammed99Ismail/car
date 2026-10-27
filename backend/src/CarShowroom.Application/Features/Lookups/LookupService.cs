@@ -121,6 +121,32 @@ public class LookupService(
         return CustomApiResponse<IReadOnlyList<LookupDto>>.Success(list);
     }
 
+    public async Task<CustomApiResponse<IReadOnlyList<LookupColorDto>>> GetColorsAsync(
+        string? search, CancellationToken cancellationToken = default)
+    {
+        var allColors = await cache.GetOrCreateAsync(
+            CacheKey.CarColors,
+            async token => await context.CarColors
+                .AsNoTracking()
+                .OrderBy(c => c.Name)
+                .Select(c => new LookupColorDto(c.Id, c.Name, c.HexCode))
+                .ToListAsync(token),
+            LongCacheOptions,
+            cancellationToken: cancellationToken);
+
+        if (string.IsNullOrWhiteSpace(search))
+        {
+            return CustomApiResponse<IReadOnlyList<LookupColorDto>>.Success(allColors);
+        }
+
+        var filtered = allColors
+            .Where(c => c.Name.Contains(search.Trim(), StringComparison.OrdinalIgnoreCase))
+            .Take(50)
+            .ToList();
+
+        return CustomApiResponse<IReadOnlyList<LookupColorDto>>.Success(filtered);
+    }
+
     public async Task<CustomApiResponse<IReadOnlyList<LookupDto>>> GetRolesLookupAsync(
         CancellationToken cancellationToken = default)
     {

@@ -49,6 +49,12 @@ export interface LookupItemDto {
   name: string
 }
 
+export interface LookupColorDto {
+  id: number
+  name: string
+  hexCode?: string | null
+}
+
 /** Bilingual lookup (backend LookupDto). */
 export interface BilingualLookupDto {
   id: number

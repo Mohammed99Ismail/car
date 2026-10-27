@@ -39,3 +39,6 @@ public record LookupDto(int Id, string NameAr, string NameEn);
 
 /// <summary>Single-name lookup item (car makes, models, branches...).</summary>
 public record LookupItemDto(int Id, string Name);
+
+/// <summary>Car color lookup item with optional hex code.</summary>
+public record LookupColorDto(int Id, string Name, string? HexCode = null);

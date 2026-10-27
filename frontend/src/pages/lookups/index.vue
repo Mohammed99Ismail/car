@@ -36,7 +36,7 @@ meta:
     </div>
 
     <!-- Lookups Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 my-8">
       <!-- 1. Car Makes Card -->
       <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
         <div>
@@ -111,7 +111,45 @@ meta:
         </div>
       </div>
 
-      <!-- 3. Contract Types Card -->
+      <!-- 3. Car Colors Card (NEW) -->
+      <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-14 h-14 rounded-2xl bg-purple-50 dark:bg-purple-950/50 flex items-center justify-center text-2xl border border-purple-100 dark:border-purple-800 text-purple-600 dark:text-purple-400">
+              🎨
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300">
+              {{ t('carColors.title') }}
+            </span>
+          </div>
+
+          <h2 class="text-xl font-bold text-slate-800 dark:text-white mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+            {{ t('carColors.title') }}
+          </h2>
+          <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-6">
+            {{ t('carColors.subtitle') }}
+          </p>
+        </div>
+
+        <div
+          v-if="accountStore.hasPermission('CarColors.View')"
+          class="flex items-center gap-2 pt-4 border-t border-slate-100 dark:border-slate-700/60"
+        >
+          <n-button
+            type="primary"
+            secondary
+            class="flex-1 rounded-xl shadow-xs !bg-purple-50 hover:!bg-purple-100 text-purple-700 dark:!bg-purple-900/30 dark:text-purple-300"
+            @click="router.push('/car-colors')"
+          >
+            {{ t('lookups.manageColors') }}
+            <template #icon>
+              <ArrowRightIcon class="w-4 h-4 rtl:rotate-180" />
+            </template>
+          </n-button>
+        </div>
+      </div>
+
+      <!-- 4. Contract Types Card -->
       <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
         <div>
           <div class="flex items-center justify-between mb-4">

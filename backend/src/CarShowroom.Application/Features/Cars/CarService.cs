@@ -34,7 +34,7 @@ public class CarService(
             c.ModelId,
             c.Model?.Name ?? string.Empty,
             c.ManufactureYear,
-            c.Color,
+            c.CarColor?.Name ?? c.Color,
             c.PlateNumber,
             c.BranchId,
             c.Branch?.Name ?? string.Empty,
@@ -47,7 +47,9 @@ public class CarService(
             c.ChassisNumber,
             c.EngineNumber,
             c.Notes,
-            c.CreatedDate);
+            c.CreatedDate,
+            c.ColorId,
+            c.CarColor?.HexCode);
     }
 
     public async Task<CustomApiResponse<PagedListModel<CarDto>>> GetCarsAsync(
@@ -57,6 +59,7 @@ public class CarService(
             .Include(c => c.Make)
             .Include(c => c.Model)
             .Include(c => c.Branch)
+            .Include(c => c.CarColor)
             .AsNoTracking();
 
         if (query.BranchId.HasValue)
@@ -71,6 +74,9 @@ public class CarService(
         if (query.ManufactureYear.HasValue)
             source = source.Where(c => c.ManufactureYear == query.ManufactureYear.Value);
 
+        if (query.ColorId.HasValue)
+            source = source.Where(c => c.ColorId == query.ColorId.Value);
+
         if (!string.IsNullOrWhiteSpace(query.Search))
         {
             var search = query.Search.Trim().ToLower();
@@ -81,6 +87,7 @@ public class CarService(
                 c.ChassisNumber.ToLower().Contains(search) ||
                 c.EngineNumber.ToLower().Contains(search) ||
                 c.Color.ToLower().Contains(search) ||
+                (c.CarColor != null && c.CarColor.Name.ToLower().Contains(search)) ||
                 c.Branch.Name.ToLower().Contains(search));
         }
 
@@ -106,6 +113,7 @@ public class CarService(
             .Include(c => c.Make)
             .Include(c => c.Model)
             .Include(c => c.Branch)
+            .Include(c => c.CarColor)
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
 
@@ -152,12 +160,33 @@ public class CarService(
 
         var (calcBookValue, _, _) = calculationService.CalculateCarBookValue(request.PurchasePrice, request.PurchaseDate);
 
+        var colorId = request.ColorId;
+        var colorName = request.Color?.Trim() ?? string.Empty;
+
+        if (colorId.HasValue)
+        {
+            var colorEntity = await context.CarColors.FindAsync([colorId.Value], cancellationToken);
+            if (colorEntity != null && string.IsNullOrWhiteSpace(colorName))
+            {
+                colorName = colorEntity.Name;
+            }
+        }
+        else if (!string.IsNullOrWhiteSpace(colorName))
+        {
+            var existingColor = await context.CarColors.FirstOrDefaultAsync(c => c.Name.ToLower() == colorName.ToLower(), cancellationToken);
+            if (existingColor != null)
+            {
+                colorId = existingColor.Id;
+            }
+        }
+
         var car = new Car
         {
             MakeId = request.MakeId,
             ModelId = request.ModelId,
             ManufactureYear = request.ManufactureYear,
-            Color = request.Color.Trim(),
+            Color = colorName,
+            ColorId = colorId,
             PlateNumber = plate,
             BranchId = request.BranchId,
             PurchaseDate = request.PurchaseDate.ToUniversalTime(),
@@ -214,10 +243,31 @@ public class CarService(
         if (await context.Cars.AnyAsync(c => c.Id != id && c.EngineNumber.ToLower() == engine.ToLower(), cancellationToken))
             return CustomApiResponse<CarDto>.Conflict(Msg.AlreadyExists(Msg.EngineNumber));
 
+        var updateColorId = request.ColorId;
+        var updateColorName = request.Color?.Trim() ?? string.Empty;
+
+        if (updateColorId.HasValue)
+        {
+            var colorEntity = await context.CarColors.FindAsync([updateColorId.Value], cancellationToken);
+            if (colorEntity != null && string.IsNullOrWhiteSpace(updateColorName))
+            {
+                updateColorName = colorEntity.Name;
+            }
+        }
+        else if (!string.IsNullOrWhiteSpace(updateColorName))
+        {
+            var existingColor = await context.CarColors.FirstOrDefaultAsync(c => c.Name.ToLower() == updateColorName.ToLower(), cancellationToken);
+            if (existingColor != null)
+            {
+                updateColorId = existingColor.Id;
+            }
+        }
+
         car.MakeId = request.MakeId;
         car.ModelId = request.ModelId;
         car.ManufactureYear = request.ManufactureYear;
-        car.Color = request.Color.Trim();
+        car.Color = updateColorName;
+        car.ColorId = updateColorId;
         car.PlateNumber = plate;
         car.BranchId = request.BranchId;
         car.PurchaseDate = request.PurchaseDate.ToUniversalTime();

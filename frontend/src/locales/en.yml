@@ -230,6 +230,7 @@ menu:
   lookupsHub: Lookups Hub
   carMakes: Car Makes
   carModels: Car Models
+  carColors: Car Colors
   roles: Roles & Permissions
   dashboard: Dashboard
   eCommerce: eCommerce
@@ -521,6 +522,7 @@ lookups:
   contractTypesCount: Contract Types
   manageMakes: Manage Car Makes
   manageModels: Manage Car Models
+  manageColors: Manage Car Colors
   manageContractTypes: View Contract Types
   selectLookup: Select lookup...
   actions: Quick Actions
@@ -561,6 +563,24 @@ carModels:
   validations:
     nameRequired: Please enter model name
     makeRequired: Please select make
+
+carColors:
+  title: Car Colors
+  subtitle: Manage standard showroom vehicle colors and hex color codes
+  list: Colors List
+  create: Add New Color
+  edit: Edit Color
+  name: Color Name
+  hexCode: Hex Color Code
+  preview: Color Preview
+  carsCount: Cars Count
+  searchPlaceholder: Search by color name (e.g. Pearl White, Royal Black)...
+  deleteConfirm: Are you sure you want to delete this color?
+  deleteSuccess: Color deleted successfully
+  createSuccess: Color created successfully
+  updateSuccess: Color updated successfully
+  validations:
+    nameRequired: Please enter color name
 
 contracts:
   title: Contracts Management

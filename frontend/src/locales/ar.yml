@@ -154,6 +154,7 @@ menu:
   lookupsHub: لوحة القوائم المرجعية
   carMakes: أنواع وماركات السيارات
   carModels: موديلات السيارات
+  carColors: ألوان السيارات
   roles: الأدوار والصلاحيات
   users: المستخدمين
   profile: الملف الشخصي
@@ -376,6 +377,7 @@ lookups:
   contractTypesCount: أنواع العقود
   manageMakes: إدارة أنواع السيارات
   manageModels: إدارة موديلات السيارات
+  manageColors: إدارة ألوان السيارات
   manageContractTypes: عرض أنواع العقود
   selectLookup: اختر قائمة مرجعية...
   actions: عمليات سريعة
@@ -416,6 +418,24 @@ carModels:
   validations:
     nameRequired: يرجى إدخال اسم الموديل
     makeRequired: يرجى اختيار الماركة
+
+carColors:
+  title: ألوان السيارات
+  subtitle: إدارة ألوان السيارات المعتمدة ورموزها اللونية لأسطول المعرض
+  list: قائمة الألوان
+  create: إضافة لون جديد
+  edit: تعديل اللون
+  name: اسم اللون
+  hexCode: كود اللون (Hex)
+  preview: معاينة اللون
+  carsCount: عدد السيارات
+  searchPlaceholder: 'ابحث باسم اللون (مثل: أبيض لؤلؤي، أسود ملكي)...'
+  deleteConfirm: هل أنت متأكد من حذف هذا اللون؟
+  deleteSuccess: تم حذف اللون بنجاح
+  createSuccess: تم إضافة اللون بنجاح
+  updateSuccess: تم تحديث بيانات اللون بنجاح
+  validations:
+    nameRequired: يرجى إدخال اسم اللون
 
 dashboard:
   systemOnline: النظام متصل وقيد العمل بكفاءة عالية

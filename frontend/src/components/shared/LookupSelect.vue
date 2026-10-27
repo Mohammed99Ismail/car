@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import { h } from 'vue'
 import type { SelectOption } from 'naive-ui'
 import { useDebouncedLookup } from '~/composables/useDebouncedLookup'
 
 interface Props {
   value?: number | string | Array<number | string> | null
-  lookupType?: 'makes' | 'models' | 'branches' | 'years' | 'roles' | 'contractTypes'
+  lookupType?: 'makes' | 'models' | 'branches' | 'years' | 'roles' | 'contractTypes' | 'colors'
   makeId?: number | null
   fetchFn?: (search?: string) => Promise<SelectOption[]>
   debounceDelay?: number
@@ -63,6 +64,19 @@ const mergedOptions = computed<SelectOption[]>(() => {
   return list
 })
 
+function renderLabel(option: SelectOption) {
+  if (props.lookupType === 'colors' && (option as any).hexCode) {
+    return h('div', { class: 'flex items-center gap-2' }, [
+      h('span', {
+        class: 'w-3.5 h-3.5 rounded-full border border-slate-300 dark:border-slate-600 inline-block shrink-0 shadow-xs',
+        style: { backgroundColor: (option as any).hexCode }
+      }),
+      h('span', null, option.label as string)
+    ])
+  }
+  return option.label as string
+}
+
 function handleSearch(query: string) {
   debouncedSearch(query)
 }
@@ -104,6 +118,7 @@ defineExpose({
     :placeholder="placeholder"
     :size="size"
     :status="status"
+    :render-label="renderLabel"
     class="rounded-xl"
     @search="handleSearch"
     @update:value="handleUpdateValue"

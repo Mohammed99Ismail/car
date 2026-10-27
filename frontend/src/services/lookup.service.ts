@@ -1,5 +1,5 @@
 import { useApi } from '~/composables/useApi'
-import type { ApiResponse, BilingualLookupDto, LookupItemDto } from '~/models/ApiResponse'
+import type { ApiResponse, BilingualLookupDto, LookupColorDto, LookupItemDto } from '~/models/ApiResponse'
 
 // In-memory cache for lookups to speed up page transitions and avoid redundant network calls
 const lookupCache = new Map<string, { data: any; timestamp: number }>()
@@ -44,9 +44,15 @@ export const useLookupService = () => {
     return withLookupCache(key, () => api.get<ApiResponse<LookupItemDto[]>>('branches', search ? { search } : undefined))
   }
 
+  async function getColors(search?: string): Promise<ApiResponse<LookupColorDto[]>> {
+    const key = `colors_${search || ''}`
+    return withLookupCache(key, () => api.get<ApiResponse<LookupColorDto[]>>('colors', search ? { search } : undefined))
+  }
+
   async function getRoles(): Promise<ApiResponse<BilingualLookupDto[]>> {
     return withLookupCache('roles', () => api.get<ApiResponse<BilingualLookupDto[]>>('roles'))
   }
 
-  return { getMakes, getModels, getYears, getBranches, getRoles, clearCache: clearLookupCache }
+  return { getMakes, getModels, getYears, getBranches, getColors, getRoles, clearCache: clearLookupCache }
 }
+

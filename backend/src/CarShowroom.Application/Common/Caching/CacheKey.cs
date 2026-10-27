@@ -5,6 +5,7 @@ public static class CacheKey
 {
     public const string CarMakes = "lookups:car-makes";
     public const string CarModelsPrefix = "lookups:car-models:";
+    public const string CarColors = "lookups:car-colors";
     public const string ContractTypes = "lookups:contract-types";
     public const string Branches = "lookups:branches";
     public const string Roles = "lookups:roles";

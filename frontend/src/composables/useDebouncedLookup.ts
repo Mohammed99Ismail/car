@@ -4,7 +4,7 @@ import { useLookupService } from '~/services/lookup.service'
 
 export interface UseDebouncedLookupOptions {
   /** The lookup type or a custom fetch function */
-  type?: 'makes' | 'models' | 'branches' | 'years' | 'roles' | 'contractTypes'
+  type?: 'makes' | 'models' | 'branches' | 'years' | 'roles' | 'contractTypes' | 'colors'
   /** For models: the parent makeId */
   makeId?: MaybeRef<number | null | undefined>
   /** Custom fetch function if type is not a predefined one */
@@ -76,6 +76,18 @@ export function useDebouncedLookup(options: UseDebouncedLookupOptions = {}) {
         const res = await lookupService.getYears()
         if (isApiSuccess(res) && res.data) {
           results = res.data.map(y => ({ label: String(y), value: y }))
+        }
+        break
+      }
+      case 'colors': {
+        const res = await lookupService.getColors(trimmed || undefined)
+        if (isApiSuccess(res) && res.data) {
+          results = res.data.map(c => ({
+            label: c.name,
+            value: c.name,
+            id: c.id,
+            hexCode: c.hexCode,
+          }))
         }
         break
       }

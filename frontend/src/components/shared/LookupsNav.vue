@@ -3,6 +3,7 @@ import {
   Table24Regular as HubIcon,
   Tag24Regular as MakesIcon,
   VehicleCar24Regular as ModelsIcon,
+  Color24Regular as ColorsIcon,
   DocumentBulletList24Regular as ContractTypesIcon,
   ChevronDown24Regular as DropdownIcon,
   Navigation24Regular as NavIcon,
@@ -10,7 +11,7 @@ import {
 import type { DropdownOption } from 'naive-ui'
 
 interface Props {
-  activeKey?: 'hub' | 'makes' | 'models' | 'contract-types'
+  activeKey?: 'hub' | 'makes' | 'models' | 'colors' | 'contract-types'
 }
 
 const props = defineProps<Props>()
@@ -40,6 +41,13 @@ const dropdownOptions = computed<DropdownOption[]>(() => {
       label: () => t('carModels.title'),
       key: '/car-models',
       icon: () => h(ModelsIcon, { class: 'w-4 h-4 text-blue-500' }),
+    })
+  }
+  if (accountStore.hasPermission('CarColors.View')) {
+    items.push({
+      label: () => t('carColors.title'),
+      key: '/car-colors',
+      icon: () => h(ColorsIcon, { class: 'w-4 h-4 text-purple-500' }),
     })
   }
   if (accountStore.hasPermission('ContractTypes.View')) {
@@ -118,6 +126,26 @@ function handleSelect(key: string) {
             <ModelsIcon class="w-4 h-4 text-blue-500" />
           </template>
           {{ t('carModels.title') }}
+        </n-button>
+      </router-link>
+
+      <router-link
+        v-if="accountStore.hasPermission('CarColors.View')"
+        to="/car-colors"
+        custom
+        v-slot="{ navigate }"
+      >
+        <n-button
+          size="medium"
+          :type="activeKey === 'colors' ? 'primary' : 'default'"
+          :secondary="activeKey !== 'colors'"
+          class="rounded-xl font-medium transition-all duration-200 hover:scale-[1.02]"
+          @click="navigate"
+        >
+          <template #icon>
+            <ColorsIcon class="w-4 h-4 text-purple-500" />
+          </template>
+          {{ t('carColors.title') }}
         </n-button>
       </router-link>
 

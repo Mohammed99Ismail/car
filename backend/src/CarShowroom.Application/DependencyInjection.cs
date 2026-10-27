@@ -1,6 +1,7 @@
 using System.Reflection;
 using CarShowroom.Application.Features.Auth;
 using CarShowroom.Application.Features.Branches;
+using CarShowroom.Application.Features.CarColors;
 using CarShowroom.Application.Features.CarMakes;
 using CarShowroom.Application.Features.CarModels;
 using CarShowroom.Application.Features.Cars;
@@ -33,6 +34,7 @@ public static class DependencyInjection
         services.AddScoped<ILookupService, LookupService>();
         services.AddScoped<ICarMakeService, CarMakeService>();
         services.AddScoped<ICarModelService, CarModelService>();
+        services.AddScoped<ICarColorService, CarColorService>();
         services.AddScoped<IBranchService, BranchService>();
         services.AddScoped<ICustomerService, CustomerService>();
         services.AddScoped<IDashboardService, DashboardService>();

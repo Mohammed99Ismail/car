@@ -42,6 +42,10 @@ export interface CarDto {
   notes: string | null
   /** تاريخ إضافة السيارة للنظام */
   createdDate: string
+  /** معرف لون السيارة */
+  colorId?: number | null
+  /** كود اللون السداسي Hex */
+  colorHex?: string | null
 }
 
 /**
@@ -56,6 +60,8 @@ export interface SaveCarDto {
   manufactureYear: number
   /** لون السيارة */
   color: string
+  /** معرف لون السيارة */
+  colorId?: number | null
   /** رقم لوحة السيارة */
   plateNumber: string
   /** معرف الفرع */
@@ -96,4 +102,6 @@ export interface CarQueryParameters {
   branchId?: number | null
   /** تصفية حسب سنة الصنع */
   manufactureYear?: number | null
+  /** تصفية حسب لون السيارة */
+  colorId?: number | null
 }

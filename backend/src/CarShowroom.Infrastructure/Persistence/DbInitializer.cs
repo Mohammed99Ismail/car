@@ -168,6 +168,44 @@ public static class DbInitializer
             logger.LogInformation("Seeded car makes and models.");
         }
 
+        // 6.5. Seed Car Colors
+        if (!await context.CarColors.AnyAsync(cancellationToken))
+        {
+            var colors = new List<CarColor>
+            {
+                new() { Name = "أبيض لؤلؤي", HexCode = "#FFFFFF" },
+                new() { Name = "أسود ملكي", HexCode = "#111111" },
+                new() { Name = "فضي معدني", HexCode = "#C0C0C0" },
+                new() { Name = "رمادي فلكي", HexCode = "#5A5D64" },
+                new() { Name = "كحلي / أزرق داكن", HexCode = "#1B2A4A" },
+                new() { Name = "أحمر قرمزي", HexCode = "#B22222" },
+                new() { Name = "بني عسلي", HexCode = "#5C4033" },
+                new() { Name = "ذهبي / بيج", HexCode = "#D4AF37" },
+                new() { Name = "أخضر داكن", HexCode = "#1C3F2B" },
+                new() { Name = "أزرق سماوي", HexCode = "#4A90E2" }
+            };
+            await context.CarColors.AddRangeAsync(colors, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
+            logger.LogInformation("Seeded standard car colors.");
+        }
+
+        // Backfill Car.ColorId if empty
+        var carsWithoutColorId = await context.Cars.Where(c => c.ColorId == null).ToListAsync(cancellationToken);
+        if (carsWithoutColorId.Count > 0)
+        {
+            var allColors = await context.CarColors.ToListAsync(cancellationToken);
+            foreach (var car in carsWithoutColorId)
+            {
+                var matched = allColors.FirstOrDefault(c => c.Name.Equals(car.Color, StringComparison.OrdinalIgnoreCase))
+                    ?? allColors.FirstOrDefault(c => !string.IsNullOrEmpty(car.Color) && (car.Color.Contains(c.Name, StringComparison.OrdinalIgnoreCase) || c.Name.Contains(car.Color, StringComparison.OrdinalIgnoreCase)));
+                if (matched != null)
+                {
+                    car.ColorId = matched.Id;
+                }
+            }
+            await context.SaveChangesAsync(cancellationToken);
+        }
+
         // 7. Seed Sample Branches
         if (!await context.Branches.AnyAsync(cancellationToken))
         {

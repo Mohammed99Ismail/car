@@ -17,6 +17,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<PasswordResetToken> PasswordResetTokens => Set<PasswordResetToken>();
     public DbSet<CarMake> CarMakes => Set<CarMake>();
     public DbSet<CarModel> CarModels => Set<CarModel>();
+    public DbSet<CarColor> CarColors => Set<CarColor>();
     public DbSet<ContractType> ContractTypes => Set<ContractType>();
     public DbSet<Branch> Branches => Set<Branch>();
     public DbSet<Customer> Customers => Set<Customer>();

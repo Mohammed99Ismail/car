@@ -14,6 +14,7 @@ public interface IApplicationDbContext
     DbSet<PasswordResetToken> PasswordResetTokens { get; }
     DbSet<CarMake> CarMakes { get; }
     DbSet<CarModel> CarModels { get; }
+    DbSet<CarColor> CarColors { get; }
     DbSet<ContractType> ContractTypes { get; }
     DbSet<Branch> Branches { get; }
     DbSet<Customer> Customers { get; }

@@ -104,6 +104,10 @@ namespace CarShowroom.Infrastructure.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("color");
 
+                    b.Property<int?>("ColorId")
+                        .HasColumnType("integer")
+                        .HasColumnName("color_id");
+
                     b.Property<int?>("CreatedByUserId")
                         .HasColumnType("integer")
                         .HasColumnName("created_by_user_id");
@@ -173,6 +177,9 @@ namespace CarShowroom.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_cars_chassis_number");
 
+                    b.HasIndex("ColorId")
+                        .HasDatabaseName("ix_cars_color_id");
+
                     b.HasIndex("EngineNumber")
                         .IsUnique()
                         .HasDatabaseName("ix_cars_engine_number");
@@ -188,6 +195,36 @@ namespace CarShowroom.Infrastructure.Migrations
                         .HasDatabaseName("ix_cars_plate_number");
 
                     b.ToTable("cars", (string)null);
+                });
+
+            modelBuilder.Entity("CarShowroom.Domain.Entities.CarColor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("HexCode")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("hex_code");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id")
+                        .HasName("pk_car_colors");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_car_colors_name");
+
+                    b.ToTable("car_colors", (string)null);
                 });
 
             modelBuilder.Entity("CarShowroom.Domain.Entities.CarMake", b =>
@@ -1079,6 +1116,12 @@ namespace CarShowroom.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_cars_branches_branch_id");
 
+                    b.HasOne("CarShowroom.Domain.Entities.CarColor", "CarColor")
+                        .WithMany()
+                        .HasForeignKey("ColorId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_cars_car_colors_color_id");
+
                     b.HasOne("CarShowroom.Domain.Entities.CarMake", "Make")
                         .WithMany()
                         .HasForeignKey("MakeId")
@@ -1094,6 +1137,8 @@ namespace CarShowroom.Infrastructure.Migrations
                         .HasConstraintName("fk_cars_car_models_model_id");
 
                     b.Navigation("Branch");
+
+                    b.Navigation("CarColor");
 
                     b.Navigation("Make");
 

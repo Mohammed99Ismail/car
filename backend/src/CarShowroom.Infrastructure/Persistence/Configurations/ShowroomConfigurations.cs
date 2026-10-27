@@ -7,6 +7,7 @@ namespace CarShowroom.Infrastructure.Persistence.Configurations;
 public class ShowroomConfigurations :
     IEntityTypeConfiguration<CarMake>,
     IEntityTypeConfiguration<CarModel>,
+    IEntityTypeConfiguration<CarColor>,
     IEntityTypeConfiguration<ContractType>,
     IEntityTypeConfiguration<Branch>,
     IEntityTypeConfiguration<Customer>,
@@ -32,6 +33,14 @@ public class ShowroomConfigurations :
         builder.HasKey(mo => mo.Id);
         builder.Property(mo => mo.Name).HasMaxLength(100).IsRequired();
         builder.HasIndex(mo => new { mo.MakeId, mo.Name }).IsUnique();
+    }
+
+    public void Configure(EntityTypeBuilder<CarColor> builder)
+    {
+        builder.HasKey(c => c.Id);
+        builder.Property(c => c.Name).HasMaxLength(100).IsRequired();
+        builder.HasIndex(c => c.Name).IsUnique();
+        builder.Property(c => c.HexCode).HasMaxLength(20);
     }
 
     public void Configure(EntityTypeBuilder<ContractType> builder)
@@ -94,6 +103,13 @@ public class ShowroomConfigurations :
             .WithMany()
             .HasForeignKey(c => c.BranchId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Property(c => c.ColorId).IsRequired(false);
+
+        builder.HasOne(c => c.CarColor)
+            .WithMany()
+            .HasForeignKey(c => c.ColorId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 
     public void Configure(EntityTypeBuilder<ContractTermsConfig> builder)

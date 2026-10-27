@@ -47,7 +47,11 @@ public record CarDto(
     /// <summary>ملاحظات إضافية عن السيارة</summary>
     string? Notes,
     /// <summary>تاريخ إضافة السيارة للنظام</summary>
-    DateTime CreatedDate);
+    DateTime CreatedDate,
+    /// <summary>معرف لون السيارة المرجعي</summary>
+    int? ColorId = null,
+    /// <summary>كود اللون السداسي Hex</summary>
+    string? ColorHex = null);
 
 /// <summary>
 /// طلب إضافة سيارة جديدة في المعرض
@@ -78,7 +82,9 @@ public record CreateCarRequest(
     /// <summary>مسار صورة السيارة</summary>
     string? ImagePath = null,
     /// <summary>القيمة الدفترية الأولية للسيارة (اختياري، في حال عدم التحديد تحسب تلقائياً من تاريخ الشراء)</summary>
-    decimal? BookValue = null);
+    decimal? BookValue = null,
+    /// <summary>معرف لون السيارة المرجعي</summary>
+    int? ColorId = null);
 
 /// <summary>
 /// طلب تحديث بيانات سيارة موجودة
@@ -109,7 +115,9 @@ public record UpdateCarRequest(
     /// <summary>مسار صورة السيارة</summary>
     string? ImagePath = null,
     /// <summary>القيمة الدفترية المحدثة للسيارة</summary>
-    decimal? BookValue = null);
+    decimal? BookValue = null,
+    /// <summary>معرف لون السيارة المرجعي</summary>
+    int? ColorId = null);
 
 /// <summary>
 /// معايير تصفية والبحث في السيارات
@@ -124,6 +132,8 @@ public class CarQueryParameters : QueryParameters
     public int? ModelId { get; set; }
     /// <summary>تصفية حسب سنة الصنع</summary>
     public int? ManufactureYear { get; set; }
+    /// <summary>تصفية حسب لون السيارة</summary>
+    public int? ColorId { get; set; }
 }
 
 public class CreateCarRequestValidator : AbstractValidator<CreateCarRequest>

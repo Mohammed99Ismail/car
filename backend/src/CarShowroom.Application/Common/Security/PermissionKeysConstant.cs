@@ -88,6 +88,14 @@ public static class PermissionKeysConstant
         public const string DELETE_KEY = "delete-contracts";
     }
 
+    public static class CarColors
+    {
+        public const string VIEW_KEY = "view-car-colors";
+        public const string CREATE_KEY = "create-car-colors";
+        public const string UPDATE_KEY = "update-car-colors";
+        public const string DELETE_KEY = "delete-car-colors";
+    }
+
     public static class Settings
     {
         public const string VIEW_KEY = "view-settings";
@@ -107,6 +115,7 @@ public static class PermissionKeysConstant
         .. Crud(70, "car-makes", "أنواع وماركات السيارات", "Car makes", CarMakes.VIEW_KEY, CarMakes.CREATE_KEY, CarMakes.UPDATE_KEY, CarMakes.DELETE_KEY),
         .. Crud(80, "car-models", "موديلات السيارات", "Car models", CarModels.VIEW_KEY, CarModels.CREATE_KEY, CarModels.UPDATE_KEY, CarModels.DELETE_KEY),
         .. Crud(90, "contracts", "العقود", "Contracts", Contracts.VIEW_KEY, Contracts.CREATE_KEY, Contracts.UPDATE_KEY, Contracts.DELETE_KEY),
+        .. Crud(100, "car-colors", "ألوان السيارات", "Car colors", CarColors.VIEW_KEY, CarColors.CREATE_KEY, CarColors.UPDATE_KEY, CarColors.DELETE_KEY),
         new(110, Settings.VIEW_KEY, "settings", "عرض إعدادات النظام", "View system settings"),
         new(111, Settings.UPDATE_KEY, "settings", "تعديل إعدادات النظام", "Update system settings"),
     ];

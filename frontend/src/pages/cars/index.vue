@@ -61,6 +61,7 @@ const formData = reactive<{
   modelId: number | null
   manufactureYear: number | null
   color: string
+  colorId: number | null
   plateNumber: string
   branchId: number | null
   purchaseDate: number | null
@@ -75,6 +76,7 @@ const formData = reactive<{
   modelId: null,
   manufactureYear: new Date().getFullYear(),
   color: '',
+  colorId: null,
   plateNumber: '',
   branchId: null,
   purchaseDate: Date.now(),
@@ -209,6 +211,7 @@ function openAddModal() {
     modelId: null,
     manufactureYear: new Date().getFullYear(),
     color: '',
+    colorId: null,
     plateNumber: '',
     branchId: null,
     purchaseDate: Date.now(),
@@ -239,6 +242,7 @@ async function openEditModal(car: CarDto) {
     modelId: car.modelId,
     manufactureYear: car.manufactureYear,
     color: car.color,
+    colorId: car.colorId ?? null,
     plateNumber: car.plateNumber,
     branchId: car.branchId,
     purchaseDate: car.purchaseDate ? new Date(car.purchaseDate).getTime() : Date.now(),
@@ -265,6 +269,7 @@ async function handleSave() {
         modelId: formData.modelId!,
         manufactureYear: Number(formData.manufactureYear),
         color: formData.color.trim(),
+        colorId: formData.colorId,
         plateNumber: formData.plateNumber.trim(),
         branchId: formData.branchId!,
         purchaseDate: new Date(formData.purchaseDate!).toISOString(),
@@ -377,7 +382,18 @@ const columns: DataTableColumns<CarDto> = [
   {
     title: t('cars.color'),
     key: 'color',
-    width: 100,
+    width: 120,
+    render(row) {
+      return h('div', { class: 'flex items-center gap-1.5' }, [
+        row.colorHex
+          ? h('span', {
+            class: 'w-3 h-3 rounded-full border border-slate-300 dark:border-slate-600 shrink-0 shadow-xs',
+            style: { backgroundColor: row.colorHex },
+          })
+          : null,
+        h('span', null, row.color),
+      ])
+    },
   },
   {
     title: t('cars.branch'),
@@ -643,7 +659,13 @@ meta:
 
           <!-- 4. Color -->
           <n-form-item path="color" :label="t('cars.color')">
-            <n-input id="car-form-color" v-model:value="formData.color" placeholder="مثال: أبيض لؤلؤي، أسود ملكي" />
+            <LookupSelect
+              id="car-form-color"
+              v-model:value="formData.color"
+              lookup-type="colors"
+              :placeholder="t('cars.colorPlaceholder') || 'اختر لون السيارة'"
+              @select-item="(item) => formData.colorId = (item as any)?.id || null"
+            />
           </n-form-item>
 
           <!-- 5. Plate Number -->

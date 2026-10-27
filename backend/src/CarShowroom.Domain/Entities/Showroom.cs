@@ -25,6 +25,16 @@ public class CarModel : BaseEntity
     public required string Name { get; set; }
 }
 
+/// <summary>ألوان السيارات المعتمدة (قائمة مرجعية قابلة للإدارة)</summary>
+public class CarColor : BaseEntity
+{
+    /// <summary>اسم اللون (مثل: أبيض لؤلؤي، أسود ملكي)</summary>
+    public required string Name { get; set; }
+
+    /// <summary>كود اللون السداسي HexCode (مثل: #FFFFFF أو #111111)</summary>
+    public string? HexCode { get; set; }
+}
+
 /// <summary>أنواع العقود — lookup مرجعي ثابت (خدمة، إيجار قصير الأجل، إيجار طويل الأجل، منتهي بالتمليك)</summary>
 public class ContractType : BaseEntity
 {
@@ -81,6 +91,12 @@ public class Car : AuditedEntityBase
 
     /// <summary>سنة الصنع / الموديل</summary>
     public int ManufactureYear { get; set; }
+
+    /// <summary>معرف لون السيارة المرجعي (اختياري)</summary>
+    public int? ColorId { get; set; }
+
+    /// <summary>لون السيارة المرجعي</summary>
+    public CarColor? CarColor { get; set; }
 
     /// <summary>لون السيارة</summary>
     public required string Color { get; set; }
