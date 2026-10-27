@@ -9,12 +9,26 @@ import {
   ArrowRight24Regular as ArrowRightIcon,
   CheckmarkCircle24Regular as CheckCircleIcon,
 } from '@vicons/fluent'
+import { RouterLink } from 'vue-router'
 import { isApiSuccess } from '~/models/ApiResponse'
 import { useDashboardService } from '~/services/dashboard.service'
 
 const { t } = useI18n()
 const accountStore = useAccountStore()
 const dashboardService = useDashboardService()
+
+// Permissions for Dashboard Modules
+const canViewCars = computed(() => accountStore.hasPermission('Cars.View'))
+const canViewCustomers = computed(() => accountStore.hasPermission('Customers.View'))
+const canViewBranches = computed(() => accountStore.hasPermission('Branches.View'))
+const canViewContractTypes = computed(() => accountStore.hasPermission('ContractTypes.View'))
+const canViewRoles = computed(() => accountStore.hasPermission('Roles.View'))
+const canViewUsers = computed(() => accountStore.hasPermission('Users.View'))
+const canViewLookups = computed(() =>
+  accountStore.hasPermission('CarMakes.View') ||
+  accountStore.hasPermission('CarModels.View') ||
+  accountStore.hasPermission('ContractTypes.View')
+)
 
 const stats = reactive({
   carsCount: 0,
@@ -89,6 +103,7 @@ meta:
           </RouterLink>
 
           <RouterLink
+            v-if="canViewLookups"
             to="/lookups"
             class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-semibold backdrop-blur-md transition text-sm"
           >
@@ -105,126 +120,176 @@ meta:
     <!-- Stat KPI Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
       <!-- 1. Cars Card -->
-      <RouterLink
-        to="/cars"
-        class="group p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/60 shadow-sm hover:shadow-md hover:border-blue-500/50 transition relative overflow-hidden"
+      <component
+        :is="canViewCars ? RouterLink : 'div'"
+        :to="canViewCars ? '/cars' : undefined"
+        class="p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/60 shadow-sm transition relative overflow-hidden flex flex-col justify-between"
+        :class="canViewCars ? 'group hover:shadow-md hover:border-blue-500/50 cursor-pointer' : 'cursor-default'"
       >
-        <div class="flex items-center justify-between">
-          <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center group-hover:scale-110 transition">
-            <CarsIcon class="w-6 h-6" />
+        <div>
+          <div class="flex items-center justify-between">
+            <div
+              class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center transition"
+              :class="canViewCars ? 'group-hover:scale-110' : ''"
+            >
+              <CarsIcon class="w-6 h-6" />
+            </div>
+            <span class="text-xs font-semibold px-2 py-1 rounded bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300">
+              {{ t('dashboard.fleet') }}
+            </span>
           </div>
-          <span class="text-xs font-semibold px-2 py-1 rounded bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300">
-            {{ t('dashboard.fleet') }}
-          </span>
+
+          <div class="mt-4">
+            <div class="text-3xl font-extrabold text-slate-800 dark:text-white">
+              {{ stats.carsCount }}
+            </div>
+            <div class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
+              {{ t('dashboard.totalCars') }}
+            </div>
+          </div>
         </div>
 
-        <div class="mt-4">
-          <div class="text-3xl font-extrabold text-slate-800 dark:text-white">
-            {{ stats.carsCount }}
-          </div>
-          <div class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
-            {{ t('dashboard.totalCars') }}
-          </div>
-        </div>
-
-        <div class="mt-4 flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 group-hover:translate-x-1 transition">
+        <!-- Action link: only visible if user has view permission -->
+        <div
+          v-if="canViewCars"
+          class="mt-4 flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 group-hover:translate-x-1 transition"
+        >
           <span>{{ t('dashboard.viewFleet') }}</span>
           <ArrowRightIcon class="w-3.5 h-3.5" :class="{ 'rotate-180': !useLayoutStore().isRtl }" />
         </div>
-      </RouterLink>
+      </component>
 
       <!-- 2. Customers Card -->
-      <RouterLink
-        to="/customers"
-        class="group p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/60 shadow-sm hover:shadow-md hover:border-emerald-500/50 transition relative overflow-hidden"
+      <component
+        :is="canViewCustomers ? RouterLink : 'div'"
+        :to="canViewCustomers ? '/customers' : undefined"
+        class="p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/60 shadow-sm transition relative overflow-hidden flex flex-col justify-between"
+        :class="canViewCustomers ? 'group hover:shadow-md hover:border-emerald-500/50 cursor-pointer' : 'cursor-default'"
       >
-        <div class="flex items-center justify-between">
-          <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center group-hover:scale-110 transition">
-            <CustomersIcon class="w-6 h-6" />
+        <div>
+          <div class="flex items-center justify-between">
+            <div
+              class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center transition"
+              :class="canViewCustomers ? 'group-hover:scale-110' : ''"
+            >
+              <CustomersIcon class="w-6 h-6" />
+            </div>
+            <span class="text-xs font-semibold px-2 py-1 rounded bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-300">
+              {{ t('dashboard.customers') }}
+            </span>
           </div>
-          <span class="text-xs font-semibold px-2 py-1 rounded bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-300">
-            {{ t('dashboard.customers') }}
-          </span>
+
+          <div class="mt-4">
+            <div class="text-3xl font-extrabold text-slate-800 dark:text-white">
+              {{ stats.customersCount }}
+            </div>
+            <div class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
+              {{ t('dashboard.totalCustomers') }}
+            </div>
+          </div>
         </div>
 
-        <div class="mt-4">
-          <div class="text-3xl font-extrabold text-slate-800 dark:text-white">
-            {{ stats.customersCount }}
-          </div>
-          <div class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
-            {{ t('dashboard.totalCustomers') }}
-          </div>
-        </div>
-
-        <div class="mt-4 flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 group-hover:translate-x-1 transition">
+        <!-- Action link: only visible if user has view permission -->
+        <div
+          v-if="canViewCustomers"
+          class="mt-4 flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 group-hover:translate-x-1 transition"
+        >
           <span>{{ t('dashboard.manageCustomers') }}</span>
           <ArrowRightIcon class="w-3.5 h-3.5" :class="{ 'rotate-180': !useLayoutStore().isRtl }" />
         </div>
-      </RouterLink>
+      </component>
 
       <!-- 3. Branches Card -->
-      <RouterLink
-        to="/branches"
-        class="group p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/60 shadow-sm hover:shadow-md hover:border-purple-500/50 transition relative overflow-hidden"
+      <component
+        :is="canViewBranches ? RouterLink : 'div'"
+        :to="canViewBranches ? '/branches' : undefined"
+        class="p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/60 shadow-sm transition relative overflow-hidden flex flex-col justify-between"
+        :class="canViewBranches ? 'group hover:shadow-md hover:border-purple-500/50 cursor-pointer' : 'cursor-default'"
       >
-        <div class="flex items-center justify-between">
-          <div class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center group-hover:scale-110 transition">
-            <BranchesIcon class="w-6 h-6" />
+        <div>
+          <div class="flex items-center justify-between">
+            <div
+              class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center transition"
+              :class="canViewBranches ? 'group-hover:scale-110' : ''"
+            >
+              <BranchesIcon class="w-6 h-6" />
+            </div>
+            <span class="text-xs font-semibold px-2 py-1 rounded bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300">
+              {{ t('dashboard.branches') }}
+            </span>
           </div>
-          <span class="text-xs font-semibold px-2 py-1 rounded bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300">
-            {{ t('dashboard.branches') }}
-          </span>
+
+          <div class="mt-4">
+            <div class="text-3xl font-extrabold text-slate-800 dark:text-white">
+              {{ stats.branchesCount }}
+            </div>
+            <div class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
+              {{ t('dashboard.showroomBranches') }}
+            </div>
+          </div>
         </div>
 
-        <div class="mt-4">
-          <div class="text-3xl font-extrabold text-slate-800 dark:text-white">
-            {{ stats.branchesCount }}
-          </div>
-          <div class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
-            {{ t('dashboard.showroomBranches') }}
-          </div>
-        </div>
-
-        <div class="mt-4 flex items-center gap-1 text-xs font-semibold text-purple-600 dark:text-purple-400 group-hover:translate-x-1 transition">
+        <!-- Action link: only visible if user has view permission -->
+        <div
+          v-if="canViewBranches"
+          class="mt-4 flex items-center gap-1 text-xs font-semibold text-purple-600 dark:text-purple-400 group-hover:translate-x-1 transition"
+        >
           <span>{{ t('dashboard.viewBranches') }}</span>
           <ArrowRightIcon class="w-3.5 h-3.5" :class="{ 'rotate-180': !useLayoutStore().isRtl }" />
         </div>
-      </RouterLink>
+      </component>
 
       <!-- 4. Contract Types Card -->
-      <RouterLink
-        to="/contract-types"
-        class="group p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/60 shadow-sm hover:shadow-md hover:border-amber-500/50 transition relative overflow-hidden"
+      <component
+        :is="canViewContractTypes ? RouterLink : 'div'"
+        :to="canViewContractTypes ? '/contract-types' : undefined"
+        class="p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/60 shadow-sm transition relative overflow-hidden flex flex-col justify-between"
+        :class="canViewContractTypes ? 'group hover:shadow-md hover:border-amber-500/50 cursor-pointer' : 'cursor-default'"
       >
-        <div class="flex items-center justify-between">
-          <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center group-hover:scale-110 transition">
-            <ContractTypesIcon class="w-6 h-6" />
+        <div>
+          <div class="flex items-center justify-between">
+            <div
+              class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center transition"
+              :class="canViewContractTypes ? 'group-hover:scale-110' : ''"
+            >
+              <ContractTypesIcon class="w-6 h-6" />
+            </div>
+            <span class="text-xs font-semibold px-2 py-1 rounded bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-300">
+              {{ t('dashboard.contractTypes') }}
+            </span>
           </div>
-          <span class="text-xs font-semibold px-2 py-1 rounded bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-300">
-            {{ t('dashboard.contractTypes') }}
-          </span>
+
+          <div class="mt-4">
+            <div class="text-3xl font-extrabold text-slate-800 dark:text-white">
+              {{ stats.contractTypesCount }}
+            </div>
+            <div class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
+              {{ t('dashboard.approvedContracts') }}
+            </div>
+          </div>
         </div>
 
-        <div class="mt-4">
-          <div class="text-3xl font-extrabold text-slate-800 dark:text-white">
-            {{ stats.contractTypesCount }}
-          </div>
-          <div class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
-            {{ t('dashboard.approvedContracts') }}
-          </div>
-        </div>
-
-        <div class="mt-4 flex items-center gap-1 text-xs font-semibold text-amber-600 dark:text-amber-400 group-hover:translate-x-1 transition">
+        <!-- Action link: only visible if user has view permission -->
+        <div
+          v-if="canViewContractTypes"
+          class="mt-4 flex items-center gap-1 text-xs font-semibold text-amber-600 dark:text-amber-400 group-hover:translate-x-1 transition"
+        >
           <span>{{ t('dashboard.viewContracts') }}</span>
           <ArrowRightIcon class="w-3.5 h-3.5" :class="{ 'rotate-180': !useLayoutStore().isRtl }" />
         </div>
-      </RouterLink>
+      </component>
     </div>
 
     <!-- Quick Navigation Modules Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <div
+      v-if="canViewCars || canViewRoles || canViewUsers"
+      class="grid grid-cols-1 md:grid-cols-2 gap-5"
+    >
       <!-- Fleet & Showroom Overview -->
-      <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-100 dark:border-slate-700/60 shadow-sm">
+      <div
+        v-if="canViewCars"
+        class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-100 dark:border-slate-700/60 shadow-sm"
+      >
         <h2 class="font-bold text-lg text-slate-800 dark:text-white mb-3 flex items-center gap-2">
           <span>🚙</span> {{ t('dashboard.fleetManagement') }}
         </h2>
@@ -241,7 +306,10 @@ meta:
       </div>
 
       <!-- Security & Permissions Overview -->
-      <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-100 dark:border-slate-700/60 shadow-sm">
+      <div
+        v-if="canViewRoles || canViewUsers"
+        class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-100 dark:border-slate-700/60 shadow-sm"
+      >
         <h2 class="font-bold text-lg text-slate-800 dark:text-white mb-3 flex items-center gap-2">
           <span>🛡️</span> {{ t('dashboard.rolesAndUsers') }}
         </h2>
@@ -250,14 +318,19 @@ meta:
         </p>
         <div class="flex items-center gap-4">
           <RouterLink
+            v-if="canViewRoles"
             to="/roles"
             class="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
           >
             <span>{{ t('roles.title') }}</span>
             <ArrowRightIcon class="w-4 h-4" :class="{ 'rotate-180': !useLayoutStore().isRtl }" />
           </RouterLink>
-          <span class="text-slate-300 dark:text-slate-600">|</span>
+          <span
+            v-if="canViewRoles && canViewUsers"
+            class="text-slate-300 dark:text-slate-600"
+          >|</span>
           <RouterLink
+            v-if="canViewUsers"
             to="/users"
             class="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
           >

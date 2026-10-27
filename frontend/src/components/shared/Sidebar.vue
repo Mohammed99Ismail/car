@@ -162,14 +162,15 @@ const menuOptions = computed<SidebarMenuOption[]>(() => {
     })
   }
 
-  // System Settings (Always accessible for administrators / settings view)
-  options.push({
-    label: t('menu.settings'),
-    route: '/settings',
-    key: 'settings',
-    icon: SettingsIcon,
-    activeIcon: SettingsIconActive,
-  })
+  if (accountStore.hasPermission('Settings.View')) {
+    options.push({
+      label: t('menu.settings'),
+      route: '/settings',
+      key: 'settings',
+      icon: SettingsIcon,
+      activeIcon: SettingsIconActive,
+    })
+  }
 
   return options
 })

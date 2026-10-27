@@ -4,9 +4,6 @@ import {
   Settings24Regular as SettingsIcon,
   LockClosed24Regular as LockIcon,
   Search24Regular as SearchIcon,
-  Sparkle24Regular as SparkleIcon,
-  ReceiptMoney24Regular as TaxIcon,
-  ShieldCheckmark24Regular as ShieldIcon,
   Copy24Regular as CopyIcon,
   Checkmark24Regular as CheckIcon,
 } from '@vicons/fluent'
@@ -27,6 +24,8 @@ import type { SystemSettingDto } from '~/models/Settings'
 import { useSettingsService } from '~/services/settings.service'
 
 const message = useMessage()
+const router = useRouter()
+const accountStore = useAccountStore()
 const settingsService = useSettingsService()
 
 const settingsList = ref<SystemSettingDto[]>([])
@@ -214,6 +213,11 @@ const columns: DataTableColumns<SystemSettingDto> = [
 ]
 
 onMounted(() => {
+  if (!accountStore.hasPermission('Settings.View')) {
+    message.error('عفواً، ليس لديك صلاحية للوصول إلى إعدادات النظام')
+    router.replace('/')
+    return
+  }
   loadSettings()
 })
 </script>
@@ -225,7 +229,7 @@ meta:
 </route>
 
 <template>
-  <div class="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-6">
+  <div v-if="accountStore.hasPermission('Settings.View')" class="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-6">
     <!-- Header Section -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 gap-4 border-b border-slate-200/80 dark:border-slate-800">
       <div class="flex items-center gap-4">
@@ -254,50 +258,6 @@ meta:
           </template>
           تحديث البيانات
         </n-button>
-      </div>
-    </div>
-
-    <!-- Quick Overview KPI Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      <!-- VAT KPI -->
-      <div class="p-5 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50/50 dark:from-slate-800 dark:to-slate-800/80 border border-blue-200/70 dark:border-slate-700 shadow-sm flex items-center justify-between">
-        <div class="space-y-1">
-          <span class="text-xs font-bold text-slate-500 dark:text-slate-400 block">ضريبة القيمة المضافة (VAT)</span>
-          <div class="text-3xl font-black font-mono text-blue-700 dark:text-blue-400">15%</div>
-          <span class="text-[11px] text-slate-600 dark:text-slate-400 block">مطبقة تلقائياً على أسعار الإيجار</span>
-        </div>
-        <div class="w-12 h-12 rounded-2xl bg-blue-600/10 dark:bg-blue-400/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
-          <n-icon size="26" :component="TaxIcon" />
-        </div>
-      </div>
-
-      <!-- Security / ReadOnly Status -->
-      <div class="p-5 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50/50 dark:from-slate-800 dark:to-slate-800/80 border border-amber-200/70 dark:border-slate-700 shadow-sm flex items-center justify-between">
-        <div class="space-y-1">
-          <span class="text-xs font-bold text-slate-500 dark:text-slate-400 block">حالة الحماية والأمان</span>
-          <div class="text-2xl font-black text-amber-700 dark:text-amber-400 flex items-center gap-1.5">
-            <n-icon size="20" :component="LockIcon" />
-            <span>للقراءة فقط</span>
-          </div>
-          <span class="text-[11px] text-slate-600 dark:text-slate-400 block">محمية من التعديل العشوائي (ReadOnly)</span>
-        </div>
-        <div class="w-12 h-12 rounded-2xl bg-amber-600/10 dark:bg-amber-400/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
-          <n-icon size="26" :component="ShieldIcon" />
-        </div>
-      </div>
-
-      <!-- Engine Readiness -->
-      <div class="p-5 rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50/50 dark:from-slate-800 dark:to-slate-800/80 border border-emerald-200/70 dark:border-slate-700 shadow-sm flex items-center justify-between">
-        <div class="space-y-1">
-          <span class="text-xs font-bold text-slate-500 dark:text-slate-400 block">بنية النظام (Extensibility)</span>
-          <div class="text-2xl font-black text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
-            <span>جاهزة للتوسع</span>
-          </div>
-          <span class="text-[11px] text-slate-600 dark:text-slate-400 block">إمكانية إضافة أي إعدادات مستقبلية</span>
-        </div>
-        <div class="w-12 h-12 rounded-2xl bg-emerald-600/10 dark:bg-emerald-400/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
-          <n-icon size="26" :component="SparkleIcon" />
-        </div>
       </div>
     </div>
 

@@ -16,33 +16,46 @@ interface Props {
 const props = defineProps<Props>()
 const { t } = useI18n()
 const router = useRouter()
+const accountStore = useAccountStore()
 
-const dropdownOptions = computed<DropdownOption[]>(() => [
-  {
-    label: () => t('lookups.hub'),
-    key: '/lookups',
-    icon: () => h(HubIcon, { class: 'w-4 h-4' }),
-  },
-  {
-    type: 'divider',
-    key: 'd1',
-  },
-  {
-    label: () => t('carMakes.title'),
-    key: '/car-makes',
-    icon: () => h(MakesIcon, { class: 'w-4 h-4 text-emerald-500' }),
-  },
-  {
-    label: () => t('carModels.title'),
-    key: '/car-models',
-    icon: () => h(ModelsIcon, { class: 'w-4 h-4 text-blue-500' }),
-  },
-  {
-    label: () => t('menu.contractTypes'),
-    key: '/contract-types',
-    icon: () => h(ContractTypesIcon, { class: 'w-4 h-4 text-amber-500' }),
-  },
-])
+const dropdownOptions = computed<DropdownOption[]>(() => {
+  const options: DropdownOption[] = [
+    {
+      label: () => t('lookups.hub'),
+      key: '/lookups',
+      icon: () => h(HubIcon, { class: 'w-4 h-4' }),
+    },
+  ]
+
+  const items: DropdownOption[] = []
+  if (accountStore.hasPermission('CarMakes.View')) {
+    items.push({
+      label: () => t('carMakes.title'),
+      key: '/car-makes',
+      icon: () => h(MakesIcon, { class: 'w-4 h-4 text-emerald-500' }),
+    })
+  }
+  if (accountStore.hasPermission('CarModels.View')) {
+    items.push({
+      label: () => t('carModels.title'),
+      key: '/car-models',
+      icon: () => h(ModelsIcon, { class: 'w-4 h-4 text-blue-500' }),
+    })
+  }
+  if (accountStore.hasPermission('ContractTypes.View')) {
+    items.push({
+      label: () => t('menu.contractTypes'),
+      key: '/contract-types',
+      icon: () => h(ContractTypesIcon, { class: 'w-4 h-4 text-amber-500' }),
+    })
+  }
+
+  if (items.length > 0) {
+    options.push({ type: 'divider', key: 'd1' }, ...items)
+  }
+
+  return options
+})
 
 function handleSelect(key: string) {
   router.push(key)
@@ -68,7 +81,12 @@ function handleSelect(key: string) {
         </n-button>
       </router-link>
 
-      <router-link to="/car-makes" custom v-slot="{ navigate }">
+      <router-link
+        v-if="accountStore.hasPermission('CarMakes.View')"
+        to="/car-makes"
+        custom
+        v-slot="{ navigate }"
+      >
         <n-button
           size="medium"
           :type="activeKey === 'makes' ? 'primary' : 'default'"
@@ -83,7 +101,12 @@ function handleSelect(key: string) {
         </n-button>
       </router-link>
 
-      <router-link to="/car-models" custom v-slot="{ navigate }">
+      <router-link
+        v-if="accountStore.hasPermission('CarModels.View')"
+        to="/car-models"
+        custom
+        v-slot="{ navigate }"
+      >
         <n-button
           size="medium"
           :type="activeKey === 'models' ? 'primary' : 'default'"
@@ -98,7 +121,12 @@ function handleSelect(key: string) {
         </n-button>
       </router-link>
 
-      <router-link to="/contract-types" custom v-slot="{ navigate }">
+      <router-link
+        v-if="accountStore.hasPermission('ContractTypes.View')"
+        to="/contract-types"
+        custom
+        v-slot="{ navigate }"
+      >
         <n-button
           size="medium"
           :type="activeKey === 'contract-types' ? 'primary' : 'default'"
