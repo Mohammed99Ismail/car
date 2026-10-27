@@ -10,7 +10,7 @@ import { CanvasRenderer } from 'echarts/renderers'
 import { BarChart as EChartsBarChart } from 'echarts/charts'
 import { PolarComponent, TooltipComponent, LegendComponent } from 'echarts/components'
 import VChart from 'vue-echarts'
-import { cn } from '~/common/utils/cn'
+import { cn } from '~/old/common/utils/cn'
 import {
   chartColors,
   chartTextColor,

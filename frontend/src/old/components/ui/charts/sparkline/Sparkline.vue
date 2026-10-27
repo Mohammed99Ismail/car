@@ -10,7 +10,7 @@ import { CanvasRenderer } from 'echarts/renderers'
 import { LineChart as EChartsLineChart, BarChart as EChartsBarChart } from 'echarts/charts'
 import { GridComponent, TooltipComponent } from 'echarts/components'
 import VChart from 'vue-echarts'
-import { cn } from '~/common/utils/cn'
+import { cn } from '~/old/common/utils/cn'
 import { chartColors, toRgba } from '../useChartTheme'
 
 // Bar + grid + tooltip registered alongside line so consumers can swap

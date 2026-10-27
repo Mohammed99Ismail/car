@@ -16,7 +16,7 @@ import {
   PolarBarChart as UipkgePolarBarChart,
   RadarChart as UipkgeRadarChart,
 } from '~/components/ui/charts'
-import { cn } from '~/common/utils/cn'
+import { cn } from '~/old/common/utils/cn'
 
 const { t } = useI18n()
 

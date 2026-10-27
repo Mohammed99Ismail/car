@@ -17,7 +17,7 @@ import {
   MarkAreaComponent,
 } from 'echarts/components'
 import VChart from 'vue-echarts'
-import { cn } from '~/common/utils/cn'
+import { cn } from '~/old/common/utils/cn'
 import {
   chartColors,
   chartTextColor,

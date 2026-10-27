@@ -30,7 +30,6 @@ const { collapsed, isRtl, mobileMode } = storeToRefs(layoutStore)
           </n-button>
         </div>
         <BreadCrumb />
-        <!-- <Search /> -->
       </div>
     </template>
     <template #extra>

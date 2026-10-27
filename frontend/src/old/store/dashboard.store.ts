@@ -5,7 +5,7 @@ import type {
   SimpleChartSeries,
 } from '~/models/ChartData'
 import type { DashboardSummaryStatDto } from '~/models/SummaryStat'
-import { useReportService } from '~/services/report.service'
+import { useReportService } from '~/old/services/report.service'
 
 export const useDashboardStore = defineStore('Dashboard', () => {
   const reportService = useReportService()

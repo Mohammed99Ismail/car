@@ -10,13 +10,17 @@
 
 ```
 frontend/src/old/
-├── components/          # مكونات واجهة المستخدم غير المستخدمة (Charts, Orders, Products, UI, Category, etc.)
-├── pages/               # الصفحات التوضيحية للقالب (Apps, Brands, Categories, Colors, Invoices, etc.)
-├── store/               # مخازن بينيا الخاصة ببيانات المتجر والقالب (brand, category, product, chat, etc.)
-├── services/            # الخدمات البرمجية الخاصة ببيانات القالب التجريبية
+├── assets/              # الصور والملفات الرسومية التوضيحية للقالب (3d-female-character-waving.png)
+├── common/              # الدوال المساعدة والتحقق القديمة (validations, cn)
+├── components/          # مكونات واجهة المستخدم غير المستخدمة (Charts, Orders, Products, CustomIcons, UI, Category, etc.)
+├── composables/         # دوال التركيب المساعدة التابعة للرسوم البيانية والقالب (useFilter, إلخ)
+├── locales/             # ملفات اللغات غير المستخدمة (fa.yml, zh.yml)
+├── mocks/               # معالجات المحاكاة (Mock Handlers) الخاصة بالقالب
 ├── models/              # نماذج البيانات والواجهات (TypeScript Interfaces/Types) الخاصة بالقالب
-├── composables/         # دوال التركيب المساعدة التابعة للرسوم البيانية والقالب
-└── mocks/               # معالجات المحاكاة (Mock Handlers) الخاصة بالقالب
+├── modules/             # الموديولات غير النشطة مثل pwa.ts
+├── pages/               # الصفحات التوضيحية للقالب (Apps, Brands, Categories, Colors, Invoices, etc.)
+├── services/            # الخدمات البرمجية الخاصة ببيانات القالب التجريبية (report.service.ts, إلخ)
+└── store/               # مخازن بينيا الخاصة ببيانات المتجر والقالب (brand, category, product, chat, etc.)
 ```
 
 ---

@@ -4,7 +4,7 @@ import {
   Settings24Regular as SettingIcon,
 } from '@vicons/fluent'
 import type { ChartData } from '~/models/ChartData'
-import { useReportService } from '~/services/report.service'
+import { useReportService } from '~/old/services/report.service'
 
 const reportService = useReportService()
 const monthlySellStat = ref<ChartData | null>(null)

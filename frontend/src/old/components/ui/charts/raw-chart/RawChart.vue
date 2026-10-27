@@ -7,7 +7,7 @@
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import VChart from 'vue-echarts'
-import { cn } from '~/common/utils/cn'
+import { cn } from '~/old/common/utils/cn'
 
 // Raw escape hatch. The opinionated wrappers (AreaChart, BarChart,
 // FunnelChart, ...) cover the common cases with sensible defaults +

@@ -10,7 +10,7 @@ import { CanvasRenderer } from 'echarts/renderers'
 import { LineChart as EChartsLineChart } from 'echarts/charts'
 import { GridComponent, TooltipComponent, LegendComponent } from 'echarts/components'
 import VChart from 'vue-echarts'
-import { cn } from '~/common/utils/cn'
+import { cn } from '~/old/common/utils/cn'
 import {
   chartColors,
   chartTextColor,

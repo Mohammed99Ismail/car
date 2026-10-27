@@ -2,7 +2,7 @@ import { acceptHMRUpdate, defineStore } from 'pinia'
 import type { LocationChartSeries, SimpleChartSeries } from '~/models/ChartData'
 import type { DashboardSummaryStatDto } from '~/models/SummaryStat'
 import type { VisitStat } from '~/models/VisitStat'
-import { useReportService } from '~/services/report.service'
+import { useReportService } from '~/old/services/report.service'
 
 export const useAnalyticsDashboardStore = defineStore(
   'AnalyticsDashboard',

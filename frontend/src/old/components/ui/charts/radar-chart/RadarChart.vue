@@ -10,7 +10,7 @@ import { CanvasRenderer } from 'echarts/renderers'
 import { RadarChart as EChartsRadarChart } from 'echarts/charts'
 import { RadarComponent, TooltipComponent, LegendComponent } from 'echarts/components'
 import VChart from 'vue-echarts'
-import { cn } from '~/common/utils/cn'
+import { cn } from '~/old/common/utils/cn'
 import { chartColors, chartTooltipBg, chartTooltipBorder, chartTooltipText } from '../useChartTheme'
 
 use([CanvasRenderer, EChartsRadarChart, RadarComponent, TooltipComponent, LegendComponent])

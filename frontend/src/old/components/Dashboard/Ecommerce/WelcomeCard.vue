@@ -30,7 +30,7 @@ const total = randomInRange(2000, 4000)
               </p>
             </div>
           </div>
-          <img src="@/assets/images/3d-female-character-waving.png" width="140px"
+          <img src="@/old/assets/images/3d-female-character-waving.png" width="140px"
             class="hidden md:block -mt-24 -mb-4 me-6 cursor-pointer">
         </div>
       </card>
