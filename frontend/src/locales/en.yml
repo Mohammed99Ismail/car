@@ -19,7 +19,12 @@ enums:
     Draft: Draft
     NotActive: NotActive
 common:
-  403Error: You have not Permission to access
+  403Error: You do not have permission to access this page
+  accessDeniedBadge: Forbidden
+  accessDeniedTitle: "Access Denied: Insufficient Permissions"
+  accessDeniedDesc: Access to this page is restricted based on your account's assigned permissions. Please contact the system administrator if you require access.
+  accessDeniedToast: You do not have permission to access this page
+  backToHome: Back to Home
   404Error: 404 Error
   404Message: >-
     Sorry but the page you are looking for does not exist, have been removed.

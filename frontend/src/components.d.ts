@@ -7,13 +7,21 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    403: typeof import('./pages/403.vue')['default']
+    'App.config': typeof import('./config/app.config.ts')['default']
     BreadCrumb: typeof import('./components/Navbar/BreadCrumb.vue')['default']
+    CarColor: typeof import('./models/CarColor.ts')['default']
+    'CarColor.service': typeof import('./services/car-color.service.ts')['default']
+    CarColors: typeof import('./pages/car-colors/index.vue')['default']
     CustomizeDialog: typeof import('./components/CustomizeDialog/CustomizeDialog.vue')['default']
     DarkModeContainer: typeof import('./components/shared/DarkModeContainer.vue')['default']
+    'Dashboard.service': typeof import('./services/dashboard.service.ts')['default']
     EnglandIcon: typeof import('./components/CustomIcons/EnglandIcon.vue')['default']
     ExportExcelModal: typeof import('./components/common/ExportExcelModal.vue')['default']
     FullScreenButton: typeof import('./components/Navbar/FullScreenButton.vue')['default']
     LanguageSelect: typeof import('./components/Navbar/LanguageSelect.vue')['default']
+    Logo: typeof import('./assets/images/logo.png')['default']
+    Logo9: typeof import('./assets/images/logo9.png')['default']
     LookupSelect: typeof import('./components/shared/LookupSelect.vue')['default']
     LookupsNav: typeof import('./components/shared/LookupsNav.vue')['default']
     NAlert: typeof import('naive-ui')['NAlert']
@@ -73,6 +81,7 @@ declare module 'vue' {
     Site: typeof import('./components/Site.vue')['default']
     ThemeCustomize: typeof import('./components/Navbar/ThemeCustomize.vue')['default']
     ThemeSwitch: typeof import('./components/Navbar/ThemeSwitch.vue')['default']
+    UseAppConfig: typeof import('./composables/useAppConfig.ts')['default']
     UserProfile: typeof import('./components/Navbar/UserProfile.vue')['default']
     UserProfilePage: typeof import('./components/Profile/UserProfilePage.vue')['default']
   }

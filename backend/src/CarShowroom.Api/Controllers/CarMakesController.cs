@@ -3,15 +3,16 @@ using CarShowroom.Application.Common.Models;
 using CarShowroom.Application.Common.Security;
 using CarShowroom.Application.Features.CarMakes;
 using CarShowroom.Application.Features.CarMakes.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarShowroom.Api.Controllers;
 
+[Authorize]
 [Route("api/car-makes")]
 public class CarMakesController(ICarMakeService carMakeService) : BaseApiController
 {
     [HttpGet]
-    [PermissionAuthorize(PermissionKeysConstant.CarMakes.VIEW_KEY)]
     public async Task<ActionResult<CustomApiResponse<PagedListModel<CarMakeDto>>>> GetCarMakes(
         [FromQuery] QueryParameters query, CancellationToken cancellationToken)
     {
@@ -20,7 +21,6 @@ public class CarMakesController(ICarMakeService carMakeService) : BaseApiControl
     }
 
     [HttpGet("{id:int}")]
-    [PermissionAuthorize(PermissionKeysConstant.CarMakes.VIEW_KEY)]
     public async Task<ActionResult<CustomApiResponse<CarMakeDto>>> GetCarMakeById(
         int id, CancellationToken cancellationToken)
     {

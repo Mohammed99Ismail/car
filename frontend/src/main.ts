@@ -81,6 +81,27 @@ app.directive('can', (el, binding) => {
   }
 })
 
+interface RoutePermissionRule {
+  prefix: string
+  permission: string | string[]
+}
+
+const routePermissionRules: RoutePermissionRule[] = [
+  { prefix: '/contracts/create', permission: 'Contracts.Create' },
+  { prefix: '/contracts', permission: 'Contracts.View' },
+  { prefix: '/customers', permission: 'Customers.View' },
+  { prefix: '/cars', permission: 'Cars.View' },
+  { prefix: '/branches', permission: 'Branches.View' },
+  { prefix: '/users', permission: 'Users.View' },
+  { prefix: '/roles', permission: 'Roles.View' },
+  { prefix: '/settings', permission: 'Settings.View' },
+  { prefix: '/car-makes', permission: 'CarMakes.View' },
+  { prefix: '/car-models', permission: 'CarModels.View' },
+  { prefix: '/car-colors', permission: 'CarColors.View' },
+  { prefix: '/contract-types', permission: 'ContractTypes.View' },
+  { prefix: '/lookups', permission: ['CarMakes.View', 'CarModels.View', 'CarColors.View', 'ContractTypes.View'] },
+]
+
 router.beforeEach((to, _, next) => {
   const accountStore = useAccountStore()
   const anonymousPaths = [
@@ -91,6 +112,7 @@ router.beforeEach((to, _, next) => {
     '/account/reset-password',
     '/reset-password',
     '/404',
+    '/403',
     '/error',
     '/maintenance',
   ]
@@ -111,6 +133,25 @@ router.beforeEach((to, _, next) => {
   ) {
     next('/')
     return
+  }
+
+  // Permission Guard for protected application modules
+  if (accountStore.isAuthenticated()) {
+    const matchingRule = routePermissionRules.find(
+      (rule) => path === rule.prefix || path.startsWith(`${rule.prefix}/`),
+    )
+
+    if (matchingRule) {
+      const required = matchingRule.permission
+      const hasPerm = Array.isArray(required)
+        ? required.some((p: string) => accountStore.hasPermission(p))
+        : accountStore.hasPermission(required)
+
+      if (!hasPerm) {
+        next('/403')
+        return
+      }
+    }
   }
 
   const { t } = i18n.global

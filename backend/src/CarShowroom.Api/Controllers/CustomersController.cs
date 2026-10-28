@@ -3,14 +3,15 @@ using CarShowroom.Application.Common.Models;
 using CarShowroom.Application.Common.Security;
 using CarShowroom.Application.Features.Customers;
 using CarShowroom.Application.Features.Customers.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarShowroom.Api.Controllers;
 
+[Authorize]
 public class CustomersController(ICustomerService customerService) : BaseApiController
 {
     [HttpGet]
-    [PermissionAuthorize(PermissionKeysConstant.Customers.VIEW_KEY)]
     public async Task<ActionResult<CustomApiResponse<PagedListModel<CustomerDto>>>> GetCustomers(
         [FromQuery] QueryParameters query, CancellationToken cancellationToken)
     {
@@ -19,7 +20,6 @@ public class CustomersController(ICustomerService customerService) : BaseApiCont
     }
 
     [HttpGet("{id:int}")]
-    [PermissionAuthorize(PermissionKeysConstant.Customers.VIEW_KEY)]
     public async Task<ActionResult<CustomApiResponse<CustomerDto>>> GetCustomerById(
         int id, CancellationToken cancellationToken)
     {

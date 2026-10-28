@@ -3,15 +3,16 @@ using CarShowroom.Application.Common.Models;
 using CarShowroom.Application.Common.Security;
 using CarShowroom.Application.Features.CarColors;
 using CarShowroom.Application.Features.CarColors.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarShowroom.Api.Controllers;
 
+[Authorize]
 [Route("api/car-colors")]
 public class CarColorsController(ICarColorService carColorService) : BaseApiController
 {
     [HttpGet]
-    [PermissionAuthorize(PermissionKeysConstant.CarColors.VIEW_KEY)]
     public async Task<ActionResult<CustomApiResponse<PagedListModel<CarColorDto>>>> GetCarColors(
         [FromQuery] QueryParameters query, CancellationToken cancellationToken)
     {
@@ -20,7 +21,6 @@ public class CarColorsController(ICarColorService carColorService) : BaseApiCont
     }
 
     [HttpGet("{id:int}")]
-    [PermissionAuthorize(PermissionKeysConstant.CarColors.VIEW_KEY)]
     public async Task<ActionResult<CustomApiResponse<CarColorDto>>> GetCarColorById(
         int id, CancellationToken cancellationToken)
     {

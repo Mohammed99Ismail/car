@@ -3,6 +3,7 @@ using CarShowroom.Application.Common.Models;
 using CarShowroom.Application.Common.Security;
 using CarShowroom.Application.Features.Contracts.Dtos;
 using CarShowroom.Application.Features.Contracts.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarShowroom.Api.Controllers;
@@ -72,7 +73,7 @@ public class ContractsController(IContractService contractService) : BaseApiCont
     }
 
     [HttpPost("calculate")]
-    [PermissionAuthorize(PermissionKeysConstant.Contracts.VIEW_KEY)]
+    [Authorize]
     public async Task<ActionResult<CustomApiResponse<ContractCalculationResultDto>>> Calculate(
         [FromBody] ContractCalculationRequest request,
         CancellationToken cancellationToken)
@@ -82,7 +83,7 @@ public class ContractsController(IContractService contractService) : BaseApiCont
     }
 
     [HttpGet("terms-config")]
-    [PermissionAuthorize(PermissionKeysConstant.Contracts.VIEW_KEY)]
+    [Authorize]
     public async Task<ActionResult<CustomApiResponse<ContractTermsConfigDto>>> GetTermsConfig(
         CancellationToken cancellationToken)
     {

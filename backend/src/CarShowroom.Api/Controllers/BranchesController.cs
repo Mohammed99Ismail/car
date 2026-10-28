@@ -3,14 +3,15 @@ using CarShowroom.Application.Common.Models;
 using CarShowroom.Application.Common.Security;
 using CarShowroom.Application.Features.Branches;
 using CarShowroom.Application.Features.Branches.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarShowroom.Api.Controllers;
 
+[Authorize]
 public class BranchesController(IBranchService branchService) : BaseApiController
 {
     [HttpGet]
-    [PermissionAuthorize(PermissionKeysConstant.Branches.VIEW_KEY)]
     public async Task<ActionResult<CustomApiResponse<PagedListModel<BranchDto>>>> GetBranches(
         [FromQuery] QueryParameters query, CancellationToken cancellationToken)
     {
@@ -19,7 +20,6 @@ public class BranchesController(IBranchService branchService) : BaseApiControlle
     }
 
     [HttpGet("{id:int}")]
-    [PermissionAuthorize(PermissionKeysConstant.Branches.VIEW_KEY)]
     public async Task<ActionResult<CustomApiResponse<BranchDto>>> GetBranchById(
         int id, CancellationToken cancellationToken)
     {
